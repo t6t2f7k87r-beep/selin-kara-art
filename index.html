@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SELİN KARA — Digital Artist</title>
+  <meta name="description" content="Özgün dijital illüstrasyonlar, özel siparişler ve AI destekli proje briefleri." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="studio.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <nav>
+    <a class="logo" href="#home">SELİN<span>•</span>KARA</a>
+    <div class="nav-links"><a href="#gallery">Eserler</a><a href="#about">Hakkımda</a><a href="#commission">Sipariş</a></div>
+    <div class="nav-actions"><button class="admin-link" id="openAdmin">Stüdyo</button><a class="nav-cta" href="#commission">Bir fikir getir <span>↗</span></a></div>
+  </nav>
+
+  <main id="home">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><i></i> İstanbul merkezli dijital sanatçı</p>
+        <h1>Hikâyene<br><em>görsel</em> bir ses<br>ver.</h1>
+        <p class="intro">Markalar, müzisyenler ve hayal kurmayı bırakmayan insanlar için cesur, dokulu ve tamamen özgün illüstrasyonlar.</p>
+        <div class="hero-actions"><a class="button dark" href="#gallery">Eserleri keşfet <b>→</b></a><a class="text-link" href="#commission">Özel bir şey çizdirelim <span>↘</span></a></div>
+      </div>
+      <div class="hero-art" aria-label="Soyut dijital illüstrasyon">
+        <div class="sun"></div><div class="arch"></div><div class="face"><span class="eye e1"></span><span class="eye e2"></span><span class="nose"></span><span class="mouth"></span></div><div class="flower f1">✦</div><div class="flower f2">✳</div><p class="art-caption">NO. 24 / INNER WEATHER</p>
+      </div>
+      <div class="scroll">AŞAĞI KAYDIR <span>↓</span></div>
+    </section>
+
+    <section class="ticker"><div>ÖZGÜN DİJİTAL SANAT <b>✳</b> ÖZEL SİPARİŞLER <b>✳</b> MARKA İLLÜSTRASYONU <b>✳</b> ÖZGÜN DİJİTAL SANAT <b>✳</b> ÖZEL SİPARİŞLER <b>✳</b></div></section>
+
+    <section class="gallery section" id="gallery">
+      <div class="section-head"><div><p class="eyebrow">01 / Seçili çalışmalar</p><h2>Duvarına değil,<br><em>dünyana</em> ait.</h2></div><button class="filter" id="filterBtn">Tüm eserler <span>⌄</span></button></div>
+      <div class="works" id="worksGrid"></div>
+      <a class="all-link" href="#gallery">Tüm koleksiyonu görüntüle <span>→</span></a>
+    </section>
+
+    <section class="statement"><p>“İyi bir illüstrasyon, bakılan değil; <em>içinde biraz kalınan</em> bir yer olmalı.”</p><span>— SELİN KARA, 2026</span></section>
+
+    <section class="commission section" id="commission">
+      <div class="commission-art"><div class="orb one"></div><div class="orb two"></div><div class="hand">✋</div><span>MAKE IT<br>PERSONAL.</span></div>
+      <div class="commission-copy"><p class="eyebrow">02 / Birlikte üretelim</p><h2>Aklındaki şeyi<br><em>görünür</em> kılalım.</h2><p>Bir albüm kapağı, markanızın yeni dünyası ya da sadece sevdiğiniz birinin portresi… Fikriniz ne kadar ham olursa olsun, onu birlikte şekillendiririz.</p><div class="commission-meta"><span>PROJELER İÇİN</span><span>2–4 HAFTA</span><span>GLOBAL ÇALIŞMA</span></div><button class="button coral" id="openBrief">Projeni anlat <b>→</b></button></div>
+    </section>
+
+    <section class="about section" id="about"><p class="eyebrow">03 / Merhaba</p><div><h2>Ben Selin.<br>Renkleri <em>hikâye</em><br>anlatmak için kullanıyorum.</h2><p>2018’den beri dijital dünyada karakterler, düşler ve markalar için görsel evrenler kuruyorum. Her çizgi, bir şey hissettirmek için orada.</p><a class="text-link" href="mailto:hello@selinkara.art">Tanışalım <span>↗</span></a></div></section>
+  </main>
+  <footer><a class="logo" href="#home">SELİN<span>•</span>KARA</a><p>© 2026 — Made with feeling.</p><div><a href="#">Instagram</a><a href="#">Behance</a></div></footer>
+
+  <dialog id="briefDialog"><button class="close" id="closeBrief">×</button><div class="brief-content"><p class="eyebrow">AI BRIEF ASİSTANI</p><h2>Fikrini beraber<br><em>netleştirelim.</em></h2><p class="brief-hint">Birkaç cümle yaz; asistan proje yönünü, kapsamını ve ilk tahmini önerir.</p><textarea id="ideaInput" placeholder="Örn. Yeni albümüm için gece hissini taşıyan, rüya gibi ama güçlü bir kapak istiyorum..."></textarea><button class="button dark" id="generateBrief">Brief'i oluştur <b>→</b></button><div class="ai-result" id="aiResult"></div></div></dialog>
+  <dialog id="adminDialog"><button class="close" id="closeAdmin">×</button><div class="admin-panel"><div class="admin-top"><div><p class="eyebrow">STÜDYO PANELİ</p><h2>Koleksiyonunu<br><em>yönet.</em></h2></div><button class="button coral" id="addWork">+ Yeni eser</button></div><div class="admin-list" id="adminList"></div><p class="admin-note">Değişiklikler bu cihazın tarayıcısında saklanır. Canlı satış için sonraki adımda paneli veritabanına bağlarız.</p></div></dialog>
+  <script src="app.js"></script>
+</body>
+</html>
