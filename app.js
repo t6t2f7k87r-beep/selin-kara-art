@@ -1,16 +1,19 @@
 const defaultWorks = [
-  { id: 'inner-weather', title: 'Inner Weather', type: 'Fine Art Print', category: 'print', price: '₺1.850', color: '#8d82d8', image: '', year: '2026', size: '30 × 40 cm', edition: '30', description: 'İç dünyamızın sessizce değişen iklimlerine dair katmanlı bir anlatı.' },
-  { id: 'sundown-club', title: 'Sundown Club', type: 'Limited Edition / 30', category: 'print', price: '₺2.400', color: '#d7a0a1', image: '', year: '2026', size: '40 × 50 cm', edition: '30', description: 'Günün son ışığına, dostluğa ve hatırlamak istediğimiz yaz akşamlarına.' },
-  { id: 'blue-hour', title: 'Blue Hour', type: 'Original Digital', category: 'original', price: '₺3.200', color: '#8cc7c1', image: '', year: '2026', size: '50 × 70 cm', edition: '1 / 1', description: 'Gece başlamadan hemen önceki o kısa, mavi ve sonsuz aralık.' },
-  { id: 'soft-rebel', title: 'Soft Rebel', type: 'Fine Art Print', category: 'print', price: '₺1.950', color: '#e5c06f', image: '', year: '2025', size: '30 × 40 cm', edition: '40', description: 'Yumuşaklığın da başlı başına bir direniş olduğuna dair.' },
-  { id: 'memory-garden', title: 'Memory Garden', type: 'Original Digital', category: 'original', price: '₺3.600', color: '#a8cf9d', image: '', year: '2025', size: '50 × 70 cm', edition: '1 / 1', description: 'Çocukluğun renkleriyle büyüyen, kimsenin bilmediği bir bahçe.' },
-  { id: 'other-side', title: 'The Other Side', type: 'Limited Edition / 20', category: 'print', price: '₺2.750', color: '#e68170', image: '', year: '2025', size: '40 × 50 cm', edition: '20', description: 'Bir kararın hemen öncesinde duran iki ayrı olasılık.' }
+  { id: 'inner-weather', title: 'Inner Weather', type: 'Fine Art Print', category: 'print', price: '₺1.850', color: '#8d82d8', image: 'assets/inner-weather.jpg', year: '2026', size: '30 × 40 cm', edition: '30', description: 'İç dünyamızın sessizce değişen iklimlerine dair katmanlı bir anlatı.' },
+  { id: 'sundown-club', title: 'Sundown Club', type: 'Limited Edition / 30', category: 'print', price: '₺2.400', color: '#d7a0a1', image: 'assets/sundown-club.jpg', year: '2026', size: '40 × 50 cm', edition: '30', description: 'Günün son ışığına, dostluğa ve hatırlamak istediğimiz yaz akşamlarına.' },
+  { id: 'blue-hour', title: 'Blue Hour', type: 'Original Digital', category: 'original', price: '₺3.200', color: '#8cc7c1', image: 'assets/blue-hour.jpg', year: '2026', size: '50 × 70 cm', edition: '1 / 1', description: 'Gece başlamadan hemen önceki o kısa, mavi ve sonsuz aralık.' },
+  { id: 'soft-rebel', title: 'Soft Rebel', type: 'Fine Art Print', category: 'print', price: '₺1.950', color: '#e5c06f', image: 'assets/soft-rebel.jpg', year: '2025', size: '30 × 40 cm', edition: '40', description: 'Yumuşaklığın da başlı başına bir direniş olduğuna dair.' },
+  { id: 'memory-garden', title: 'Memory Garden', type: 'Original Digital', category: 'original', price: '₺3.600', color: '#a8cf9d', image: 'assets/memory-garden.jpg', year: '2025', size: '50 × 70 cm', edition: '1 / 1', description: 'Çocukluğun renkleriyle büyüyen, kimsenin bilmediği bir bahçe.' },
+  { id: 'other-side', title: 'The Other Side', type: 'Limited Edition / 20', category: 'print', price: '₺2.750', color: '#e68170', image: 'assets/other-side.jpg', year: '2025', size: '40 × 50 cm', edition: '20', description: 'Bir kararın hemen öncesinde duran iki ayrı olasılık.' }
 ];
 
 const keys = { works: 'ecren-isik-works', legacy: 'selin-kara-works', favorites: 'ecren-isik-favorites', briefs: 'ecren-isik-briefs', settings: 'ecren-isik-ai-settings' };
 const parseStore = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
 const legacyWorks = parseStore(keys.legacy, null);
-let works = parseStore(keys.works, legacyWorks || defaultWorks).map((work, index) => ({ ...defaultWorks[index % defaultWorks.length], ...work, id: work.id || `work-${Date.now()}-${index}`, category: work.category || (index % 2 ? 'original' : 'print') }));
+let works = parseStore(keys.works, legacyWorks || defaultWorks).map((work, index) => {
+  const fallback = defaultWorks[index % defaultWorks.length];
+  return { ...fallback, ...work, image: work.image || fallback.image, id: work.id || `work-${Date.now()}-${index}`, category: work.category || (index % 2 ? 'original' : 'print') };
+});
 let favorites = parseStore(keys.favorites, []);
 let briefs = parseStore(keys.briefs, []);
 let aiSettings = parseStore(keys.settings, { endpoint: '', assistant: 'Ecren AI' });
@@ -87,8 +90,8 @@ function openWork(id) {
   $('#workDialog').showModal();
 }
 
-function openPanel(id) { const panel = document.getElementById(id); panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); }
-function closePanel(id) { const panel = document.getElementById(id); panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); }
+function openPanel(id) { const panel = document.getElementById(id); panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); setPageLock(true); }
+function closePanel(id) { const panel = document.getElementById(id); panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); if (!document.querySelector('.side-panel.open, .cart-drawer.open, .mobile-menu.open, .desktop-menu.open')) setPageLock(false); }
 function showToast(message) { $('#toast p').textContent = message; $('#toast').classList.add('show'); clearTimeout(showToast.timer); showToast.timer = setTimeout(() => $('#toast').classList.remove('show'), 2600); }
 function goToAI(prefill = '') { $('#workDialog').open && $('#workDialog').close(); document.querySelector('#ai-studio').scrollIntoView({ behavior: 'smooth' }); if (prefill) $('#ideaInput').value = prefill; setTimeout(() => $('#ideaInput').focus(), 700); }
 
@@ -169,7 +172,12 @@ $$('#megaLinks a').forEach(link => {
 $('#railPrev').onclick = () => { railIndex = Math.max(0, railIndex - 1); updateRail(); };
 $('#railNext').onclick = () => { railIndex += 1; updateRail(); };
 window.addEventListener('resize', updateRail);
-window.addEventListener('keydown', event => { if (event.key === 'Escape' && $('#mobileMenu').classList.contains('open')) closeMobileMenu(); });
+window.addEventListener('keydown', event => {
+  if (event.key !== 'Escape') return;
+  if ($('#mobileMenu').classList.contains('open')) closeMobileMenu();
+  else if ($('#cartDrawer').classList.contains('open')) closePanel('cartDrawer');
+  else if ($('#userPanel').classList.contains('open')) closePanel('userPanel');
+});
 
 $('#filterPills').onclick = event => { const button = event.target.closest('[data-filter]'); if (!button) return; activeFilter = button.dataset.filter; $$('#filterPills button').forEach(item => item.classList.toggle('active', item === button)); renderWorks(); };
 $('#projectTypes').onclick = event => { const button = event.target.closest('[data-type]'); if (!button) return; selectedType = button.dataset.type; $$('#projectTypes button').forEach(item => item.classList.toggle('active', item === button)); };

@@ -95,9 +95,11 @@ window.renderFeatureLayers = () => {
 };
 
 function addToCart(id) {
-  const size = $('#workSize')?.value || works.find(work => work.id === id)?.size || '30 × 40 cm';
+  const work = works.find(entry => entry.id === id);
+  if (!work) { showToast('Bu eser artık koleksiyonda bulunmuyor.'); return; }
+  const size = $('#workSize')?.value || work.size || '30 × 40 cm';
   const frame = $('#workFrame')?.value || 'Çerçevesiz';
-  const item = cart.find(entry => entry.id === id && (entry.size || size) === size && (entry.frame || frame) === frame);
+  const item = cart.find(entry => entry.id === id && entry.size === size && entry.frame === frame);
   if (item) item.qty += 1; else cart.push({ id, size, frame, qty: 1 });
   saveFeature(featureKeys.cart, cart);
   renderCart();
@@ -146,7 +148,7 @@ document.addEventListener('click', event => {
   const placeholder = event.target.closest('[data-placeholder-link]');
   if (placeholder) { event.preventDefault(); showToast('Bu sosyal profil henüz bağlanmadı.'); }
   const add = event.target.closest('[data-add-cart]');
-  if (add) addToCart(add.dataset.addCart);
+  if (add) { event.preventDefault(); addToCart(add.dataset.addCart); return; }
   const increment = event.target.closest('[data-cart-inc]');
   if (increment) changeCart(increment.dataset.cartInc, 1);
   const decrement = event.target.closest('[data-cart-dec]');
@@ -170,8 +172,24 @@ $('#closeGallery').onclick = () => $('#galleryDialog').close();
 $('#galleryPrev').onclick = () => { galleryIndex -= 1; renderGallery(); };
 $('#galleryNext').onclick = () => { galleryIndex += 1; renderGallery(); };
 $('#openCart').onclick = () => openPanel('cartDrawer');
-$('#closeCheckout').onclick = () => $('#checkoutDialog').close();
-$('#startCheckout').onclick = () => { if (!cart.length) return; closePanel('cartDrawer'); $('#checkoutTotal').textContent = money(cart.reduce((sum, item) => sum + priceNumber(works.find(work => work.id === item.id)?.price) * item.qty, 0)); $('#checkoutDialog').showModal(); };
+function renderCheckoutPreview() {
+  $('#checkoutPreview').innerHTML = cart.map(item => {
+    const work = works.find(entry => entry.id === item.id);
+    if (!work) return '';
+    return `<article><div><b>${escapeHTML(work.title)}</b><small>${escapeHTML(item.size || work.size)} · ${escapeHTML(item.frame || 'Çerçevesiz')} · ${item.qty} adet</small></div><strong>${money(priceNumber(work.price) * item.qty)}</strong></article>`;
+  }).join('');
+}
+function returnToCart() { if ($('#checkoutDialog').open) $('#checkoutDialog').close(); openPanel('cartDrawer'); }
+$('#closeCheckout').onclick = returnToCart;
+$('#checkoutDialog').addEventListener('cancel', event => { event.preventDefault(); returnToCart(); });
+$('#startCheckout').onclick = () => {
+  if (!cart.length) return;
+  closePanel('cartDrawer');
+  renderCheckoutPreview();
+  $('#checkoutTotal').textContent = money(cart.reduce((sum, item) => sum + priceNumber(works.find(work => work.id === item.id)?.price) * item.qty, 0));
+  $('#checkoutDialog').scrollTop = 0;
+  $('#checkoutDialog').showModal();
+};
 $('#playStudio').onclick = () => $('#studioDialog').showModal();
 $('#closeStudio').onclick = () => $('#studioDialog').close();
 $('#langToggle').onclick = () => { currentLanguage = currentLanguage === 'tr' ? 'en' : 'tr'; applyLanguage(); };
