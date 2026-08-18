@@ -204,8 +204,6 @@ $('#startCheckout').onclick = () => {
   $('#checkoutDialog').scrollTop = 0;
   $('#checkoutDialog').showModal();
 };
-$('#playStudio').onclick = () => $('#studioDialog').showModal();
-$('#closeStudio').onclick = () => $('#studioDialog').close();
 $('#langToggle').onclick = () => { currentLanguage = currentLanguage === 'tr' ? 'en' : 'tr'; applyLanguage(); };
 
 $('#referenceInput').onchange = event => {
@@ -310,5 +308,5 @@ applyLanguage();
 window.renderFeatureLayers();
 
 if ('serviceWorker' in navigator && !['localhost', '127.0.0.1'].includes(location.hostname)) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=20260818-4', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {}));
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=20260818-5', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {}));
 }
