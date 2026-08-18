@@ -10,7 +10,18 @@
   <meta property="og:title" content="Ecren Işık — Digital Artist" />
   <meta property="og:description" content="Özgün dijital sanat, koleksiyonluk baskılar ve kişiye özel görsel dünyalar." />
   <meta property="og:locale" content="tr_TR" />
-  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://t6t2f7k87r-beep.github.io/selin-kara-art/" />
+  <meta property="og:image" content="https://t6t2f7k87r-beep.github.io/selin-kara-art/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:alt" content="Ecren Işık Artist Studio — soyut dijital sanat kompozisyonu" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ecren Işık — Digital Artist" />
+  <meta name="twitter:description" content="Özgün dijital sanat, koleksiyonluk baskılar ve kişiye özel görsel dünyalar." />
+  <meta name="twitter:image" content="https://t6t2f7k87r-beep.github.io/selin-kara-art/og.png" />
+  <meta name="apple-mobile-web-app-title" content="Ecren Işık" />
+  <meta name="format-detection" content="telephone=no" />
   <link rel="canonical" href="https://t6t2f7k87r-beep.github.io/selin-kara-art/" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
@@ -38,11 +49,11 @@
     </nav>
     <div class="header-actions">
       <button class="lang-toggle" id="langToggle" aria-label="Dili değiştir">TR <span>/</span> EN</button>
-      <button class="cart-trigger" id="openCart" aria-label="Sepeti aç">Bag <b id="cartCount">0</b></button>
-      <button class="icon-btn" id="openUser" aria-label="Kullanıcı menüsü"><span class="user-dot"></span><span class="hide-mobile">Hesabım</span><b id="favoriteCount">0</b></button>
+      <button class="cart-trigger" id="openCart" aria-label="Sepeti aç" aria-controls="cartDrawer">Bag <b id="cartCount">0</b></button>
+      <button class="icon-btn" id="openUser" aria-label="Kullanıcı menüsü" aria-controls="userPanel"><span class="user-dot"></span><span class="hide-mobile">Hesabım</span><b id="favoriteCount">0</b></button>
       <button class="desktop-explore" id="desktopExplore" aria-label="Masaüstü keşif menüsünü aç"><span>Keşfet</span><i><b></b><b></b></i></button>
-      <button class="pill-btn" id="openAdmin">Stüdyo paneli <span>↗</span></button>
-      <button class="menu-btn" id="menuBtn" aria-label="Menüyü aç"><span></span><span></span></button>
+      <button class="pill-btn" id="openAdmin" aria-haspopup="dialog">Stüdyo paneli <span>↗</span></button>
+      <button class="menu-btn" id="menuBtn" aria-label="Menüyü aç" aria-controls="mobileMenu"><span></span><span></span></button>
     </div>
   </header>
 
@@ -167,11 +178,11 @@
     <a class="panel-action" href="#works" data-close="userPanel">Koleksiyonu keşfet <span>→</span></a>
   </aside>
 
-  <dialog class="admin-dialog" id="adminDialog">
+  <dialog class="admin-dialog" id="adminDialog" aria-label="Stüdyo yönetim paneli">
     <div class="admin-shell">
       <aside class="admin-sidebar"><a class="brand brand-system"><span class="brand-mark" aria-hidden="true"><b>E</b><b>I</b></span><span class="brand-name">ECREN IŞIK<small>STUDIO ADMIN</small></span></a><nav><button class="active" data-admin-tab="collection">▦ <span>Koleksiyon</span></button><button data-admin-tab="commerce">◇ <span>Satış</span></button><button data-admin-tab="ai">✦ <span>AI Ayarları</span></button></nav><div class="admin-profile"><span>EI</span><div><b>Ecren Işık</b><small>Artist / Admin</small></div></div></aside>
       <main class="admin-main">
-        <div class="admin-header"><div><p>STÜDYO PANELİ</p><h2 id="adminTitle">Koleksiyon</h2></div><button class="panel-close" id="closeAdmin">×</button></div>
+        <div class="admin-header"><div><p>STÜDYO PANELİ</p><h2 id="adminTitle">Koleksiyon</h2></div><button class="panel-close" id="closeAdmin" aria-label="Stüdyo panelini kapat">×</button></div>
         <section class="admin-tab active" id="adminCollection">
           <div class="metric-grid"><article><span>Toplam eser</span><strong id="totalWorks">0</strong><small>Aktif koleksiyon</small></article><article><span>Favorilenme</span><strong id="totalFavorites">0</strong><small>Ziyaretçi etkileşimi</small></article><article><span>AI brief</span><strong id="totalBriefs">0</strong><small>Potansiyel proje</small></article></div>
           <div class="admin-toolbar"><div><h3>Eserler</h3><p>Görsel, fiyat ve koleksiyon bilgilerini düzenle.</p></div><button class="primary-btn compact" id="addWork">+ Yeni eser</button></div>
@@ -194,11 +205,11 @@
     </div>
   </dialog>
 
-  <dialog class="work-dialog" id="workDialog"><button class="panel-close work-close" id="closeWork">×</button><div class="work-detail" id="workDetail"></div></dialog>
+  <dialog class="work-dialog" id="workDialog" aria-label="Eser detayı"><button class="panel-close work-close" id="closeWork" aria-label="Eser detayını kapat">×</button><div class="work-detail" id="workDetail"></div></dialog>
   <aside class="cart-drawer" id="cartDrawer" aria-hidden="true"><div class="cart-head"><div><p>ECREN IŞIK / SHOP</p><h3>Sepetin <em id="cartTitleCount">(0)</em></h3></div><button data-close="cartDrawer" aria-label="Sepeti kapat">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-foot"><div><span>Ara toplam</span><strong id="cartSubtotal">₺0</strong></div><small>Kargo ve teslimat adresi ödeme adımında hesaplanır.</small><button id="startCheckout">Siparişi tamamla <span>→</span></button></div></aside>
-  <dialog class="gallery-dialog" id="galleryDialog"><button class="gallery-close" id="closeGallery">Kapat ×</button><div class="gallery-stage" id="galleryStage"></div><div class="gallery-nav"><button id="galleryPrev">←</button><span id="galleryCounter">01 / 06</span><button id="galleryNext">→</button></div></dialog>
-  <dialog class="checkout-dialog" id="checkoutDialog"><button class="panel-close" id="closeCheckout">×</button><form id="checkoutForm"><p class="index">SECURE CHECKOUT / DEMO READY</p><h2>Siparişini<br><em>tamamla.</em></h2><div class="checkout-grid"><label>Ad soyad<input name="name" required autocomplete="name"></label><label>E-posta<input name="email" type="email" required autocomplete="email"></label><label>Telefon<input name="phone" required autocomplete="tel"></label><label>Şehir<input name="city" required autocomplete="address-level2"></label><label class="full">Teslimat adresi<textarea name="address" required autocomplete="street-address"></textarea></label></div><div class="checkout-summary"><span>Ödenecek tutar</span><strong id="checkoutTotal">₺0</strong></div><p class="checkout-note" id="checkoutNote">Demo modunda kart bilgisi alınmaz; sipariş yalnızca bu cihazda kaydedilir.</p><button type="submit" class="primary-btn">Siparişi oluştur <span>→</span></button></form></dialog>
-  <dialog class="studio-dialog" id="studioDialog"><button class="panel-close" id="closeStudio">×</button><div><span>STUDIO FILM / PLACEHOLDER</span><h2>Gerçek stüdyo videosu<br>buraya gelecek.</h2><p>Video yüklendiğinde bu sinematik katman otomatik oynatıcıya dönüşecek. Şimdilik sahte çekim veya içerik göstermiyoruz.</p></div></dialog>
+  <dialog class="gallery-dialog" id="galleryDialog" aria-label="Eser galerisi"><button class="gallery-close" id="closeGallery" aria-label="Galeriyi kapat">Kapat ×</button><div class="gallery-stage" id="galleryStage"></div><div class="gallery-nav"><button id="galleryPrev" aria-label="Önceki eser">←</button><span id="galleryCounter">01 / 06</span><button id="galleryNext" aria-label="Sonraki eser">→</button></div></dialog>
+  <dialog class="checkout-dialog" id="checkoutDialog" aria-labelledby="checkoutTitle"><button class="panel-close" id="closeCheckout" aria-label="Ödeme adımını kapat">×</button><form id="checkoutForm"><p class="index">SECURE CHECKOUT / DEMO READY</p><h2 id="checkoutTitle">Siparişini<br><em>tamamla.</em></h2><div class="checkout-grid"><label>Ad soyad<input name="name" required autocomplete="name"></label><label>E-posta<input name="email" type="email" required autocomplete="email"></label><label>Telefon<input name="phone" required autocomplete="tel" inputmode="tel"></label><label>Şehir<input name="city" required autocomplete="address-level2"></label><label class="full">Teslimat adresi<textarea name="address" required autocomplete="street-address"></textarea></label></div><div class="checkout-summary"><span>Ödenecek tutar</span><strong id="checkoutTotal">₺0</strong></div><p class="checkout-note" id="checkoutNote">Demo modunda kart bilgisi alınmaz; sipariş yalnızca bu cihazda kaydedilir.</p><button type="submit" class="primary-btn">Siparişi oluştur <span>→</span></button></form></dialog>
+  <dialog class="studio-dialog" id="studioDialog" aria-label="Stüdyo filmi"><button class="panel-close" id="closeStudio" aria-label="Stüdyo filmini kapat">×</button><div><span>STUDIO FILM / PLACEHOLDER</span><h2>Gerçek stüdyo videosu<br>buraya gelecek.</h2><p>Video yüklendiğinde bu sinematik katman otomatik oynatıcıya dönüşecek. Şimdilik sahte çekim veya içerik göstermiyoruz.</p></div></dialog>
   <div class="toast" id="toast"><span>✦</span><p></p></div>
   <script src="app.js"></script>
   <script src="features.js"></script>

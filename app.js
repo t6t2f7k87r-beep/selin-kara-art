@@ -82,6 +82,8 @@ function openWork(id) {
   const index = works.indexOf(work);
   const sizes = work.category === 'original' ? [work.size || '50 × 70 cm'] : [...new Set([work.size || '30 × 40 cm', '50 × 70 cm'])];
   $('#workDetail').innerHTML = `<div class="detail-art">${artMarkup(work, index)}</div><div class="detail-info"><p class="index">ECREN IŞIK / ${work.category === 'original' ? 'ORIGINAL' : 'LIMITED PRINT'}</p><h2>${escapeHTML(work.title)}</h2><p>${escapeHTML(work.description)}</p><div class="detail-story"><span>${escapeHTML(work.year || '2026')} / STORY NOTE</span><p>Renk, ritim ve katmanlar eserin ana duygusunu taşıyacak biçimde kuruldu. Gerçek eskiz ve süreç görselleri yüklendiğinde bu hikâye alanı esere özel güncellenecek.</p></div><strong class="detail-price">${escapeHTML(work.price)}</strong><div class="product-options"><label><span>BOYUT</span><select id="workSize">${sizes.map(size => `<option>${escapeHTML(size)}</option>`).join('')}</select></label><label><span>SUNUM</span><select id="workFrame"><option>Çerçevesiz</option><option>Çerçeveli — teklif iste</option></select></label></div><div class="detail-meta"><div><span>FORMAT</span><b>${escapeHTML(work.type)}</b></div><div><span>TESLİMAT</span><b>3–5 iş günü</b></div><div><span>SERTİFİKA</span><b>İmzalı</b></div><div><span>EDITION</span><b>${escapeHTML(work.edition || (work.category === 'original' ? '1 / 1' : 'Sınırlı'))}</b></div></div><div class="detail-actions"><button class="request-work" data-add-cart="${work.id}">Sepete ekle</button><button class="favorite-work" data-favorite="${work.id}">${favorites.includes(work.id) ? '♥ Favorilerimde' : '♡ Favoriye ekle'}</button></div><button class="commission-link" data-request="${work.id}">Bu eserden ilham alan özel bir çalışma iste →</button></div>`;
+  $('#workDialog').setAttribute('aria-label', `${work.title} eser detayı`);
+  $('#workDialog').scrollTop = 0;
   $('#workDialog').showModal();
 }
 
@@ -144,9 +146,9 @@ $('#closeAdmin').onclick = () => $('#adminDialog').close();
 $('#closeWork').onclick = () => $('#workDialog').close();
 $('#heroBrief').onclick = () => goToAI(); $('#footerBrief').onclick = () => goToAI();
 function setPageLock(locked) { document.body.style.overflow = locked ? 'hidden' : ''; }
-function closeMobileMenu() { $('#mobileMenu').classList.remove('open'); $('#mobileMenu').setAttribute('aria-hidden', 'true'); $('#menuBtn').classList.remove('active'); $('#menuBtn').setAttribute('aria-expanded', 'false'); document.body.classList.remove('mobile-nav-open'); setPageLock(false); }
+function closeMobileMenu() { $('#mobileMenu').classList.remove('open'); $('#mobileMenu').setAttribute('aria-hidden', 'true'); $('#menuBtn').classList.remove('active'); $('#menuBtn').setAttribute('aria-expanded', 'false'); $('#menuBtn').setAttribute('aria-label', 'Menüyü aç'); document.body.classList.remove('mobile-nav-open'); setPageLock(false); }
 $('#menuBtn').setAttribute('aria-expanded', 'false');
-$('#menuBtn').onclick = () => { const opening = !$('#mobileMenu').classList.contains('open'); $('#mobileMenu').classList.toggle('open', opening); $('#mobileMenu').setAttribute('aria-hidden', String(!opening)); $('#menuBtn').classList.toggle('active', opening); $('#menuBtn').setAttribute('aria-expanded', String(opening)); document.body.classList.toggle('mobile-nav-open', opening); setPageLock(opening); };
+$('#menuBtn').onclick = () => { const opening = !$('#mobileMenu').classList.contains('open'); $('#mobileMenu').classList.toggle('open', opening); $('#mobileMenu').setAttribute('aria-hidden', String(!opening)); $('#menuBtn').classList.toggle('active', opening); $('#menuBtn').setAttribute('aria-expanded', String(opening)); $('#menuBtn').setAttribute('aria-label', opening ? 'Menüyü kapat' : 'Menüyü aç'); document.body.classList.toggle('mobile-nav-open', opening); setPageLock(opening); };
 $$('#mobileMenu a[href^="#"]').forEach(link => link.onclick = closeMobileMenu);
 $('#mobileUser').onclick = () => { closeMobileMenu(); openPanel('userPanel'); };
 $('#mobileAdmin').onclick = () => { closeMobileMenu(); renderAdmin(); $('#adminDialog').showModal(); };

@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#0d0d0d"/>
-  <circle cx="390" cy="116" r="42" fill="#d9ff43"/>
-  <path d="M112 128h250v66H190v50h145v62H190v58h178v66H112z" fill="#f5f1e8"/>
-  <path d="M112 364c90-92 184-104 288-37" fill="none" stroke="#7b61ff" stroke-width="26" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ecren Işık monogramı">
+  <rect width="512" height="512" rx="116" fill="#0b0b0b"/>
+  <rect x="92" y="92" width="328" height="328" rx="88" fill="none" stroke="#f4f1e9" stroke-width="12"/>
+  <path d="M256 92v328" stroke="#f4f1e9" stroke-width="12"/>
+  <path d="M156 176v160m0-160h62m-62 80h52m-52 80h62" fill="none" stroke="#f4f1e9" stroke-width="24" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M294 176h62m-31 0v160m-31 0h62" fill="none" stroke="#f4f1e9" stroke-width="24" stroke-linecap="square"/>
+  <circle cx="390" cy="122" r="19" fill="#d7ff3f"/>
 </svg>
