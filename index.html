@@ -29,11 +29,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260818-3" />
-  <link rel="stylesheet" href="studio.css?v=20260818-3" />
-  <link rel="stylesheet" href="polish.css?v=20260818-3" />
-  <link rel="stylesheet" href="features.css?v=20260818-3" />
-  <link rel="stylesheet" href="refinement.css?v=20260818-3" />
+  <link rel="stylesheet" href="style.css?v=20260818-4" />
+  <link rel="stylesheet" href="studio.css?v=20260818-4" />
+  <link rel="stylesheet" href="polish.css?v=20260818-4" />
+  <link rel="stylesheet" href="features.css?v=20260818-4" />
+  <link rel="stylesheet" href="refinement.css?v=20260818-4" />
+  <link rel="stylesheet" href="art-direction.css?v=20260818-4" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Ecren Işık","jobTitle":"Digital Artist & Illustrator","url":"https://t6t2f7k87r-beep.github.io/selin-kara-art/","knowsAbout":["Digital illustration","Fine art prints","Custom commissions"]}</script>
 </head>
 <body>
@@ -86,9 +87,9 @@
 
       <div class="hero-stage reveal" data-delay="150" id="heroStage">
         <div class="stage-label"><span>FEATURED / 001</span><span>DRAG THE FEELING</span></div>
-        <div class="stage-card back-card"><div class="mini-art art-b"></div></div>
+        <div class="stage-card back-card"><div class="mini-art"><img src="assets/sundown-club.jpg" alt="Sundown Club eserinden detay" loading="eager" decoding="async"></div></div>
         <div class="stage-card main-card">
-          <div class="main-visual art-a"><span class="halo"></span><span class="portal"></span><span class="figure"></span><i class="spark s1">✦</i><i class="spark s2">✦</i></div>
+          <div class="main-visual hero-feature-art"><img src="assets/inner-weather.jpg" alt="Inner Weather — Ecren Işık" loading="eager" fetchpriority="high" decoding="async"><span class="hero-art-index">ORIGINAL / 001</span></div>
           <div class="stage-meta"><div><b>Inner Weather</b><span>Digital / 2026</span></div><span>01 / 24</span></div>
         </div>
         <div class="floating-note">A world<br>of her own.</div>
@@ -102,6 +103,16 @@
       <div class="section-heading reveal"><div><p class="index">01 — THE STAND</p><h2>Bir sergi gibi.<br><em>Sana özel.</em></h2></div><p>Seçili işler, sınırlı baskılar ve Ecren’in dünyasından yeni parçalar. Yaklaş, keşfet, kendi favorini seç.</p></div>
       <div class="stand-rail reveal" id="standRail"></div>
       <div class="rail-controls"><button id="railPrev" aria-label="Önceki eser">←</button><div class="rail-progress"><span id="railProgress"></span></div><button id="railNext" aria-label="Sonraki eser">→</button></div>
+    </section>
+
+    <section class="art-interlude" aria-label="Ecren Işık sanat manifestosu">
+      <div class="art-interlude-frame" aria-hidden="true"></div>
+      <div class="art-interlude-copy reveal">
+        <span>ATELIER NOTE / I</span>
+        <p>Klasik ışığın hafızası.<br><em>Dijital çağın cesareti.</em></p>
+        <small>Her iş; boya, doku ve hikâyenin zamansız ruhunu çağdaş bir görsel dile dönüştürür.</small>
+      </div>
+      <div class="art-interlude-plate"><b>01</b><span>OLD SOUL<br>NEW MEDIUM</span></div>
     </section>
 
     <section class="manifesto">
@@ -129,9 +140,12 @@
       <div class="ai-console reveal" data-delay="120">
         <p class="index">04 — AI PROJECT LAB</p>
         <h2>Fikrini anlat.<br><em>Olasılığını gör.</em></h2>
-        <p class="console-intro">Nasıl bir resim istediğini kendi kelimelerinle anlat. AI sanat danışmanı stil yönünü, renk dünyasını, süreyi ve tahmini bütçeyi çıkarsın.</p>
+        <p class="console-intro">Nasıl bir resim istediğini kendi kelimelerinle anlat. Sanat danışmanı niyeti, sembolleri, kompozisyonu, renk dünyasını, süreyi ve tahmini bütçeyi tek bir yaratıcı briefte toplasın.</p>
+        <div class="ai-steps" aria-label="AI proje aşamaları"><span class="active"><b>01</b> Hikâye</span><span><b>02</b> Sanat yönü</span><span><b>03</b> Teklif</span></div>
         <div class="project-types" id="projectTypes"><button data-type="Portre">Portre</button><button data-type="Albüm kapağı">Albüm kapağı</button><button data-type="Marka işi">Marka işi</button><button data-type="Kişisel eser">Kişisel eser</button></div>
-        <label class="prompt-box"><span>FİKRİN / HİKÂYEN</span><textarea id="ideaInput" placeholder="Örn. Kız kardeşime hediye etmek için ikimizi çocukluk anılarımızla, rüya gibi bir bahçede anlatan sıcak bir eser istiyorum..."></textarea><small><b id="charCount">0</b>/600</small></label>
+        <label class="prompt-box"><span>FİKRİN / HİKÂYEN</span><textarea id="ideaInput" maxlength="600" placeholder="Örn. Kız kardeşime hediye etmek için ikimizi çocukluk anılarımızla, rüya gibi bir bahçede anlatan sıcak bir eser istiyorum..."></textarea><small><b id="charCount">0</b>/600</small></label>
+        <div class="brief-meter"><span>BRIEF DERİNLİĞİ</span><div><i id="briefMeterFill"></i></div><b id="briefMeterLabel">Başlangıç</b></div>
+        <div class="idea-starters" id="ideaStarters"><span>DETAY EKLE</span><button data-prompt-starter="Ana karakteri ve aranızdaki bağı anlat. ">Karakter</button><button data-prompt-starter="Anının geçtiği zamanı ve mekânı tarif et. ">Mekân</button><button data-prompt-starter="Eserde hissetmek istediğin duyguyu anlat. ">Duygu</button><button data-prompt-starter="Sevdiğin renkleri ve kaçınmak istediklerini belirt. ">Renk</button></div>
         <div class="reference-upload"><label for="referenceInput"><span>＋ REFERANS EKLE</span><small>JPG/PNG · en fazla 2.5 MB</small></label><input id="referenceInput" type="file" accept="image/png,image/jpeg,image/webp"><div id="referencePreview"><span>İsteğe bağlı: bir fotoğraf veya renk referansı yükle.</span></div></div>
         <div class="mood-row"><span>ATMOSFER</span><div id="moods"><button data-mood="Rüya gibi">Rüya gibi</button><button data-mood="Cesur">Cesur</button><button data-mood="Minimal">Minimal</button><button data-mood="Nostaljik">Nostaljik</button></div></div>
         <button class="analyze-btn" id="generateBrief"><span class="btn-label">AI ile projeyi analiz et</span><span class="loader-dots"><i></i><i></i><i></i></span><b>✦</b></button>
@@ -155,7 +169,7 @@
 
     <section class="trust-section section">
       <div class="trust-strip reveal"><p>HER ESERDE</p><span>İmzalı sertifika</span><span>Özenli paketleme</span><span>Takipli gönderim</span><span>Güvenli ödeme altyapısına hazır</span></div>
-      <div class="timeline-grid reveal"><div><p class="index">SELECTED MOMENTS</p><h2>Sergiler ve<br><em>duyurular.</em></h2></div><div class="timeline-empty"><span>YAKINDA</span><p>İlk sergi, yayın ve işbirliği kayıtları stüdyo panelinden bu alana eklenecek. Hayali referans yok; yalnızca gerçek kilometre taşları.</p></div></div>
+      <div class="timeline-grid reveal"><div><p class="index">SELECTED MOMENTS</p><h2>Stüdyodan<br><em>notlar.</em></h2></div><div class="timeline-empty"><span>2026</span><p>Ecren Işık Artist Studio dijital koleksiyonu, sınırlı baskı seçkisi ve kişiye özel proje laboratuvarıyla yayında.</p></div></div>
     </section>
 
     <section class="about section" id="about">
@@ -173,7 +187,7 @@
     <div class="user-tabs"><button class="active" data-user-tab="favorites">Favorilerim <b id="favoriteTabCount">0</b></button><button data-user-tab="projects">Projelerim <b id="projectCount">0</b></button><button data-user-tab="orders">Siparişler <b id="orderCount">0</b></button><button data-user-tab="profile">Profil</button></div>
     <div class="user-view active" id="favoritesView"><div class="empty-state" id="favoritesList"><i>♡</i><h4>Henüz bir favorin yok.</h4><p>Kalbine dokunan eserlerdeki kalp ikonuna dokun.</p></div></div>
     <div class="user-view" id="projectsView"><div class="empty-state" id="projectsList"><i>✦</i><h4>İlk fikrini bekliyoruz.</h4><p>AI Stüdyo’da bir brief oluşturduğunda burada görünecek.</p></div></div>
-    <div class="user-view" id="ordersView"><div class="empty-state" id="ordersList"><i>□</i><h4>Henüz sipariş yok.</h4><p>Sepetinden oluşturduğun deneme siparişleri burada görünür.</p></div></div>
+    <div class="user-view" id="ordersView"><div class="empty-state" id="ordersList"><i>□</i><h4>Henüz sipariş talebin yok.</h4><p>Sepetinden oluşturduğun talepler burada görünür.</p></div></div>
     <div class="user-view" id="profileView"><form class="profile-form" id="profileForm"><label>Ad soyad<input id="profileName" autocomplete="name" placeholder="Adın"></label><label>E-posta<input id="profileEmail" type="email" autocomplete="email" placeholder="ornek@email.com"></label><label>Şehir<input id="profileCity" autocomplete="address-level2" placeholder="İstanbul"></label><button type="submit">Profili kaydet →</button></form></div>
     <a class="panel-action" href="#works" data-close="userPanel">Koleksiyonu keşfet <span>→</span></a>
   </aside>
@@ -196,7 +210,7 @@
           <button class="primary-btn compact" id="saveAISettings">Ayarları kaydet</button>
         </section>
         <section class="admin-tab" id="adminCommerce">
-          <div class="settings-card"><span class="settings-icon">◇</span><div><h3>Satış altyapısı</h3><p>Sepet ve sipariş akışı cihazda çalışır. Gerçek ödeme için güvenli sunucu ödeme endpoint’ini bağla.</p></div><span class="status-badge" id="commerceStatus">DEMO MODE</span></div>
+          <div class="settings-card"><span class="settings-icon">◇</span><div><h3>Satış altyapısı</h3><p>Sepet ve sipariş talebi akışı cihazda çalışır. Doğrudan ödeme için güvenli sunucu ödeme endpoint’ini bağla.</p></div><span class="status-badge" id="commerceStatus">REQUEST MODE</span></div>
           <label class="setting-field"><span>Ödeme endpoint adresi</span><input id="checkoutEndpoint" type="url" placeholder="https://api.siteniz.com/checkout"><small>Kart bilgisi site içinde tutulmaz; endpoint ödeme sağlayıcısının güvenli sayfasına yönlendirmelidir.</small></label>
           <div class="commerce-fields"><label class="setting-field"><span>Para birimi</span><select id="shopCurrency"><option value="TRY">TRY · ₺</option><option value="EUR">EUR · €</option><option value="USD">USD · $</option></select></label><label class="setting-field"><span>Ücretsiz kargo eşiği</span><input id="freeShipping" type="number" min="0" value="5000"></label></div>
           <button class="primary-btn compact" id="saveCommerce">Satış ayarlarını kaydet</button>
@@ -206,12 +220,12 @@
   </dialog>
 
   <dialog class="work-dialog" id="workDialog" aria-label="Eser detayı"><div class="work-dialog-bar"><button class="work-back" id="closeWork" aria-label="Eser detayından geri dön"><span>←</span> Geri</button><small>ECREN IŞIK / ESER DETAYI</small></div><div class="work-detail" id="workDetail"></div></dialog>
-  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true"><div class="cart-head"><div><p>ECREN IŞIK / SHOP</p><h3>Sepetin <em id="cartTitleCount">(0)</em></h3></div><button data-close="cartDrawer" aria-label="Sepeti kapat">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-foot"><div><span>Ara toplam</span><strong id="cartSubtotal">₺0</strong></div><small>Kargo ve teslimat adresi ödeme adımında hesaplanır.</small><button id="startCheckout">Siparişi tamamla <span>→</span></button></div></aside>
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true"><div class="cart-head"><div><p>ECREN IŞIK / SHOP</p><h3>Sepetin <em id="cartTitleCount">(0)</em></h3></div><button data-close="cartDrawer" aria-label="Sepeti kapat">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-foot"><div><span>Ara toplam</span><strong id="cartSubtotal">₺0</strong></div><small>Kargo ve teslimat detayları stüdyo onayıyla netleşir.</small><button id="startCheckout">Sipariş talebi oluştur <span>→</span></button></div></aside>
   <dialog class="gallery-dialog" id="galleryDialog" aria-label="Eser galerisi"><button class="gallery-close" id="closeGallery" aria-label="Galeriyi kapat">Kapat ×</button><div class="gallery-stage" id="galleryStage"></div><div class="gallery-nav"><button id="galleryPrev" aria-label="Önceki eser">←</button><span id="galleryCounter">01 / 06</span><button id="galleryNext" aria-label="Sonraki eser">→</button></div></dialog>
-  <dialog class="checkout-dialog" id="checkoutDialog" aria-labelledby="checkoutTitle"><button class="checkout-back" id="closeCheckout" aria-label="Sepete geri dön"><span>←</span> Sepete dön</button><form id="checkoutForm"><p class="index">SECURE CHECKOUT / DEMO READY</p><h2 id="checkoutTitle">Siparişini<br><em>tamamla.</em></h2><div class="checkout-preview" id="checkoutPreview" aria-label="Sipariş özeti"></div><div class="checkout-grid"><label>Ad soyad<input name="name" required autocomplete="name"></label><label>E-posta<input name="email" type="email" required autocomplete="email"></label><label>Telefon<input name="phone" required autocomplete="tel" inputmode="tel"></label><label>Şehir<input name="city" required autocomplete="address-level2"></label><label class="full">Teslimat adresi<textarea name="address" required autocomplete="street-address"></textarea></label></div><div class="checkout-summary"><span>Ödenecek tutar</span><strong id="checkoutTotal">₺0</strong></div><p class="checkout-note" id="checkoutNote">Demo modunda kart bilgisi alınmaz; sipariş yalnızca bu cihazda kaydedilir.</p><button type="submit" class="primary-btn">Siparişi oluştur <span>→</span></button></form></dialog>
-  <dialog class="studio-dialog" id="studioDialog" aria-label="Stüdyo filmi"><button class="panel-close" id="closeStudio" aria-label="Stüdyo filmini kapat">×</button><div><span>STUDIO FILM / PLACEHOLDER</span><h2>Gerçek stüdyo videosu<br>buraya gelecek.</h2><p>Video yüklendiğinde bu sinematik katman otomatik oynatıcıya dönüşecek. Şimdilik sahte çekim veya içerik göstermiyoruz.</p></div></dialog>
+  <dialog class="checkout-dialog" id="checkoutDialog" aria-labelledby="checkoutTitle"><button class="checkout-back" id="closeCheckout" aria-label="Sepete geri dön"><span>←</span> Sepete dön</button><form id="checkoutForm"><p class="index">ORDER REQUEST / SAFE FLOW</p><h2 id="checkoutTitle">Siparişini<br><em>tamamla.</em></h2><div class="checkout-preview" id="checkoutPreview" aria-label="Sipariş özeti"></div><div class="checkout-grid"><label>Ad soyad<input name="name" required autocomplete="name"></label><label>E-posta<input name="email" type="email" required autocomplete="email"></label><label>Telefon<input name="phone" required autocomplete="tel" inputmode="tel"></label><label>Şehir<input name="city" required autocomplete="address-level2"></label><label class="full">Teslimat adresi<textarea name="address" required autocomplete="street-address"></textarea></label></div><div class="checkout-summary"><span>Talep tutarı</span><strong id="checkoutTotal">₺0</strong></div><p class="checkout-note" id="checkoutNote">Kart bilgisi alınmaz. Talebin cihazına kaydedilir; ardından hazırlanan e-postayla stüdyoya iletebilirsin.</p><button type="submit" class="primary-btn">Sipariş talebi oluştur <span>→</span></button></form></dialog>
+  <dialog class="studio-dialog" id="studioDialog" aria-label="Stüdyo manifestosu"><button class="panel-close" id="closeStudio" aria-label="Stüdyo manifestosunu kapat">×</button><div class="studio-film-art"><span>ATELIER / ECREN IŞIK</span><h2>Bir his,<br>önce ışığa dönüşür.</h2><p>Sonra renk, ritim ve sessizlik kendi yerini bulur. Her eser; klasik sanatın sabrını, dijital üretimin özgürlüğüyle buluşturan kişisel bir dünya olarak kurulur.</p><ol><li><b>01</b> Dinle</li><li><b>02</b> Damıt</li><li><b>03</b> Görünür kıl</li></ol></div></dialog>
   <div class="toast" id="toast"><span>✦</span><p></p></div>
-  <script src="app.js?v=20260818-3"></script>
-  <script src="features.js?v=20260818-3"></script>
+  <script src="app.js?v=20260818-4"></script>
+  <script src="features.js?v=20260818-4"></script>
 </body>
 </html>

@@ -26,13 +26,41 @@ let lastAnalysis = null;
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 const escapeHTML = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
-const saveWorks = () => localStorage.setItem(keys.works, JSON.stringify(works));
+const saveWorks = () => {
+  try { localStorage.setItem(keys.works, JSON.stringify(works)); return true; }
+  catch { showToast('Tarayıcı depolama alanı doldu. Daha küçük bir görsel dene.'); return false; }
+};
 const saveFavorites = () => localStorage.setItem(keys.favorites, JSON.stringify(favorites));
 const saveBriefs = () => localStorage.setItem(keys.briefs, JSON.stringify(briefs));
 
 function artMarkup(work, index, className = '', loading = 'lazy') {
   const priority = loading === 'eager' ? ' fetchpriority="high"' : '';
   return work.image ? `<img src="${work.image}" alt="${escapeHTML(work.title)}" class="${className}" loading="${loading}" decoding="async"${priority}>` : `<div class="generated-art variant-${index % 4}" style="background-color:${escapeHTML(work.color)}" role="img" aria-label="${escapeHTML(work.title)} için demo görsel alanı"><span></span><small class="demo-art-label">DEMO VISUAL</small></div>`;
+}
+
+function optimizeArtworkUpload(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('read'));
+    reader.onload = () => {
+      const image = new Image();
+      image.onerror = () => reject(new Error('image'));
+      image.onload = () => {
+        const maxEdge = 1600;
+        const ratio = Math.min(1, maxEdge / Math.max(image.naturalWidth, image.naturalHeight));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(image.naturalWidth * ratio));
+        canvas.height = Math.max(1, Math.round(image.naturalHeight * ratio));
+        const context = canvas.getContext('2d');
+        context.fillStyle = '#f4f1e9';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', .84));
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 function renderStand() {
@@ -94,44 +122,129 @@ function openWork(id) {
 function openPanel(id) { const panel = document.getElementById(id); panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); setPageLock(true); }
 function closePanel(id) { const panel = document.getElementById(id); panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); if (!document.querySelector('.side-panel.open, .cart-drawer.open, .mobile-menu.open, .desktop-menu.open')) setPageLock(false); }
 function showToast(message) { $('#toast p').textContent = message; $('#toast').classList.add('show'); clearTimeout(showToast.timer); showToast.timer = setTimeout(() => $('#toast').classList.remove('show'), 2600); }
-function goToAI(prefill = '') { $('#workDialog').open && $('#workDialog').close(); document.querySelector('#ai-studio').scrollIntoView({ behavior: 'smooth' }); if (prefill) $('#ideaInput').value = prefill; setTimeout(() => $('#ideaInput').focus(), 700); }
+function goToAI(prefill = '') { $('#workDialog').open && $('#workDialog').close(); document.querySelector('#ai-studio').scrollIntoView({ behavior: 'smooth' }); if (prefill) { $('#ideaInput').value = prefill; updateBriefMeter(); } setTimeout(() => $('#ideaInput').focus(), 700); }
+
+const hasAny = (text, words) => words.some(word => text.includes(word));
+const formatRange = (low, high) => `${new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(low)} – ${new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(high)}`;
 
 function localAnalysis(idea) {
   const type = selectedType || 'Kişisel eser';
   const mood = selectedMood || 'Özgün';
+  const text = idea.toLocaleLowerCase('tr-TR');
   const configs = {
-    'Portre': { price: '₺4.500 – ₺7.500', duration: '2–3 hafta', deliverable: 'Portre + 2 eskiz yönü' },
-    'Albüm kapağı': { price: '₺7.500 – ₺12.000', duration: '3–4 hafta', deliverable: 'Kapak + platform uyarlamaları' },
-    'Marka işi': { price: '₺12.000 – ₺24.000', duration: '4–6 hafta', deliverable: 'Ana görsel + ticari kullanım' },
-    'Kişisel eser': { price: '₺5.000 – ₺9.000', duration: '2–4 hafta', deliverable: 'Özel eser + baskı dosyası' }
+    'Portre': { range: [4500, 7500], duration: '2–3 hafta', deliverable: 'Portre + 2 eskiz yönü' },
+    'Albüm kapağı': { range: [7500, 12000], duration: '3–4 hafta', deliverable: 'Kapak + platform uyarlamaları' },
+    'Marka işi': { range: [12000, 24000], duration: '4–6 hafta', deliverable: 'Ana görsel + kullanım seti' },
+    'Kişisel eser': { range: [5000, 9000], duration: '2–4 hafta', deliverable: 'Özel eser + baskı dosyası' }
   };
-  const palettes = { 'Rüya gibi': ['#8d82d8','#f4b6c2','#d9ff43','#252642'], 'Cesur': ['#ff684e','#d9ff43','#111111','#7b61ff'], 'Minimal': ['#eeeae0','#1c1c1c','#9cb9b5','#d7c8aa'], 'Nostaljik': ['#d38b6d','#e5c06f','#405e64','#efe4d0'], 'Özgün': ['#7b61ff','#ff684e','#d9ff43','#0d0d0d'] };
-  const keywords = idea.toLocaleLowerCase('tr-TR');
-  const theme = keywords.includes('gece') ? 'Geceye Açılan Hafıza' : keywords.includes('aile') || keywords.includes('kardeş') ? 'Ortak Bir Hafıza' : keywords.includes('müzik') || type === 'Albüm kapağı' ? 'Sesin Görsel Yankısı' : keywords.includes('doğa') || keywords.includes('bahçe') ? 'İçimizdeki Bahçe' : 'Kişisel Bir Evren';
-  return { title: theme, direction: `${mood} atmosferinde; duyguyu merkezine alan, Ecren’in dokulu renk diliyle şekillenen ${type.toLocaleLowerCase('tr-TR')} yönü. Anlatındaki ana semboller kompozisyonun görsel hafızasına dönüşecek.`, type, mood, palette: palettes[mood] || palettes.Özgün, confidence: Math.min(96, 72 + Math.floor(idea.length / 20)), ...configs[type] };
+  const palettes = {
+    'Rüya gibi': ['#8d82d8','#f4b6c2','#d9ff43','#252642'],
+    'Cesur': ['#c84f39','#d9ff43','#111111','#7b61ff'],
+    'Minimal': ['#eeeae0','#1c1c1c','#9cb9b5','#d7c8aa'],
+    'Nostaljik': ['#b96f58','#d9b86a','#405e64','#efe4d0'],
+    'Özgün': ['#7b61ff','#c6533d','#d9ff43','#151515']
+  };
+
+  let palette = [...(palettes[mood] || palettes.Özgün)];
+  if (hasAny(text, ['mavi', 'deniz', 'gökyüz'])) palette = ['#173b53','#6fa9b6','#d7c9a7','#792f43'];
+  else if (hasAny(text, ['yeşil', 'orman', 'bahçe', 'doğa'])) palette = ['#173f35','#86a67b','#d8bd7c','#efe5d3'];
+  else if (hasAny(text, ['kırmızı', 'tutku', 'ateş'])) palette = ['#8f2f28','#d85d3f','#d7b66f','#1a1718'];
+
+  const isGift = hasAny(text, ['hediye', 'doğum günü', 'yıldönümü', 'yıl dönümü']);
+  const isMemory = hasAny(text, ['anı', 'çocukluk', 'hatıra', 'geçmiş', 'özlem']);
+  const isNature = hasAny(text, ['bahçe', 'orman', 'çiçek', 'doğa', 'deniz', 'gökyüz']);
+  const isNight = hasAny(text, ['gece', 'ay', 'yıldız', 'karanlık']);
+  const isMusic = hasAny(text, ['müzik', 'şarkı', 'albüm', 'ses']) || type === 'Albüm kapağı';
+  const isRelationship = hasAny(text, ['kardeş', 'anne', 'baba', 'aile', 'sevgili', 'arkadaş', 'ikimiz', 'biz']);
+  const complexityPoints = (idea.length > 170 ? 2 : idea.length > 80 ? 1 : 0) + (window.ecrenReferenceData ? 1 : 0) + ([isMemory,isNature,isNight,isMusic,isRelationship].filter(Boolean).length > 2 ? 1 : 0);
+  const complexity = complexityPoints >= 3 ? 'Katmanlı' : complexityPoints >= 1 ? 'Dengeli' : 'Yalın';
+  const multiplier = complexityPoints >= 3 ? 1.18 : complexityPoints >= 1 ? 1.08 : 1;
+  const config = configs[type];
+
+  const title = isNight ? 'Geceye Açılan Hafıza' : isRelationship && isMemory ? 'Birlikte Büyüyen Anı' : isMusic ? 'Sesin Görsel Yankısı' : isNature ? 'İçimizdeki Bahçe' : isGift ? 'Saklanan Bir Hediye' : 'Kişisel Bir Evren';
+  const focus = isRelationship ? 'Bağ ve yakınlık' : isMemory ? 'Hafıza ve zaman' : isMusic ? 'Ritim ve kimlik' : isNature ? 'Doğa ve dönüşüm' : 'Kişisel ifade';
+  const composition = type === 'Albüm kapağı' ? 'Merkezî ikon + güçlü siluet' : isRelationship ? 'İki odaklı dengeli sahne' : mood === 'Minimal' ? 'Geniş negatif alan' : 'Katmanlı sinematik derinlik';
+  const symbols = [isMemory && 'anı katmanları', isNature && 'botanik izler', isNight && 'ışık halkası', isMusic && 'ritmik formlar', isRelationship && 'birbirine yaklaşan iki form'].filter(Boolean);
+  if (!symbols.length) symbols.push('kişisel simge', 'ışık geçidi');
+
+  const routes = [
+    { name: 'Şiirsel Sessizlik', note: `${composition}; yumuşak ışık ve nefes alan doku.` },
+    { name: 'Sembolik Hafıza', note: `${symbols.slice(0, 2).join(' ve ')} üzerinden anlatısal kurgu.` },
+    { name: 'Cesur Çerçeve', note: `Daha grafik ritim, güçlü kontrast ve çağdaş sergi etkisi.` }
+  ];
+
+  const briefScore = Math.min(98, 38 + Math.floor(idea.length / 5) + (selectedType ? 10 : 0) + (selectedMood ? 10 : 0) + (window.ecrenReferenceData ? 8 : 0));
+  return {
+    title,
+    direction: `${mood} atmosferinde, ${focus.toLocaleLowerCase('tr-TR')} duygusunu merkeze alan bir ${type.toLocaleLowerCase('tr-TR')} yönü. Klasik ışık düzeni; dokulu dijital katmanlar ve çağdaş kompozisyonla yeniden yorumlanacak.`,
+    type,
+    mood,
+    focus,
+    composition,
+    complexity,
+    symbols,
+    routes,
+    palette,
+    confidence: briefScore,
+    price: formatRange(Math.round(config.range[0] * multiplier / 100) * 100, Math.round(config.range[1] * multiplier / 100) * 100),
+    duration: complexityPoints >= 3 ? ({ '2–3 hafta': '3–4 hafta', '3–4 hafta': '4–5 hafta', '4–6 hafta': '5–7 hafta', '2–4 hafta': '3–5 hafta' }[config.duration] || config.duration) : config.duration,
+    deliverable: config.deliverable,
+    insight: isGift ? 'Hediye niteliği nedeniyle kişisel detaylar kompozisyonun ana imzasına dönüşmeli.' : 'En güçlü sonuç için tek bir ana duygu seçilip diğer öğeler onu desteklemeli.',
+    nextQuestion: symbols.length < 2 ? 'Bu hikâyeyi temsil eden özel bir nesne veya mekân var mı?' : 'Kompozisyonda mutlaka görünmesini istediğin tek detay hangisi?'
+  };
+}
+
+function normalizeAnalysis(base, external) {
+  if (!external || typeof external !== 'object') return base;
+  const palette = Array.isArray(external.palette) ? external.palette.filter(color => /^#[0-9a-f]{6}$/i.test(color)).slice(0, 4) : [];
+  const routes = Array.isArray(external.routes) ? external.routes.slice(0, 3).map((route, index) => ({
+    name: String(route?.name || base.routes[index]?.name || `Rota ${index + 1}`),
+    note: String(route?.note || base.routes[index]?.note || '')
+  })) : base.routes;
+  return {
+    ...base,
+    title: typeof external.title === 'string' ? external.title.slice(0, 90) : base.title,
+    direction: typeof external.direction === 'string' ? external.direction.slice(0, 500) : base.direction,
+    focus: typeof external.focus === 'string' ? external.focus.slice(0, 80) : base.focus,
+    composition: typeof external.composition === 'string' ? external.composition.slice(0, 120) : base.composition,
+    complexity: typeof external.complexity === 'string' ? external.complexity.slice(0, 40) : base.complexity,
+    insight: typeof external.insight === 'string' ? external.insight.slice(0, 260) : base.insight,
+    nextQuestion: typeof external.nextQuestion === 'string' ? external.nextQuestion.slice(0, 220) : base.nextQuestion,
+    price: typeof external.price === 'string' ? external.price.slice(0, 80) : base.price,
+    duration: typeof external.duration === 'string' ? external.duration.slice(0, 60) : base.duration,
+    deliverable: typeof external.deliverable === 'string' ? external.deliverable.slice(0, 120) : base.deliverable,
+    confidence: Number.isFinite(Number(external.confidence)) ? Math.max(0, Math.min(100, Number(external.confidence))) : base.confidence,
+    palette: palette.length === 4 ? palette : base.palette,
+    routes
+  };
 }
 
 async function analyzeProject() {
   const idea = $('#ideaInput').value.trim();
   if (idea.length < 15) { showToast('Fikrini biraz daha detaylandırmalısın.'); $('#ideaInput').focus(); return; }
   const button = $('#generateBrief'); button.classList.add('loading'); button.disabled = true;
-  let result;
+  const base = localAnalysis(idea);
+  let result = base;
   if (aiSettings.endpoint) {
     try {
       const response = await fetch(aiSettings.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idea, type: selectedType, mood: selectedMood, referenceImage: window.ecrenReferenceData || '' }) });
       if (!response.ok) throw new Error('AI service unavailable');
-      result = { ...localAnalysis(idea), ...(await response.json()) };
-    } catch { result = localAnalysis(idea); showToast('Harici AI yanıt vermedi; cihaz içi tahmin kullanıldı.'); }
-  } else { await new Promise(resolve => setTimeout(resolve, 1100)); result = localAnalysis(idea); }
+      result = normalizeAnalysis(base, await response.json());
+    } catch { result = base; showToast('Harici AI yanıt vermedi; akıllı brief motoru kullanıldı.'); }
+  } else { await new Promise(resolve => setTimeout(resolve, 900)); }
   lastAnalysis = { ...result, idea };
-  $('#aiResult').innerHTML = `<div class="result-card"><div class="result-top"><span>✦ ${escapeHTML(aiSettings.assistant || 'ECREN AI')} ANALİZİ</span><b>%${escapeHTML(result.confidence)} UYUM</b></div><h3>${escapeHTML(result.title)}</h3><p>${escapeHTML(result.direction)}</p><div class="palette">${result.palette.map(color => `<i style="background:${color}"></i>`).join('')}</div><div class="moodboard"><article style="--m1:${result.palette[0]};--m2:${result.palette[1]}"><i></i><span>ROUTE 01 / SOFT FOCUS</span></article><article style="--m1:${result.palette[1]};--m2:${result.palette[2]}"><i></i><span>ROUTE 02 / SYMBOLIC</span></article><article style="--m1:${result.palette[2]};--m2:${result.palette[3]}"><i></i><span>ROUTE 03 / BOLD FRAME</span></article></div><small class="ai-disclaimer">Bu moodboard kompozisyon rotasıdır; gerçek eser önizlemesi değildir.${window.ecrenReferenceData ? ' Yüklenen referans proje briefine eklendi.' : ''}</small><div class="result-metrics"><div><span>TAHMİNİ BÜTÇE</span><strong>${escapeHTML(result.price)}</strong></div><div><span>ÜRETİM SÜRESİ</span><strong>${escapeHTML(result.duration)}</strong></div><div><span>TESLİM</span><strong>${escapeHTML(result.deliverable)}</strong></div></div><button class="save-brief" id="saveBrief">Bu proje briefini hesabıma kaydet →</button></div>`;
+  const palette = result.palette;
+  $('#aiResult').innerHTML = `<div class="result-card"><div class="result-top"><span>✦ ${escapeHTML(aiSettings.assistant || 'ECREN AI')} / CREATIVE BRIEF</span><b>%${escapeHTML(result.confidence)} BRIEF SKORU</b></div><h3>${escapeHTML(result.title)}</h3><p>${escapeHTML(result.direction)}</p><div class="result-summary"><div><span>ANA DUYGU</span><b>${escapeHTML(result.focus)}</b></div><div><span>KOMPOZİSYON</span><b>${escapeHTML(result.composition)}</b></div><div><span>KARMAŞIKLIK</span><b>${escapeHTML(result.complexity)}</b></div></div><div class="palette">${palette.map(color => `<i style="background:${color}"></i>`).join('')}</div><div class="route-grid">${result.routes.map((route, index) => `<article class="route-card"><div class="route-visual" style="--r1:${palette[index % 4]};--r2:${palette[(index + 1) % 4]};--r3:${palette[(index + 2) % 4]};--r4:${palette[(index + 3) % 4]}"></div><span>ROTA 0${index + 1}</span><b>${escapeHTML(route.name)}</b><p>${escapeHTML(route.note)}</p></article>`).join('')}</div><small class="ai-disclaimer">Bunlar sanat yönü ve kompozisyon rotalarıdır; bitmiş eser önizlemesi değildir.${window.ecrenReferenceData ? ' Yüklenen referans brief analizine eklendi.' : ''}</small><div class="ai-insights"><article><span>SANAT DANIŞMANI NOTU</span><p>${escapeHTML(result.insight)}</p></article><article><span>SIRADAKİ SORU</span><p>${escapeHTML(result.nextQuestion)}</p></article></div><div class="result-metrics"><div><span>TAHMİNİ BÜTÇE</span><strong>${escapeHTML(result.price)}</strong></div><div><span>ÜRETİM SÜRESİ</span><strong>${escapeHTML(result.duration)}</strong></div><div><span>TESLİM</span><strong>${escapeHTML(result.deliverable)}</strong></div></div><button class="save-brief" id="saveBrief">Bu yaratıcı briefi hesabıma kaydet →</button></div>`;
   $('#aiResult').classList.add('show'); button.classList.remove('loading'); button.disabled = false;
+  $$('.ai-steps span').forEach((step, index) => step.classList.toggle('active', index <= 1));
 }
 
 function saveCurrentBrief() {
   if (!lastAnalysis) return;
   briefs.push({ ...lastAnalysis, date: new Intl.DateTimeFormat('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date()) });
-  saveBriefs(); renderUserPanel(); renderAdmin(); showToast('Proje briefin hesabına kaydedildi.'); openPanel('userPanel');
+  saveBriefs(); renderUserPanel(); renderAdmin(); showToast('Yaratıcı brief hesabına kaydedildi.');
+  $$('.ai-steps span').forEach(step => step.classList.add('active'));
+  openPanel('userPanel');
 }
 
 function updateAIStatus() { const live = Boolean(aiSettings.endpoint); $('#aiConnectionStatus').textContent = live ? 'ENDPOINT READY' : 'LOCAL AI'; $('#aiConnectionStatus').style.color = live ? '#d9ff43' : ''; }
@@ -181,21 +294,45 @@ window.addEventListener('keydown', event => {
 });
 
 $('#filterPills').onclick = event => { const button = event.target.closest('[data-filter]'); if (!button) return; activeFilter = button.dataset.filter; $$('#filterPills button').forEach(item => item.classList.toggle('active', item === button)); renderWorks(); };
-$('#projectTypes').onclick = event => { const button = event.target.closest('[data-type]'); if (!button) return; selectedType = button.dataset.type; $$('#projectTypes button').forEach(item => item.classList.toggle('active', item === button)); };
-$('#moods').onclick = event => { const button = event.target.closest('[data-mood]'); if (!button) return; selectedMood = button.dataset.mood; $$('#moods button').forEach(item => item.classList.toggle('active', item === button)); };
-$('#ideaInput').oninput = () => $('#charCount').textContent = $('#ideaInput').value.length;
+function updateBriefMeter() {
+  const length = $('#ideaInput').value.trim().length;
+  const score = Math.min(100, Math.round((length / 180) * 70) + (selectedType ? 15 : 0) + (selectedMood ? 15 : 0));
+  $('#charCount').textContent = $('#ideaInput').value.length;
+  $('#briefMeterFill').style.width = `${Math.max(8, score)}%`;
+  $('#briefMeterLabel').textContent = score >= 80 ? 'Çok güçlü' : score >= 55 ? 'İyi' : score >= 30 ? 'Gelişiyor' : 'Başlangıç';
+}
+$('#projectTypes').onclick = event => { const button = event.target.closest('[data-type]'); if (!button) return; selectedType = button.dataset.type; $$('#projectTypes button').forEach(item => item.classList.toggle('active', item === button)); updateBriefMeter(); };
+$('#moods').onclick = event => { const button = event.target.closest('[data-mood]'); if (!button) return; selectedMood = button.dataset.mood; $$('#moods button').forEach(item => item.classList.toggle('active', item === button)); updateBriefMeter(); };
+$('#ideaInput').oninput = updateBriefMeter;
+$('#ideaStarters').onclick = event => {
+  const button = event.target.closest('[data-prompt-starter]');
+  if (!button) return;
+  const input = $('#ideaInput');
+  const addition = button.dataset.promptStarter;
+  input.value = `${input.value}${input.value.trim() ? '\n' : ''}${addition}`.slice(0, 600);
+  input.focus();
+  input.setSelectionRange(input.value.length, input.value.length);
+  updateBriefMeter();
+};
 $('#generateBrief').onclick = analyzeProject;
 
 $$('[data-user-tab]').forEach(button => button.onclick = () => { $$('[data-user-tab]').forEach(item => item.classList.toggle('active', item === button)); $$('.user-view').forEach(view => view.classList.toggle('active', view.id === `${button.dataset.userTab}View`)); });
 $$('[data-admin-tab]').forEach(button => button.onclick = () => { const tabMap = { ai: 'adminAI', commerce: 'adminCommerce', collection: 'adminCollection' }; const titleMap = { ai: 'AI Ayarları', commerce: 'Satış', collection: 'Koleksiyon' }; $$('[data-admin-tab]').forEach(item => item.classList.toggle('active', item === button)); $$('.admin-tab').forEach(tab => tab.classList.toggle('active', tab.id === tabMap[button.dataset.adminTab])); $('#adminTitle').textContent = titleMap[button.dataset.adminTab]; });
 
 $('#adminList').addEventListener('input', event => { const input = event.target; if (!input.dataset.field) return; works[input.dataset.index][input.dataset.field] = input.value; saveWorks(); });
-$('#adminList').addEventListener('change', event => {
+$('#adminList').addEventListener('change', async event => {
   const input = event.target;
   if (input.dataset.field) { renderAll(); return; }
   if (input.dataset.upload !== undefined && input.files?.[0]) {
-    if (input.files[0].size > 2_500_000) { showToast('Görsel 2.5 MB’dan küçük olmalı.'); return; }
-    const reader = new FileReader(); reader.onload = () => { works[Number(input.dataset.upload)].image = reader.result; saveWorks(); renderAll(); showToast('Eser görseli güncellendi.'); }; reader.readAsDataURL(input.files[0]);
+    if (input.files[0].size > 8_000_000) { showToast('Görsel 8 MB’dan küçük olmalı.'); input.value = ''; return; }
+    const index = Number(input.dataset.upload);
+    const previous = works[index].image;
+    try {
+      works[index].image = await optimizeArtworkUpload(input.files[0]);
+      if (!saveWorks()) works[index].image = previous;
+      else showToast('Eser görseli optimize edilip güncellendi.');
+      renderAll();
+    } catch { works[index].image = previous; showToast('Bu görsel işlenemedi. JPG veya PNG dene.'); }
   }
 });
 $('#adminList').addEventListener('click', event => { const button = event.target.closest('[data-delete]'); if (!button) return; works.splice(Number(button.dataset.delete), 1); saveWorks(); renderAll(); showToast('Eser koleksiyondan kaldırıldı.'); });

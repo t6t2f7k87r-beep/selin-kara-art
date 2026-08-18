@@ -59,9 +59,19 @@ function renderCart() {
   }).join('') : '<div class="cart-empty"><i>◇</i><h4>Sepetin henüz boş.</h4><p>Sana eşlik edecek bir eser seçtiğinde burada göreceksin.</p><a href="#works" data-close="cartDrawer">Koleksiyona git →</a></div>';
 }
 
+function orderMailHref(order) {
+  const customer = order.customer || {};
+  const itemLines = order.items.map(item => {
+    const work = works.find(entry => entry.id === item.id);
+    return `• ${work?.title || item.title || 'Eser'} — ${item.size || ''} / ${item.frame || ''} / ${item.qty} adet`;
+  });
+  const body = [`Sipariş talebi: ${order.number}`, '', ...itemLines, '', `Toplam: ${order.total}`, '', `Ad soyad: ${customer.name || ''}`, `E-posta: ${customer.email || ''}`, `Telefon: ${customer.phone || ''}`, `Şehir: ${customer.city || ''}`, `Adres: ${customer.address || ''}`].join('\n');
+  return `mailto:hello@ecrenisik.art?subject=${encodeURIComponent(`Ecren Işık sipariş talebi ${order.number}`)}&body=${encodeURIComponent(body)}`;
+}
+
 function renderOrders() {
   $('#orderCount').textContent = orders.length;
-  $('#ordersList').innerHTML = orders.length ? orders.slice().reverse().map(order => `<article class="order-item"><div><span>${escapeHTML(order.date)} · ${escapeHTML(order.status)}</span><h4>${escapeHTML(order.number)}</h4><p>${order.items.length} eser · ${escapeHTML(order.total)}</p></div><b>→</b></article>`).join('') : '<i>□</i><h4>Henüz sipariş yok.</h4><p>Sepetinden oluşturduğun deneme siparişleri burada görünür.</p>';
+  $('#ordersList').innerHTML = orders.length ? orders.slice().reverse().map(order => `<article class="order-item"><div><span>${escapeHTML(order.date)} · ${escapeHTML(order.status)}</span><h4>${escapeHTML(order.number)}</h4><p>${order.items.length} eser · ${escapeHTML(order.total)}</p></div><a class="order-send" href="${orderMailHref(order)}">Stüdyoya gönder ↗</a></article>`).join('') : '<i>□</i><h4>Henüz sipariş talebin yok.</h4><p>Sepetinden oluşturduğun talepler burada görünür.</p>';
 }
 
 function renderProfile() {
@@ -74,9 +84,9 @@ function renderCommerce() {
   $('#checkoutEndpoint').value = commerceSettings.endpoint || '';
   $('#shopCurrency').value = commerceSettings.currency || 'TRY';
   $('#freeShipping').value = commerceSettings.freeShipping ?? 5000;
-  $('#commerceStatus').textContent = commerceSettings.endpoint ? 'ENDPOINT READY' : 'DEMO MODE';
+  $('#commerceStatus').textContent = commerceSettings.endpoint ? 'PAYMENT READY' : 'REQUEST MODE';
   $('#commerceStatus').classList.toggle('live', Boolean(commerceSettings.endpoint));
-  $('#checkoutNote').textContent = commerceSettings.endpoint ? 'Ödeme sağlayıcısının güvenli sayfasına yönlendirileceksin. Bu site kart bilgisi saklamaz.' : 'Demo modunda kart bilgisi alınmaz; sipariş yalnızca bu cihazda kaydedilir.';
+  $('#checkoutNote').textContent = commerceSettings.endpoint ? 'Ödeme sağlayıcısının güvenli sayfasına yönlendirileceksin. Bu site kart bilgisi saklamaz.' : 'Kart bilgisi alınmaz. Talebin cihazına kaydedilir; ardından hazırlanan e-postayla stüdyoya iletebilirsin.';
 }
 
 function renderCatalogSync() {
@@ -186,6 +196,10 @@ $('#startCheckout').onclick = () => {
   if (!cart.length) return;
   closePanel('cartDrawer');
   renderCheckoutPreview();
+  const form = $('#checkoutForm');
+  if (profile.name && !form.elements.name.value) form.elements.name.value = profile.name;
+  if (profile.email && !form.elements.email.value) form.elements.email.value = profile.email;
+  if (profile.city && !form.elements.city.value) form.elements.city.value = profile.city;
   $('#checkoutTotal').textContent = money(cart.reduce((sum, item) => sum + priceNumber(works.find(work => work.id === item.id)?.price) * item.qty, 0));
   $('#checkoutDialog').scrollTop = 0;
   $('#checkoutDialog').showModal();
@@ -267,14 +281,14 @@ $('#checkoutForm').onsubmit = async event => {
     } catch { showToast('Ödeme servisine ulaşılamadı; ayarları kontrol et.'); }
   } else {
     const number = `EI-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
-    orders.push({ number, date: new Intl.DateTimeFormat('tr-TR', { dateStyle: 'medium' }).format(new Date()), status: 'Demo sipariş', total: money(totalValue), items: [...cart] });
+    orders.push({ number, date: new Intl.DateTimeFormat('tr-TR', { dateStyle: 'medium' }).format(new Date()), status: 'Gönderime hazır', total: money(totalValue), items: [...cart], customer: payload.customer });
     saveFeature(featureKeys.orders, orders);
     cart = [];
     renderCart();
     renderOrders();
     form.reset();
     $('#checkoutDialog').close();
-    showToast(`${number} numaralı demo sipariş oluşturuldu.`);
+    showToast(`${number} hazır. Siparişlerimden stüdyoya gönderebilirsin.`);
     openPanel('userPanel');
     const ordersTab = $('[data-user-tab="orders"]');
     ordersTab.click();
@@ -296,5 +310,5 @@ applyLanguage();
 window.renderFeatureLayers();
 
 if ('serviceWorker' in navigator && !['localhost', '127.0.0.1'].includes(location.hostname)) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=20260818-3', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {}));
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=20260818-4', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {}));
 }
