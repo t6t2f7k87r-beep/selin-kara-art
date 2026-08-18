@@ -30,8 +30,9 @@ const saveWorks = () => localStorage.setItem(keys.works, JSON.stringify(works));
 const saveFavorites = () => localStorage.setItem(keys.favorites, JSON.stringify(favorites));
 const saveBriefs = () => localStorage.setItem(keys.briefs, JSON.stringify(briefs));
 
-function artMarkup(work, index, className = '') {
-  return work.image ? `<img src="${work.image}" alt="${escapeHTML(work.title)}" class="${className}" loading="lazy" decoding="async">` : `<div class="generated-art variant-${index % 4}" style="background-color:${escapeHTML(work.color)}" role="img" aria-label="${escapeHTML(work.title)} için demo görsel alanı"><span></span><small class="demo-art-label">DEMO VISUAL</small></div>`;
+function artMarkup(work, index, className = '', loading = 'lazy') {
+  const priority = loading === 'eager' ? ' fetchpriority="high"' : '';
+  return work.image ? `<img src="${work.image}" alt="${escapeHTML(work.title)}" class="${className}" loading="${loading}" decoding="async"${priority}>` : `<div class="generated-art variant-${index % 4}" style="background-color:${escapeHTML(work.color)}" role="img" aria-label="${escapeHTML(work.title)} için demo görsel alanı"><span></span><small class="demo-art-label">DEMO VISUAL</small></div>`;
 }
 
 function renderStand() {
@@ -84,7 +85,7 @@ function openWork(id) {
   const work = works.find(item => item.id === id); if (!work) return;
   const index = works.indexOf(work);
   const sizes = work.category === 'original' ? [work.size || '50 × 70 cm'] : [...new Set([work.size || '30 × 40 cm', '50 × 70 cm'])];
-  $('#workDetail').innerHTML = `<div class="detail-art">${artMarkup(work, index)}</div><div class="detail-info"><p class="index">ECREN IŞIK / ${work.category === 'original' ? 'ORIGINAL' : 'LIMITED PRINT'}</p><h2>${escapeHTML(work.title)}</h2><p>${escapeHTML(work.description)}</p><div class="detail-story"><span>${escapeHTML(work.year || '2026')} / STORY NOTE</span><p>Renk, ritim ve katmanlar eserin ana duygusunu taşıyacak biçimde kuruldu. Gerçek eskiz ve süreç görselleri yüklendiğinde bu hikâye alanı esere özel güncellenecek.</p></div><strong class="detail-price">${escapeHTML(work.price)}</strong><div class="product-options"><label><span>BOYUT</span><select id="workSize">${sizes.map(size => `<option>${escapeHTML(size)}</option>`).join('')}</select></label><label><span>SUNUM</span><select id="workFrame"><option>Çerçevesiz</option><option>Çerçeveli — teklif iste</option></select></label></div><div class="detail-meta"><div><span>FORMAT</span><b>${escapeHTML(work.type)}</b></div><div><span>TESLİMAT</span><b>3–5 iş günü</b></div><div><span>SERTİFİKA</span><b>İmzalı</b></div><div><span>EDITION</span><b>${escapeHTML(work.edition || (work.category === 'original' ? '1 / 1' : 'Sınırlı'))}</b></div></div><div class="detail-actions"><button class="request-work" data-add-cart="${work.id}">Sepete ekle</button><button class="favorite-work" data-favorite="${work.id}">${favorites.includes(work.id) ? '♥ Favorilerimde' : '♡ Favoriye ekle'}</button></div><button class="commission-link" data-request="${work.id}">Bu eserden ilham alan özel bir çalışma iste →</button></div>`;
+  $('#workDetail').innerHTML = `<div class="detail-art">${artMarkup(work, index, '', 'eager')}</div><div class="detail-info"><p class="index">ECREN IŞIK / ${work.category === 'original' ? 'ORIGINAL' : 'LIMITED PRINT'}</p><h2>${escapeHTML(work.title)}</h2><p>${escapeHTML(work.description)}</p><div class="detail-story"><span>${escapeHTML(work.year || '2026')} / STORY NOTE</span><p>Renk, ritim ve katmanlar eserin ana duygusunu taşıyacak biçimde kuruldu. Gerçek eskiz ve süreç görselleri yüklendiğinde bu hikâye alanı esere özel güncellenecek.</p></div><strong class="detail-price">${escapeHTML(work.price)}</strong><div class="product-options"><label><span>BOYUT</span><select id="workSize">${sizes.map(size => `<option>${escapeHTML(size)}</option>`).join('')}</select></label><label><span>SUNUM</span><select id="workFrame"><option>Çerçevesiz</option><option>Çerçeveli — teklif iste</option></select></label></div><div class="detail-meta"><div><span>FORMAT</span><b>${escapeHTML(work.type)}</b></div><div><span>TESLİMAT</span><b>3–5 iş günü</b></div><div><span>SERTİFİKA</span><b>İmzalı</b></div><div><span>EDITION</span><b>${escapeHTML(work.edition || (work.category === 'original' ? '1 / 1' : 'Sınırlı'))}</b></div></div><div class="detail-actions"><button class="request-work" data-add-cart="${work.id}">Sepete ekle</button><button class="favorite-work" data-favorite="${work.id}">${favorites.includes(work.id) ? '♥ Favorilerimde' : '♡ Favoriye ekle'}</button></div><button class="commission-link" data-request="${work.id}">Bu eserden ilham alan özel bir çalışma iste →</button></div>`;
   $('#workDialog').setAttribute('aria-label', `${work.title} eser detayı`);
   $('#workDialog').scrollTop = 0;
   $('#workDialog').showModal();
@@ -230,3 +231,12 @@ $$('.magnetic,.primary-btn').forEach(button => {
 });
 
 renderAll();
+
+const preloadArtwork = () => defaultWorks.forEach(work => {
+  if (!work.image) return;
+  const image = new Image();
+  image.decoding = 'async';
+  image.src = work.image;
+});
+if ('requestIdleCallback' in window) requestIdleCallback(preloadArtwork, { timeout: 1200 });
+else setTimeout(preloadArtwork, 350);

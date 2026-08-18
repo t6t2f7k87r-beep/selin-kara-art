@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ecren-isik-v6';
+const CACHE_NAME = 'ecren-isik-v7';
 const CORE_ASSETS = ['./', './index.html', './style.css', './studio.css', './polish.css', './features.css', './refinement.css', './app.js', './features.js', './icon.svg', './og.png', './assets/inner-weather.jpg', './assets/sundown-club.jpg', './assets/blue-hour.jpg', './assets/soft-rebel.jpg', './assets/memory-garden.jpg', './assets/other-side.jpg'];
 
 self.addEventListener('install', event => {
@@ -19,11 +19,11 @@ self.addEventListener('fetch', event => {
     }).catch(() => caches.match('./index.html')));
     return;
   }
-  event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
+  event.respondWith(fetch(event.request).then(response => {
     if (response.ok && new URL(event.request.url).origin === location.origin) {
       const copy = response.clone();
       caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
     }
     return response;
-  })));
+  }).catch(() => caches.match(event.request, { ignoreSearch: true })));
 });

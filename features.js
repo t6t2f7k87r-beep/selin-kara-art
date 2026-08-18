@@ -296,5 +296,5 @@ applyLanguage();
 window.renderFeatureLayers();
 
 if ('serviceWorker' in navigator && !['localhost', '127.0.0.1'].includes(location.hostname)) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=20260818-3', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {}));
 }
