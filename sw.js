@@ -1,5 +1,5 @@
-const CACHE_NAME = 'ecren-isik-v3';
-const CORE_ASSETS = ['./', './index.html', './style.css', './studio.css', './polish.css', './features.css', './app.js', './features.js', './icon.svg'];
+const CACHE_NAME = 'ecren-isik-v4';
+const CORE_ASSETS = ['./', './index.html', './style.css', './studio.css', './polish.css', './features.css', './refinement.css', './app.js', './features.js', './icon.svg'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting()));

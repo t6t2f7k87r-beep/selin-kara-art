@@ -144,10 +144,13 @@ $('#closeAdmin').onclick = () => $('#adminDialog').close();
 $('#closeWork').onclick = () => $('#workDialog').close();
 $('#heroBrief').onclick = () => goToAI(); $('#footerBrief').onclick = () => goToAI();
 function setPageLock(locked) { document.body.style.overflow = locked ? 'hidden' : ''; }
-function closeMobileMenu() { $('#mobileMenu').classList.remove('open'); $('#mobileMenu').setAttribute('aria-hidden', 'true'); $('#menuBtn').classList.remove('active'); setPageLock(false); }
-$('#menuBtn').onclick = () => { const opening = !$('#mobileMenu').classList.contains('open'); $('#mobileMenu').classList.toggle('open', opening); $('#mobileMenu').setAttribute('aria-hidden', String(!opening)); $('#menuBtn').classList.toggle('active', opening); setPageLock(opening); };
-$$('#mobileMenu nav a').forEach(link => link.onclick = closeMobileMenu);
+function closeMobileMenu() { $('#mobileMenu').classList.remove('open'); $('#mobileMenu').setAttribute('aria-hidden', 'true'); $('#menuBtn').classList.remove('active'); $('#menuBtn').setAttribute('aria-expanded', 'false'); document.body.classList.remove('mobile-nav-open'); setPageLock(false); }
+$('#menuBtn').setAttribute('aria-expanded', 'false');
+$('#menuBtn').onclick = () => { const opening = !$('#mobileMenu').classList.contains('open'); $('#mobileMenu').classList.toggle('open', opening); $('#mobileMenu').setAttribute('aria-hidden', String(!opening)); $('#menuBtn').classList.toggle('active', opening); $('#menuBtn').setAttribute('aria-expanded', String(opening)); document.body.classList.toggle('mobile-nav-open', opening); setPageLock(opening); };
+$$('#mobileMenu a[href^="#"]').forEach(link => link.onclick = closeMobileMenu);
 $('#mobileUser').onclick = () => { closeMobileMenu(); openPanel('userPanel'); };
+$('#mobileAdmin').onclick = () => { closeMobileMenu(); renderAdmin(); $('#adminDialog').showModal(); };
+$('#mobileLang').onclick = () => $('#langToggle').click();
 function openDesktopMenu() { $('#desktopMenu').classList.add('open'); $('#desktopMenu').setAttribute('aria-hidden', 'false'); setPageLock(true); }
 function closeDesktopMenu() { $('#desktopMenu').classList.remove('open'); $('#desktopMenu').setAttribute('aria-hidden', 'true'); setPageLock(false); }
 $('#desktopExplore').onclick = openDesktopMenu;
@@ -164,6 +167,7 @@ $$('#megaLinks a').forEach(link => {
 $('#railPrev').onclick = () => { railIndex = Math.max(0, railIndex - 1); updateRail(); };
 $('#railNext').onclick = () => { railIndex += 1; updateRail(); };
 window.addEventListener('resize', updateRail);
+window.addEventListener('keydown', event => { if (event.key === 'Escape' && $('#mobileMenu').classList.contains('open')) closeMobileMenu(); });
 
 $('#filterPills').onclick = event => { const button = event.target.closest('[data-filter]'); if (!button) return; activeFilter = button.dataset.filter; $$('#filterPills button').forEach(item => item.classList.toggle('active', item === button)); renderWorks(); };
 $('#projectTypes').onclick = event => { const button = event.target.closest('[data-type]'); if (!button) return; selectedType = button.dataset.type; $$('#projectTypes button').forEach(item => item.classList.toggle('active', item === button)); };

@@ -137,6 +137,7 @@ function applyLanguage() {
   document.documentElement.lang = currentLanguage;
   translations[currentLanguage].forEach(([selector, html]) => { const element = $(selector); if (element) element.innerHTML = html; });
   $('#langToggle').innerHTML = currentLanguage === 'tr' ? 'TR <span>/</span> EN' : 'EN <span>/</span> TR';
+  $('#mobileLang').textContent = currentLanguage === 'tr' ? 'TR / EN' : 'EN / TR';
   localStorage.setItem(featureKeys.language, currentLanguage);
   renderCart();
 }
