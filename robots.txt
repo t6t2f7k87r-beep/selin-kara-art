@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://t6t2f7k87r-beep.github.io/selin-kara-art/sitemap.xml

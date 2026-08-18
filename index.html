@@ -2,58 +2,204 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SELİN KARA — Digital Artist</title>
-  <meta name="description" content="Özgün dijital illüstrasyonlar, özel siparişler ve AI destekli proje briefleri." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d0d0d" />
+  <meta name="description" content="Ecren Işık — özgün dijital sanat, koleksiyonluk baskılar ve kişiye özel illüstrasyonlar." />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Ecren Işık — Digital Artist" />
+  <meta property="og:description" content="Özgün dijital sanat, koleksiyonluk baskılar ve kişiye özel görsel dünyalar." />
+  <meta property="og:locale" content="tr_TR" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://t6t2f7k87r-beep.github.io/selin-kara-art/" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <title>ECREN IŞIK — Digital Artist</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="studio.css" />
+  <link rel="stylesheet" href="polish.css" />
+  <link rel="stylesheet" href="features.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Ecren Işık","jobTitle":"Digital Artist & Illustrator","url":"https://t6t2f7k87r-beep.github.io/selin-kara-art/","knowsAbout":["Digital illustration","Fine art prints","Custom commissions"]}</script>
 </head>
 <body>
-  <div class="grain"></div>
-  <nav>
-    <a class="logo" href="#home">SELİN<span>•</span>KARA</a>
-    <div class="nav-links"><a href="#gallery">Eserler</a><a href="#about">Hakkımda</a><a href="#commission">Sipariş</a></div>
-    <div class="nav-actions"><button class="admin-link" id="openAdmin">Stüdyo</button><a class="nav-cta" href="#commission">Bir fikir getir <span>↗</span></a></div>
-  </nav>
+  <div class="intro-loader" id="introLoader" aria-hidden="true"><div class="intro-mark"><span>ECREN</span><i></i><span>IŞIK</span></div><div class="intro-line"><b></b></div><small>ART / EMOTION / MOTION</small></div>
+  <div class="scroll-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+  <header class="site-header" id="siteHeader">
+    <a class="brand" href="#home" aria-label="Ecren Işık ana sayfa"><span>ECREN</span><i></i><span>IŞIK</span></a>
+    <nav class="desktop-nav" aria-label="Ana menü">
+      <a href="#stand">Stand</a><a href="#works">Eserler</a><a href="#ai-studio">AI Stüdyo</a><a href="#about">Hakkımda</a>
+    </nav>
+    <div class="header-actions">
+      <button class="lang-toggle" id="langToggle" aria-label="Dili değiştir">TR <span>/</span> EN</button>
+      <button class="cart-trigger" id="openCart" aria-label="Sepeti aç">Bag <b id="cartCount">0</b></button>
+      <button class="icon-btn" id="openUser" aria-label="Kullanıcı menüsü"><span class="user-dot"></span><span class="hide-mobile">Hesabım</span><b id="favoriteCount">0</b></button>
+      <button class="desktop-explore" id="desktopExplore" aria-label="Masaüstü keşif menüsünü aç"><span>Keşfet</span><i><b></b><b></b></i></button>
+      <button class="pill-btn" id="openAdmin">Stüdyo paneli <span>↗</span></button>
+      <button class="menu-btn" id="menuBtn" aria-label="Menüyü aç"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-menu-top"><span>ECREN IŞIK / MENU</span><small>ART IN MOTION</small></div>
+    <nav><a href="#stand"><span>01</span><b>Stand</b><i>↘</i></a><a href="#works"><span>02</span><b>Eserler</b><i>↘</i></a><a href="#archive"><span>03</span><b>Arşiv</b><i>↘</i></a><a href="#ai-studio"><span>04</span><b>AI Stüdyo</b><i>↘</i></a><a href="#about"><span>05</span><b>Hakkımda</b><i>↘</i></a></nav>
+    <div class="mobile-menu-art"><div class="menu-mini-orb"></div><p>Hayal ettiğin<br><em>şeyin ötesi.</em></p></div>
+    <div class="mobile-menu-foot"><button id="mobileUser">♡ Favorilerim</button><a href="mailto:hello@ecrenisik.art">Birlikte çalışalım ↗</a></div>
+  </div>
+
+  <div class="desktop-menu" id="desktopMenu" aria-hidden="true">
+    <div class="desktop-menu-top"><a class="brand" href="#home"><span>ECREN</span><i></i><span>IŞIK</span></a><p>DESKTOP EXPERIENCE / 2026</p><button id="closeDesktopMenu">Kapat <span>×</span></button></div>
+    <div class="desktop-menu-grid">
+      <nav class="mega-links" id="megaLinks"><a href="#stand" data-preview="0"><small>01</small><span>Stand</span><i>Seçili işler</i></a><a href="#works" data-preview="1"><small>02</small><span>Koleksiyon</span><i>Özgün eserler</i></a><a href="#archive" data-preview="2"><small>03</small><span>Arşiv</span><i>Süreç ve eskizler</i></a><a href="#ai-studio" data-preview="3"><small>04</small><span>AI Project Lab</span><i>Fikrini analiz et</i></a><a href="#about" data-preview="4"><small>05</small><span>Ecren</span><i>Sanatçıyı tanı</i></a></nav>
+      <div class="mega-preview"><div class="preview-frame" id="menuPreview"><span class="preview-shape p-one"></span><span class="preview-shape p-two"></span><span class="preview-shape p-three"></span></div><div class="preview-caption"><span id="previewIndex">01 / 05</span><p id="previewTitle">Curated digital worlds.</p></div></div>
+    </div>
+    <div class="desktop-menu-foot"><p>Digital art with a pulse.</p><div><a href="#" data-placeholder-link>Instagram / yakında</a><a href="#" data-placeholder-link>Behance / yakında</a><a href="mailto:hello@ecrenisik.art">E-posta ↗</a></div><span>© 2026</span></div>
+  </div>
 
   <main id="home">
     <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow"><i></i> İstanbul merkezli dijital sanatçı</p>
-        <h1>Hikâyene<br><em>görsel</em> bir ses<br>ver.</h1>
-        <p class="intro">Markalar, müzisyenler ve hayal kurmayı bırakmayan insanlar için cesur, dokulu ve tamamen özgün illüstrasyonlar.</p>
-        <div class="hero-actions"><a class="button dark" href="#gallery">Eserleri keşfet <b>→</b></a><a class="text-link" href="#commission">Özel bir şey çizdirelim <span>↘</span></a></div>
+      <div class="hero-orbit orbit-a"></div><div class="hero-orbit orbit-b"></div>
+      <div class="hero-copy reveal">
+        <p class="kicker"><span></span> DİJİTAL İLLÜSTRASYON · ÖZGÜN İŞLER</p>
+        <h1>Hayal ettiğin<br><em>şeyin ötesi.</em></h1>
+        <p class="hero-lead">Karakteri olan insanlar ve markalar için duygusu yüksek, koleksiyonluk dijital sanat.</p>
+        <div class="hero-cta"><a class="primary-btn magnetic" href="#works">Koleksiyonu keşfet <span>↘</span></a><button class="ghost-btn" id="heroBrief">Bir fikir anlat <span>✦</span></button></div>
+        <div class="hero-proof"><div><strong>01</strong><span>Özgün üretim</span></div><div><strong>02</strong><span>Sınırlı baskı</span></div><div><strong>03</strong><span>Kişisel sipariş</span></div></div>
       </div>
-      <div class="hero-art" aria-label="Soyut dijital illüstrasyon">
-        <div class="sun"></div><div class="arch"></div><div class="face"><span class="eye e1"></span><span class="eye e2"></span><span class="nose"></span><span class="mouth"></span></div><div class="flower f1">✦</div><div class="flower f2">✳</div><p class="art-caption">NO. 24 / INNER WEATHER</p>
+
+      <div class="hero-stage reveal" data-delay="150" id="heroStage">
+        <div class="stage-label"><span>FEATURED / 001</span><span>DRAG THE FEELING</span></div>
+        <div class="stage-card back-card"><div class="mini-art art-b"></div></div>
+        <div class="stage-card main-card">
+          <div class="main-visual art-a"><span class="halo"></span><span class="portal"></span><span class="figure"></span><i class="spark s1">✦</i><i class="spark s2">✦</i></div>
+          <div class="stage-meta"><div><b>Inner Weather</b><span>Digital / 2026</span></div><span>01 / 24</span></div>
+        </div>
+        <div class="floating-note">A world<br>of her own.</div>
       </div>
-      <div class="scroll">AŞAĞI KAYDIR <span>↓</span></div>
+      <a class="scroll-cue" href="#stand"><span>SCROLL TO EXPERIENCE</span><i>↓</i></a>
     </section>
 
-    <section class="ticker"><div>ÖZGÜN DİJİTAL SANAT <b>✳</b> ÖZEL SİPARİŞLER <b>✳</b> MARKA İLLÜSTRASYONU <b>✳</b> ÖZGÜN DİJİTAL SANAT <b>✳</b> ÖZEL SİPARİŞLER <b>✳</b></div></section>
+    <section class="marquee" aria-label="Hizmetler"><div><span>ORIGINAL ART</span><i>✦</i><span>PERSONAL COMMISSIONS</span><i>✦</i><span>VISUAL WORLDS</span><i>✦</i><span>LIMITED PRINTS</span><i>✦</i><span>ORIGINAL ART</span><i>✦</i><span>PERSONAL COMMISSIONS</span></div></section>
 
-    <section class="gallery section" id="gallery">
-      <div class="section-head"><div><p class="eyebrow">01 / Seçili çalışmalar</p><h2>Duvarına değil,<br><em>dünyana</em> ait.</h2></div><button class="filter" id="filterBtn">Tüm eserler <span>⌄</span></button></div>
-      <div class="works" id="worksGrid"></div>
-      <a class="all-link" href="#gallery">Tüm koleksiyonu görüntüle <span>→</span></a>
+    <section class="stand section" id="stand">
+      <div class="section-heading reveal"><div><p class="index">01 — THE STAND</p><h2>Bir sergi gibi.<br><em>Sana özel.</em></h2></div><p>Seçili işler, sınırlı baskılar ve Ecren’in dünyasından yeni parçalar. Yaklaş, keşfet, kendi favorini seç.</p></div>
+      <div class="stand-rail reveal" id="standRail"></div>
+      <div class="rail-controls"><button id="railPrev" aria-label="Önceki eser">←</button><div class="rail-progress"><span id="railProgress"></span></div><button id="railNext" aria-label="Sonraki eser">→</button></div>
     </section>
 
-    <section class="statement"><p>“İyi bir illüstrasyon, bakılan değil; <em>içinde biraz kalınan</em> bir yer olmalı.”</p><span>— SELİN KARA, 2026</span></section>
-
-    <section class="commission section" id="commission">
-      <div class="commission-art"><div class="orb one"></div><div class="orb two"></div><div class="hand">✋</div><span>MAKE IT<br>PERSONAL.</span></div>
-      <div class="commission-copy"><p class="eyebrow">02 / Birlikte üretelim</p><h2>Aklındaki şeyi<br><em>görünür</em> kılalım.</h2><p>Bir albüm kapağı, markanızın yeni dünyası ya da sadece sevdiğiniz birinin portresi… Fikriniz ne kadar ham olursa olsun, onu birlikte şekillendiririz.</p><div class="commission-meta"><span>PROJELER İÇİN</span><span>2–4 HAFTA</span><span>GLOBAL ÇALIŞMA</span></div><button class="button coral" id="openBrief">Projeni anlat <b>→</b></button></div>
+    <section class="manifesto">
+      <div class="manifesto-word">FEEL</div>
+      <div class="manifesto-copy reveal"><span>ECREN IŞIK / MANIFESTO</span><p>“Sadece güzel görünen değil,<br><em>bir şey hissettiren</em> işler.”</p><small>Her çizgi bir karakter, her renk bir hafıza, her iş yalnızca bir kez anlatılabilecek bir hikâye.</small></div>
     </section>
 
-    <section class="about section" id="about"><p class="eyebrow">03 / Merhaba</p><div><h2>Ben Selin.<br>Renkleri <em>hikâye</em><br>anlatmak için kullanıyorum.</h2><p>2018’den beri dijital dünyada karakterler, düşler ve markalar için görsel evrenler kuruyorum. Her çizgi, bir şey hissettirmek için orada.</p><a class="text-link" href="mailto:hello@selinkara.art">Tanışalım <span>↗</span></a></div></section>
+    <section class="works section" id="works">
+      <div class="section-heading reveal"><div><p class="index">02 — SELECTED WORKS</p><h2>Yeni bir dünya<br><em>duvarında başlar.</em></h2></div><div class="works-tools"><div class="filter-pills" id="filterPills"><button class="active" data-filter="all">Tümü</button><button data-filter="print">Baskı</button><button data-filter="original">Orijinal</button></div><button class="gallery-launch" id="openGallery">Tam ekran sergi <span>↗</span></button></div></div>
+      <div class="works-grid" id="worksGrid"></div>
+    </section>
+
+    <section class="archive-section section" id="archive">
+      <div class="archive-head reveal"><div><p class="index">03 — LIVING ARCHIVE</p><h2>Bitmiş işler kadar<br><em>oluş anları da.</em></h2></div><p>Seçili eserler, eskizler ve üretim notları; yıllara ve üretim biçimine göre yaşayan bir arşivde.</p></div>
+      <div class="archive-controls reveal" id="archiveFilters"><button class="active" data-archive="all">Tümü</button><button data-archive="artwork">Eser</button><button data-archive="process">Süreç</button><button data-archive="sketch">Eskiz</button><span></span><button data-year="all" class="active">Tüm yıllar</button><button data-year="2026">2026</button><button data-year="2025">2025</button></div>
+      <div class="archive-grid" id="archiveGrid"></div>
+    </section>
+
+    <section class="ai-studio section" id="ai-studio">
+      <div class="ai-visual reveal">
+        <div class="ai-sphere"><span></span><i></i><b></b></div>
+        <div class="ai-status"><span class="pulse"></span> ECREN AI · HAZIR</div>
+        <p>Fikrinden görsel bir rota çıkarır.</p>
+      </div>
+      <div class="ai-console reveal" data-delay="120">
+        <p class="index">04 — AI PROJECT LAB</p>
+        <h2>Fikrini anlat.<br><em>Olasılığını gör.</em></h2>
+        <p class="console-intro">Nasıl bir resim istediğini kendi kelimelerinle anlat. AI sanat danışmanı stil yönünü, renk dünyasını, süreyi ve tahmini bütçeyi çıkarsın.</p>
+        <div class="project-types" id="projectTypes"><button data-type="Portre">Portre</button><button data-type="Albüm kapağı">Albüm kapağı</button><button data-type="Marka işi">Marka işi</button><button data-type="Kişisel eser">Kişisel eser</button></div>
+        <label class="prompt-box"><span>FİKRİN / HİKÂYEN</span><textarea id="ideaInput" placeholder="Örn. Kız kardeşime hediye etmek için ikimizi çocukluk anılarımızla, rüya gibi bir bahçede anlatan sıcak bir eser istiyorum..."></textarea><small><b id="charCount">0</b>/600</small></label>
+        <div class="reference-upload"><label for="referenceInput"><span>＋ REFERANS EKLE</span><small>JPG/PNG · en fazla 2.5 MB</small></label><input id="referenceInput" type="file" accept="image/png,image/jpeg,image/webp"><div id="referencePreview"><span>İsteğe bağlı: bir fotoğraf veya renk referansı yükle.</span></div></div>
+        <div class="mood-row"><span>ATMOSFER</span><div id="moods"><button data-mood="Rüya gibi">Rüya gibi</button><button data-mood="Cesur">Cesur</button><button data-mood="Minimal">Minimal</button><button data-mood="Nostaljik">Nostaljik</button></div></div>
+        <button class="analyze-btn" id="generateBrief"><span class="btn-label">AI ile projeyi analiz et</span><span class="loader-dots"><i></i><i></i><i></i></span><b>✦</b></button>
+        <div class="ai-result" id="aiResult" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="process section">
+      <div class="section-heading reveal"><div><p class="index">05 — PROCESS</p><h2>Fikirden,<br><em>imza esere.</em></h2></div><p>Şeffaf, kişisel ve heyecanı kaybetmeyen bir üretim süreci.</p></div>
+      <div class="process-grid">
+        <article class="reveal"><span>01</span><i>◌</i><h3>Hikâyeni anlat</h3><p>Briefini veya aklındaki hissi paylaş. Ne kadar ham olursa olsun.</p></article>
+        <article class="reveal" data-delay="80"><span>02</span><i>✦</i><h3>Yönü birlikte seç</h3><p>Renk dünyası ve iki eskiz rotası arasından sana en çok benzeyeni seç.</p></article>
+        <article class="reveal" data-delay="160"><span>03</span><i>◎</i><h3>Eserin doğsun</h3><p>Onaylanan yön, yüksek çözünürlüklü ve baskıya hazır son esere dönüşsün.</p></article>
+      </div>
+    </section>
+
+    <section class="studio-story" id="studioStory">
+      <div class="story-visual reveal"><div class="film-grain"></div><span>PLAY / STUDIO NOTES</span><button id="playStudio" aria-label="Stüdyo hikâyesini oynat">▶</button></div>
+      <div class="story-copy reveal"><p class="index">06 — INSIDE THE STUDIO</p><h2>Renk, ritim,<br><em>ve iyi bir fikir.</em></h2><p>Ecren’in yaklaşımı kısa yollar üzerine değil; fikrin özünü bulup ona en doğru görsel dili kurmak üzerine. Süreç boyunca her karar görünür, her revizyon amaçlı.</p><div class="studio-values"><div><b>2</b><span>Eskiz rotası</span></div><div><b>2</b><span>Revizyon turu</span></div><div><b>∞</b><span>Kişisel dokunuş</span></div></div></div>
+    </section>
+
+    <section class="trust-section section">
+      <div class="trust-strip reveal"><p>HER ESERDE</p><span>İmzalı sertifika</span><span>Özenli paketleme</span><span>Takipli gönderim</span><span>Güvenli ödeme altyapısına hazır</span></div>
+      <div class="timeline-grid reveal"><div><p class="index">SELECTED MOMENTS</p><h2>Sergiler ve<br><em>duyurular.</em></h2></div><div class="timeline-empty"><span>YAKINDA</span><p>İlk sergi, yayın ve işbirliği kayıtları stüdyo panelinden bu alana eklenecek. Hayali referans yok; yalnızca gerçek kilometre taşları.</p></div></div>
+    </section>
+
+    <section class="about section" id="about">
+      <div class="about-portrait reveal"><div class="portrait-art"><span>EI</span></div><small>SELF PORTRAIT / 2026</small></div>
+      <div class="about-copy reveal"><p class="index">07 — ABOUT ECREN</p><h2>İç dünyaları<br><em>görünür</em> kılıyorum.</h2><p>Ben Ecren. Renkleri yalnızca güzellik için değil; hafızayı, karakteri ve insanın kendine sakladığı o özel hissi anlatmak için kullanıyorum.</p><blockquote>“Bir iş bittiğinde, sana zaten hep varmış gibi hissettirmeli.”</blockquote><a class="underlink" href="mailto:hello@ecrenisik.art">Birlikte çalışalım <span>↗</span></a></div>
+    </section>
+
+    <section class="final-cta"><div class="cta-orbit"></div><p>Bir fikrin mi var?</p><h2>Onu birlikte<br><em>unutulmaz</em> yapalım.</h2><button class="primary-btn light" id="footerBrief">Projeni başlat <span>↗</span></button></section>
   </main>
-  <footer><a class="logo" href="#home">SELİN<span>•</span>KARA</a><p>© 2026 — Made with feeling.</p><div><a href="#">Instagram</a><a href="#">Behance</a></div></footer>
 
-  <dialog id="briefDialog"><button class="close" id="closeBrief">×</button><div class="brief-content"><p class="eyebrow">AI BRIEF ASİSTANI</p><h2>Fikrini beraber<br><em>netleştirelim.</em></h2><p class="brief-hint">Birkaç cümle yaz; asistan proje yönünü, kapsamını ve ilk tahmini önerir.</p><textarea id="ideaInput" placeholder="Örn. Yeni albümüm için gece hissini taşıyan, rüya gibi ama güçlü bir kapak istiyorum..."></textarea><button class="button dark" id="generateBrief">Brief'i oluştur <b>→</b></button><div class="ai-result" id="aiResult"></div></div></dialog>
-  <dialog id="adminDialog"><button class="close" id="closeAdmin">×</button><div class="admin-panel"><div class="admin-top"><div><p class="eyebrow">STÜDYO PANELİ</p><h2>Koleksiyonunu<br><em>yönet.</em></h2></div><button class="button coral" id="addWork">+ Yeni eser</button></div><div class="admin-list" id="adminList"></div><p class="admin-note">Değişiklikler bu cihazın tarayıcısında saklanır. Canlı satış için sonraki adımda paneli veritabanına bağlarız.</p></div></dialog>
+  <footer><a class="brand" href="#home"><span>ECREN</span><i></i><span>IŞIK</span></a><p>Digital art with a pulse.<br>© 2026, all feelings reserved.</p><div><a href="#" data-placeholder-link>Instagram / yakında</a><a href="#" data-placeholder-link>Behance / yakında</a><a href="mailto:hello@ecrenisik.art">E-posta ↗</a></div></footer>
+
+  <aside class="side-panel" id="userPanel" aria-hidden="true">
+    <div class="panel-head"><div><p>MY COLLECTION</p><h3>Merhaba <em>sanatsever.</em></h3></div><button class="panel-close" data-close="userPanel">×</button></div>
+    <div class="user-tabs"><button class="active" data-user-tab="favorites">Favorilerim <b id="favoriteTabCount">0</b></button><button data-user-tab="projects">Projelerim <b id="projectCount">0</b></button><button data-user-tab="orders">Siparişler <b id="orderCount">0</b></button><button data-user-tab="profile">Profil</button></div>
+    <div class="user-view active" id="favoritesView"><div class="empty-state" id="favoritesList"><i>♡</i><h4>Henüz bir favorin yok.</h4><p>Kalbine dokunan eserlerdeki kalp ikonuna dokun.</p></div></div>
+    <div class="user-view" id="projectsView"><div class="empty-state" id="projectsList"><i>✦</i><h4>İlk fikrini bekliyoruz.</h4><p>AI Stüdyo’da bir brief oluşturduğunda burada görünecek.</p></div></div>
+    <div class="user-view" id="ordersView"><div class="empty-state" id="ordersList"><i>□</i><h4>Henüz sipariş yok.</h4><p>Sepetinden oluşturduğun deneme siparişleri burada görünür.</p></div></div>
+    <div class="user-view" id="profileView"><form class="profile-form" id="profileForm"><label>Ad soyad<input id="profileName" autocomplete="name" placeholder="Adın"></label><label>E-posta<input id="profileEmail" type="email" autocomplete="email" placeholder="ornek@email.com"></label><label>Şehir<input id="profileCity" autocomplete="address-level2" placeholder="İstanbul"></label><button type="submit">Profili kaydet →</button></form></div>
+    <a class="panel-action" href="#works" data-close="userPanel">Koleksiyonu keşfet <span>→</span></a>
+  </aside>
+
+  <dialog class="admin-dialog" id="adminDialog">
+    <div class="admin-shell">
+      <aside class="admin-sidebar"><a class="brand"><span>ECREN</span><i></i><span>STUDIO</span></a><nav><button class="active" data-admin-tab="collection">▦ <span>Koleksiyon</span></button><button data-admin-tab="commerce">◇ <span>Satış</span></button><button data-admin-tab="ai">✦ <span>AI Ayarları</span></button></nav><div class="admin-profile"><span>EI</span><div><b>Ecren Işık</b><small>Artist / Admin</small></div></div></aside>
+      <main class="admin-main">
+        <div class="admin-header"><div><p>STÜDYO PANELİ</p><h2 id="adminTitle">Koleksiyon</h2></div><button class="panel-close" id="closeAdmin">×</button></div>
+        <section class="admin-tab active" id="adminCollection">
+          <div class="metric-grid"><article><span>Toplam eser</span><strong id="totalWorks">0</strong><small>Aktif koleksiyon</small></article><article><span>Favorilenme</span><strong id="totalFavorites">0</strong><small>Ziyaretçi etkileşimi</small></article><article><span>AI brief</span><strong id="totalBriefs">0</strong><small>Potansiyel proje</small></article></div>
+          <div class="admin-toolbar"><div><h3>Eserler</h3><p>Görsel, fiyat ve koleksiyon bilgilerini düzenle.</p></div><button class="primary-btn compact" id="addWork">+ Yeni eser</button></div>
+          <div class="admin-list" id="adminList"></div>
+          <div class="catalog-sync"><div><span class="settings-icon">↻</span><div><h3>Katalog senkronizasyonu</h3><p>Gerçek merkezi yönetim için oturum doğrulamalı katalog API adresini bağla. Token veya gizli anahtar tarayıcıya yazılmaz.</p></div><span class="status-badge" id="catalogStatus">LOCAL ONLY</span></div><label class="setting-field"><span>Katalog endpoint adresi</span><input id="catalogEndpoint" type="url" placeholder="https://api.siteniz.com/catalog"></label><div><button id="pullCatalog">Sunucudan çek</button><button id="pushCatalog">Değişiklikleri gönder</button></div></div>
+        </section>
+        <section class="admin-tab" id="adminAI">
+          <div class="settings-card"><span class="settings-icon">✦</span><div><h3>AI senkronizasyonu</h3><p>Site varsayılan olarak cihaz içi akıllı proje tahmincisini kullanır. Güvenli bir sunucu endpoint’i eklendiğinde gerçek AI yanıtlarına otomatik geçer.</p></div><span class="status-badge" id="aiConnectionStatus">LOCAL AI</span></div>
+          <label class="setting-field"><span>Güvenli AI endpoint adresi</span><input id="aiEndpoint" type="url" placeholder="https://api.siteniz.com/brief"><small>API anahtarını buraya yazma; anahtar yalnızca sunucuda tutulmalıdır.</small></label>
+          <label class="setting-field"><span>Asistan adı</span><input id="assistantName" type="text" value="Ecren AI"></label>
+          <button class="primary-btn compact" id="saveAISettings">Ayarları kaydet</button>
+        </section>
+        <section class="admin-tab" id="adminCommerce">
+          <div class="settings-card"><span class="settings-icon">◇</span><div><h3>Satış altyapısı</h3><p>Sepet ve sipariş akışı cihazda çalışır. Gerçek ödeme için güvenli sunucu ödeme endpoint’ini bağla.</p></div><span class="status-badge" id="commerceStatus">DEMO MODE</span></div>
+          <label class="setting-field"><span>Ödeme endpoint adresi</span><input id="checkoutEndpoint" type="url" placeholder="https://api.siteniz.com/checkout"><small>Kart bilgisi site içinde tutulmaz; endpoint ödeme sağlayıcısının güvenli sayfasına yönlendirmelidir.</small></label>
+          <div class="commerce-fields"><label class="setting-field"><span>Para birimi</span><select id="shopCurrency"><option value="TRY">TRY · ₺</option><option value="EUR">EUR · €</option><option value="USD">USD · $</option></select></label><label class="setting-field"><span>Ücretsiz kargo eşiği</span><input id="freeShipping" type="number" min="0" value="5000"></label></div>
+          <button class="primary-btn compact" id="saveCommerce">Satış ayarlarını kaydet</button>
+        </section>
+      </main>
+    </div>
+  </dialog>
+
+  <dialog class="work-dialog" id="workDialog"><button class="panel-close work-close" id="closeWork">×</button><div class="work-detail" id="workDetail"></div></dialog>
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true"><div class="cart-head"><div><p>ECREN IŞIK / SHOP</p><h3>Sepetin <em id="cartTitleCount">(0)</em></h3></div><button data-close="cartDrawer" aria-label="Sepeti kapat">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-foot"><div><span>Ara toplam</span><strong id="cartSubtotal">₺0</strong></div><small>Kargo ve teslimat adresi ödeme adımında hesaplanır.</small><button id="startCheckout">Siparişi tamamla <span>→</span></button></div></aside>
+  <dialog class="gallery-dialog" id="galleryDialog"><button class="gallery-close" id="closeGallery">Kapat ×</button><div class="gallery-stage" id="galleryStage"></div><div class="gallery-nav"><button id="galleryPrev">←</button><span id="galleryCounter">01 / 06</span><button id="galleryNext">→</button></div></dialog>
+  <dialog class="checkout-dialog" id="checkoutDialog"><button class="panel-close" id="closeCheckout">×</button><form id="checkoutForm"><p class="index">SECURE CHECKOUT / DEMO READY</p><h2>Siparişini<br><em>tamamla.</em></h2><div class="checkout-grid"><label>Ad soyad<input name="name" required autocomplete="name"></label><label>E-posta<input name="email" type="email" required autocomplete="email"></label><label>Telefon<input name="phone" required autocomplete="tel"></label><label>Şehir<input name="city" required autocomplete="address-level2"></label><label class="full">Teslimat adresi<textarea name="address" required autocomplete="street-address"></textarea></label></div><div class="checkout-summary"><span>Ödenecek tutar</span><strong id="checkoutTotal">₺0</strong></div><p class="checkout-note" id="checkoutNote">Demo modunda kart bilgisi alınmaz; sipariş yalnızca bu cihazda kaydedilir.</p><button type="submit" class="primary-btn">Siparişi oluştur <span>→</span></button></form></dialog>
+  <dialog class="studio-dialog" id="studioDialog"><button class="panel-close" id="closeStudio">×</button><div><span>STUDIO FILM / PLACEHOLDER</span><h2>Gerçek stüdyo videosu<br>buraya gelecek.</h2><p>Video yüklendiğinde bu sinematik katman otomatik oynatıcıya dönüşecek. Şimdilik sahte çekim veya içerik göstermiyoruz.</p></div></dialog>
+  <div class="toast" id="toast"><span>✦</span><p></p></div>
   <script src="app.js"></script>
+  <script src="features.js"></script>
 </body>
 </html>
