@@ -292,3 +292,217 @@
   .lily-motif,.lily-motif .bloom-petal { animation: none; }
   .lily-click-bloom { display: none; }
 }
+
+/* AI Studio — hidden visual feast */
+.visual-feast-overlay {
+  --bloom-left: #ff715b;
+  --bloom-center: #d8ff3e;
+  --bloom-right: #8067e8;
+  --bloom-line: #f5efe7;
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  isolation: isolate;
+  color: #f7f2e9;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(216,255,62,.18), transparent 21%),
+    radial-gradient(circle at 18% 25%, rgba(255,113,91,.42), transparent 34%),
+    radial-gradient(circle at 82% 74%, rgba(128,103,232,.52), transparent 38%),
+    #0d0d0d;
+  animation: visualFeastScene 4.3s cubic-bezier(.16,1,.3,1) both;
+}
+
+.visual-feast-overlay::before,
+.visual-feast-overlay::after {
+  content: '';
+  position: absolute;
+  width: min(88vw, 950px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 50%;
+  animation: visualFeastOrbit 7s linear infinite;
+}
+
+.visual-feast-overlay::after {
+  width: min(58vw, 630px);
+  border-color: rgba(216,255,62,.48);
+  animation-direction: reverse;
+  animation-duration: 4.5s;
+}
+
+.visual-feast-aura {
+  position: absolute;
+  width: min(118vw, 1260px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 15deg, rgba(216,255,62,.22) 0 7deg, transparent 7deg 21deg, rgba(128,103,232,.22) 21deg 28deg, transparent 28deg 43deg, rgba(255,113,91,.19) 43deg 50deg, transparent 50deg 68deg);
+  filter: blur(8px);
+  animation: visualFeastSpin 9s linear infinite, visualFeastPulse 1.25s ease-in-out infinite alternate;
+}
+
+.visual-feast-lily {
+  position: relative;
+  z-index: 2;
+  width: clamp(240px, 34vw, 520px);
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 30px rgba(216,255,62,.28)) drop-shadow(0 38px 70px rgba(0,0,0,.45));
+  animation: visualFeastLily 4.3s cubic-bezier(.16,1,.3,1) both;
+}
+
+.visual-feast-lily .bloom-petal { animation: visualFeastPetal 1s cubic-bezier(.16,1,.3,1) both; }
+.visual-feast-lily .bloom-petal-center { animation-delay: .08s; }
+.visual-feast-lily .bloom-petal-right { animation-delay: .16s; }
+.visual-feast-lily .bloom-stem,
+.visual-feast-lily .bloom-leaf { stroke: var(--bloom-line); stroke-width: 1.35; fill: none; }
+.visual-feast-lily .bloom-heart { fill: #fff; }
+
+.visual-feast-title {
+  position: absolute;
+  z-index: 3;
+  inset: 50% auto auto 50%;
+  width: min(92vw, 980px);
+  transform: translate(-50%,-50%);
+  text-align: center;
+  mix-blend-mode: screen;
+  animation: visualFeastCopy 4.3s cubic-bezier(.16,1,.3,1) both;
+}
+
+.visual-feast-title span {
+  display: block;
+  margin-bottom: 16px;
+  color: var(--lily-acid);
+  font: 600 clamp(7px, .85vw, 11px)/1 var(--mono);
+  letter-spacing: .32em;
+}
+
+.visual-feast-title strong {
+  display: block;
+  color: #fff;
+  font: 600 clamp(64px, 12.7vw, 190px)/.72 var(--serif);
+  letter-spacing: -.075em;
+  text-shadow: 0 0 50px rgba(255,255,255,.18);
+}
+
+.visual-feast-title em { color: var(--lily-acid); font-weight: 600; }
+
+.visual-feast-particles { position: absolute; inset: 0; z-index: 4; }
+.visual-feast-particles i {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: clamp(4px, .55vw, 9px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: hsl(calc(var(--i) * 31deg + 62deg) 92% 68%);
+  box-shadow: 0 0 18px currentColor;
+  animation: visualFeastParticle 1.25s var(--delay) ease-in-out infinite alternate;
+}
+
+.ai-feast-preview {
+  --bloom-left: #ff715b;
+  --bloom-center: #d8ff3e;
+  --bloom-right: #8067e8;
+  --bloom-line: #f6f0e7;
+  position: relative;
+  min-height: 285px;
+  margin: 0 0 28px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.18);
+  color: #fff;
+  background:
+    radial-gradient(circle at 20% 18%, rgba(255,113,91,.72), transparent 34%),
+    radial-gradient(circle at 82% 78%, rgba(128,103,232,.8), transparent 39%),
+    #111;
+}
+
+.ai-feast-preview::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: .35;
+  background: repeating-conic-gradient(from 40deg at 50% 50%, rgba(216,255,62,.18) 0 5deg, transparent 5deg 20deg);
+  animation: visualFeastSpin 14s linear infinite;
+}
+
+.ai-feast-preview svg {
+  position: relative;
+  z-index: 2;
+  width: 132px;
+  height: 132px;
+  overflow: visible;
+  filter: drop-shadow(0 20px 32px rgba(0,0,0,.4));
+}
+
+.ai-feast-preview .bloom-stem,
+.ai-feast-preview .bloom-leaf { fill: none; stroke: var(--bloom-line); stroke-width: 1.4; }
+.ai-feast-preview .bloom-heart { fill: #fff; }
+.ai-feast-preview span,
+.ai-feast-preview strong { position: relative; z-index: 2; }
+.ai-feast-preview span { color: var(--lily-acid); font: 600 7px var(--mono); letter-spacing: .24em; }
+.ai-feast-preview strong { font: 600 clamp(28px, 4vw, 54px)/.86 var(--serif); letter-spacing: -.045em; }
+.ai-feast-orbit { position: absolute; width: 250px; aspect-ratio: 1; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; animation: visualFeastOrbit 8s linear infinite; }
+.visual-feast-result { border-color: rgba(216,255,62,.48); box-shadow: 0 24px 80px rgba(128,103,232,.13); }
+
+@keyframes visualFeastScene {
+  0% { opacity: 0; clip-path: circle(0 at 50% 50%); }
+  12%,78% { opacity: 1; clip-path: circle(76% at 50% 50%); }
+  100% { opacity: 0; clip-path: circle(0 at 50% 50%); }
+}
+
+@keyframes visualFeastLily {
+  0% { opacity: 0; transform: scale(.08) rotate(-24deg); }
+  22% { opacity: .92; transform: scale(1.2) rotate(4deg); }
+  68% { opacity: .52; transform: scale(1) rotate(-2deg); }
+  100% { opacity: 0; transform: scale(1.45) rotate(8deg); }
+}
+
+@keyframes visualFeastPetal {
+  0% { transform: scale(.1) rotate(-16deg); }
+  55% { transform: scale(1.14) rotate(3deg); }
+  100% { transform: scale(1); }
+}
+
+@keyframes visualFeastCopy {
+  0%,12% { opacity: 0; filter: blur(18px); transform: translate(-50%,-45%) scale(.82); }
+  28%,72% { opacity: 1; filter: blur(0); transform: translate(-50%,-50%) scale(1); }
+  100% { opacity: 0; filter: blur(14px); transform: translate(-50%,-55%) scale(1.12); }
+}
+
+@keyframes visualFeastOrbit { to { transform: rotate(360deg); } }
+@keyframes visualFeastSpin { to { transform: rotate(360deg); } }
+@keyframes visualFeastPulse { to { transform: scale(1.09); opacity: .65; } }
+@keyframes visualFeastParticle {
+  from { opacity: .2; transform: translate3d(-12px,18px,0) scale(.5); }
+  to { opacity: 1; transform: translate3d(14px,-24px,0) scale(1.4); }
+}
+
+@media (max-width: 640px) {
+  .visual-feast-title strong { font-size: clamp(60px, 23vw, 102px); line-height: .76; }
+  .visual-feast-title span { margin-bottom: 12px; letter-spacing: .2em; }
+  .visual-feast-lily { width: 78vw; }
+  .visual-feast-overlay::before { width: 140vw; }
+  .visual-feast-overlay::after { width: 88vw; }
+  .ai-feast-preview { min-height: 235px; }
+  .ai-feast-preview svg { width: 108px; height: 108px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visual-feast-overlay { animation: visualFeastFade 2.2s ease both; }
+  .visual-feast-overlay *,
+  .ai-feast-preview *,
+  .ai-feast-preview::before { animation: none !important; }
+}
+
+@keyframes visualFeastFade {
+  0%,100% { opacity: 0; }
+  15%,78% { opacity: 1; }
+}

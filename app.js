@@ -136,11 +136,24 @@ function goToAI(prefill = '') { $('#workDialog').open && $('#workDialog').close(
 
 const hasAny = (text, words) => words.some(word => text.includes(word));
 const formatRange = (low, high) => `${new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(low)} – ${new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(high)}`;
+const visualFeastRequested = value => String(value || '').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ı/g, 'i').includes('saitcani sikmisler');
+
+function launchVisualFeast() {
+  document.querySelector('.visual-feast-overlay')?.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'visual-feast-overlay';
+  overlay.setAttribute('aria-hidden', 'true');
+  const particles = Array.from({ length: 24 }, (_, index) => `<i style="--i:${index};--x:${(index * 47) % 101}%;--y:${(index * 73) % 97}%;--delay:${(index % 8) * -.11}s"></i>`).join('');
+  overlay.innerHTML = `<div class="visual-feast-aura"></div><svg class="visual-feast-lily" viewBox="0 0 64 64"><use href="#lilyumBloom"></use></svg><div class="visual-feast-title"><span>SAİTCAN MODE / UNLOCKED</span><strong>GÖRSEL<br><em>ŞÖLEN</em></strong></div><div class="visual-feast-particles">${particles}</div>`;
+  document.body.appendChild(overlay);
+  setTimeout(() => overlay.remove(), 4300);
+}
 
 function localAnalysis(idea) {
   const type = selectedType || 'Kişisel eser';
   const mood = selectedMood || 'Özgün';
   const text = idea.toLocaleLowerCase('tr-TR');
+  const visualFeast = visualFeastRequested(idea);
   const configs = {
     'Portre': { range: [4500, 7500], duration: '2–3 hafta', deliverable: 'Portre + 2 eskiz yönü' },
     'Albüm kapağı': { range: [7500, 12000], duration: '3–4 hafta', deliverable: 'Kapak + platform uyarlamaları' },
@@ -184,6 +197,30 @@ function localAnalysis(idea) {
   ];
 
   const briefScore = Math.min(98, 38 + Math.floor(idea.length / 5) + (selectedType ? 10 : 0) + (selectedMood ? 10 : 0) + (window.ecrenReferenceData ? 8 : 0));
+  if (visualFeast) return {
+    title: 'Neon Zambak Patlaması',
+    direction: 'Özel sürpriz modu açıldı: klasik zambak formu; neon renk, ışık halkaları ve çağdaş hareket diliyle tam ekran bir görsel şölene dönüşüyor.',
+    type: 'Sürpriz mod',
+    mood: 'Maksimum enerji',
+    focus: 'Renk ve hareket',
+    composition: 'Merkezî zambak + ışık patlaması',
+    complexity: 'Şenlikli',
+    symbols: ['zambak', 'ışık halkası', 'renk patlaması'],
+    routes: [
+      { name: 'Neon Bahçe', note: 'Canlı zambaklar ve renk geçişleriyle yükselen sahne.' },
+      { name: 'Kozmik Çiçek', note: 'Işık halkaları, yıldız tozu ve ritmik hareket.' },
+      { name: 'Klasik / Pop', note: 'Zarif botanik çizgiler ile cesur dijital rengin birleşimi.' }
+    ],
+    palette: ['#d8ff3e', '#ff715b', '#8067e8', '#7dd3fc'],
+    confidence: 100,
+    price: 'SÜRPRİZ',
+    duration: 'ANINDA',
+    deliverable: 'TAM EKRAN ŞÖLEN',
+    insight: 'Bu mod yalnızca eğlenceli, soyut ve renkli bir görsel sürpriz üretir.',
+    nextQuestion: 'Bir sonraki sürpriz modu hangi renk dünyasında açalım?',
+    visualFeast: true
+  };
+
   return {
     title,
     direction: `${mood} atmosferinde, ${focus.toLocaleLowerCase('tr-TR')} duygusunu merkeze alan bir ${type.toLocaleLowerCase('tr-TR')} yönü. Klasik ışık düzeni; dokulu dijital katmanlar ve çağdaş kompozisyonla yeniden yorumlanacak.`,
@@ -235,7 +272,7 @@ async function analyzeProject() {
   const button = $('#generateBrief'); button.classList.add('loading'); button.disabled = true;
   const base = localAnalysis(idea);
   let result = base;
-  if (aiSettings.endpoint) {
+  if (aiSettings.endpoint && !base.visualFeast) {
     try {
       const response = await fetch(aiSettings.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idea, type: selectedType, mood: selectedMood, referenceImage: window.ecrenReferenceData || '' }) });
       if (!response.ok) throw new Error('AI service unavailable');
@@ -244,8 +281,10 @@ async function analyzeProject() {
   } else { await new Promise(resolve => setTimeout(resolve, 900)); }
   lastAnalysis = { ...result, idea };
   const palette = result.palette;
-  $('#aiResult').innerHTML = `<div class="result-card"><div class="result-top"><span>✦ ${escapeHTML(aiSettings.assistant || 'LILYUM AI')} / CREATIVE BRIEF</span><b>%${escapeHTML(result.confidence)} BRIEF SKORU</b></div><h3>${escapeHTML(result.title)}</h3><p>${escapeHTML(result.direction)}</p><div class="result-summary"><div><span>ANA DUYGU</span><b>${escapeHTML(result.focus)}</b></div><div><span>KOMPOZİSYON</span><b>${escapeHTML(result.composition)}</b></div><div><span>KARMAŞIKLIK</span><b>${escapeHTML(result.complexity)}</b></div></div><div class="palette">${palette.map(color => `<i style="background:${color}"></i>`).join('')}</div><div class="route-grid">${result.routes.map((route, index) => `<article class="route-card"><div class="route-visual" style="--r1:${palette[index % 4]};--r2:${palette[(index + 1) % 4]};--r3:${palette[(index + 2) % 4]};--r4:${palette[(index + 3) % 4]}"></div><span>ROTA 0${index + 1}</span><b>${escapeHTML(route.name)}</b><p>${escapeHTML(route.note)}</p></article>`).join('')}</div><small class="ai-disclaimer">Bunlar sanat yönü ve kompozisyon rotalarıdır; bitmiş eser önizlemesi değildir.${window.ecrenReferenceData ? ' Yüklenen referans brief analizine eklendi.' : ''}</small><div class="ai-insights"><article><span>SANAT DANIŞMANI NOTU</span><p>${escapeHTML(result.insight)}</p></article><article><span>SIRADAKİ SORU</span><p>${escapeHTML(result.nextQuestion)}</p></article></div><div class="result-metrics"><div><span>TAHMİNİ BÜTÇE</span><strong>${escapeHTML(result.price)}</strong></div><div><span>ÜRETİM SÜRESİ</span><strong>${escapeHTML(result.duration)}</strong></div><div><span>TESLİM</span><strong>${escapeHTML(result.deliverable)}</strong></div></div><button class="save-brief" id="saveBrief">Bu yaratıcı briefi hesabıma kaydet →</button></div>`;
+  const feastPreview = result.visualFeast ? `<div class="ai-feast-preview" aria-label="Özel görsel şölen"><div class="ai-feast-orbit"></div><svg viewBox="0 0 64 64"><use href="#lilyumBloom"></use></svg><span>SECRET MODE / COLOR IN BLOOM</span><strong>GÖRSEL ŞÖLEN</strong></div>` : '';
+  $('#aiResult').innerHTML = `<div class="result-card ${result.visualFeast ? 'visual-feast-result' : ''}"><div class="result-top"><span>✦ ${escapeHTML(aiSettings.assistant || 'LILYUM AI')} / CREATIVE BRIEF</span><b>%${escapeHTML(result.confidence)} BRIEF SKORU</b></div>${feastPreview}<h3>${escapeHTML(result.title)}</h3><p>${escapeHTML(result.direction)}</p><div class="result-summary"><div><span>ANA DUYGU</span><b>${escapeHTML(result.focus)}</b></div><div><span>KOMPOZİSYON</span><b>${escapeHTML(result.composition)}</b></div><div><span>KARMAŞIKLIK</span><b>${escapeHTML(result.complexity)}</b></div></div><div class="palette">${palette.map(color => `<i style="background:${color}"></i>`).join('')}</div><div class="route-grid">${result.routes.map((route, index) => `<article class="route-card"><div class="route-visual" style="--r1:${palette[index % 4]};--r2:${palette[(index + 1) % 4]};--r3:${palette[(index + 2) % 4]};--r4:${palette[(index + 3) % 4]}"></div><span>ROTA 0${index + 1}</span><b>${escapeHTML(route.name)}</b><p>${escapeHTML(route.note)}</p></article>`).join('')}</div><small class="ai-disclaimer">Bunlar sanat yönü ve kompozisyon rotalarıdır; bitmiş eser önizlemesi değildir.${window.ecrenReferenceData ? ' Yüklenen referans brief analizine eklendi.' : ''}</small><div class="ai-insights"><article><span>SANAT DANIŞMANI NOTU</span><p>${escapeHTML(result.insight)}</p></article><article><span>SIRADAKİ SORU</span><p>${escapeHTML(result.nextQuestion)}</p></article></div><div class="result-metrics"><div><span>TAHMİNİ BÜTÇE</span><strong>${escapeHTML(result.price)}</strong></div><div><span>ÜRETİM SÜRESİ</span><strong>${escapeHTML(result.duration)}</strong></div><div><span>TESLİM</span><strong>${escapeHTML(result.deliverable)}</strong></div></div><button class="save-brief" id="saveBrief">Bu yaratıcı briefi hesabıma kaydet →</button></div>`;
   $('#aiResult').classList.add('show'); button.classList.remove('loading'); button.disabled = false;
+  if (result.visualFeast) launchVisualFeast();
   $$('.ai-steps span').forEach((step, index) => step.classList.toggle('active', index <= 1));
 }
 
