@@ -380,6 +380,32 @@ $$('.magnetic,.primary-btn').forEach(button => {
   button.addEventListener('pointerleave', () => button.style.transform = '');
 });
 
+const clickBloomPalettes = [
+  ['#ff715b', '#d8ff3e', '#8067e8'],
+  ['#e7c47e', '#f2eee6', '#ff715b'],
+  ['#7dd3fc', '#d8ff3e', '#a98cf8']
+];
+let clickBloomIndex = 0;
+document.addEventListener('pointerdown', event => {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (event.pointerType === 'mouse' && event.button !== 0) return;
+  const interactive = event.target.closest('button,a,.payment-switch,[data-work]');
+  if (!interactive || interactive.matches(':disabled,[aria-disabled="true"]')) return;
+  const [left, center, right] = clickBloomPalettes[clickBloomIndex++ % clickBloomPalettes.length];
+  const bloom = document.createElement('span');
+  bloom.className = 'lily-click-bloom';
+  bloom.setAttribute('aria-hidden', 'true');
+  bloom.style.left = `${event.clientX}px`;
+  bloom.style.top = `${event.clientY}px`;
+  bloom.style.setProperty('--bloom-left', left);
+  bloom.style.setProperty('--bloom-center', center);
+  bloom.style.setProperty('--bloom-right', right);
+  bloom.innerHTML = '<svg viewBox="0 0 64 64"><use href="#lilyumBloom"></use></svg>';
+  document.body.appendChild(bloom);
+  bloom.addEventListener('animationend', () => bloom.remove(), { once: true });
+  setTimeout(() => bloom.remove(), 1100);
+}, { passive: true });
+
 renderAll();
 
 const preloadArtwork = () => defaultWorks.forEach(work => {

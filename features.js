@@ -10,7 +10,7 @@ const featureKeys = {
 let cart = parseStore(featureKeys.cart, []);
 let orders = parseStore(featureKeys.orders, []);
 let profile = parseStore(featureKeys.profile, { name: '', email: '', city: '' });
-let commerceSettings = parseStore(featureKeys.commerce, { endpoint: '', currency: 'TRY', freeShipping: 5000 });
+let commerceSettings = { enabled: false, provider: 'iyzico', endpoint: '', currency: 'TRY', freeShipping: 5000, ...parseStore(featureKeys.commerce, {}) };
 let catalogSettings = parseStore(featureKeys.catalog, { endpoint: '' });
 let archiveType = 'all';
 let archiveYear = 'all';
@@ -20,6 +20,17 @@ let currentLanguage = localStorage.getItem(featureKeys.language) || 'tr';
 const saveFeature = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 const priceNumber = value => Number(String(value).replace(/[^\d.,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
 const money = value => new Intl.NumberFormat(currentLanguage === 'en' ? 'en-US' : 'tr-TR', { style: 'currency', currency: commerceSettings.currency || 'TRY', maximumFractionDigits: 0 }).format(value);
+const providerNames = { iyzico: 'iyzico', stripe: 'Stripe', shopier: 'Shopier', custom: 'Özel altyapı' };
+
+function isSecurePaymentUrl(value) {
+  try {
+    const url = new URL(value);
+    const localPreview = url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname);
+    return url.protocol === 'https:' || localPreview;
+  } catch { return false; }
+}
+
+const onlinePaymentReady = (settings = commerceSettings) => Boolean(settings.enabled && isSecurePaymentUrl(settings.endpoint));
 
 function renderArchive() {
   const archive = works.flatMap((work, index) => {
@@ -53,6 +64,9 @@ function renderCart() {
   $('#cartSubtotal').textContent = money(total);
   $('#checkoutTotal').textContent = money(total);
   $('#startCheckout').disabled = !count;
+  const paymentReady = onlinePaymentReady();
+  $('#checkoutCtaLabel').textContent = paymentReady ? 'Güvenli ödemeye geç' : 'Sipariş talebi oluştur';
+  $('#checkoutSubmitLabel').textContent = paymentReady ? 'Ödeme sayfasına devam et' : 'Sipariş talebi oluştur';
   $('#cartItems').innerHTML = cart.length ? cart.map((item, index) => {
     const work = works.find(entry => entry.id === item.id);
     return `<article class="cart-item"><div class="cart-thumb">${artMarkup(work, index)}</div><div><span>${work.category === 'original' ? 'ORIGINAL' : 'LIMITED PRINT'}</span><h4>${escapeHTML(work.title)}</h4><p>${escapeHTML(item.size || work.size || '30 × 40 cm')} · ${escapeHTML(item.frame || 'Çerçevesiz')}<br>${escapeHTML(work.price)}</p><div class="qty"><button data-cart-dec="${index}">−</button><b>${item.qty}</b><button data-cart-inc="${index}">＋</button></div></div><button class="cart-remove" data-cart-remove="${index}" aria-label="Ürünü kaldır">×</button></article>`;
@@ -82,12 +96,61 @@ function renderProfile() {
 }
 
 function renderCommerce() {
+  const paymentReady = onlinePaymentReady();
+  const provider = commerceSettings.provider || 'iyzico';
+  $('#paymentEnabled').checked = Boolean(commerceSettings.enabled);
+  $('#paymentProvider').value = provider;
   $('#checkoutEndpoint').value = commerceSettings.endpoint || '';
   $('#shopCurrency').value = commerceSettings.currency || 'TRY';
   $('#freeShipping').value = commerceSettings.freeShipping ?? 5000;
-  $('#commerceStatus').textContent = commerceSettings.endpoint ? 'PAYMENT READY' : 'REQUEST MODE';
-  $('#commerceStatus').classList.toggle('live', Boolean(commerceSettings.endpoint));
-  $('#checkoutNote').textContent = commerceSettings.endpoint ? 'Ödeme sağlayıcısının güvenli sayfasına yönlendirileceksin. Bu site kart bilgisi saklamaz.' : 'Kart bilgisi alınmaz. Talebin cihazına kaydedilir; ardından hazırlanan e-postayla stüdyoya iletebilirsin.';
+  $('#commerceStatus').textContent = paymentReady ? `${providerNames[provider] || provider} READY`.toUpperCase() : commerceSettings.enabled ? 'SETUP NEEDED' : 'REQUEST MODE';
+  $('#commerceStatus').classList.toggle('live', paymentReady);
+  updatePaymentCheck(commerceSettings);
+  $('#checkoutNote').textContent = paymentReady ? `${providerNames[provider] || 'Ödeme sağlayıcısı'} üzerinden güvenli ödeme sayfasına yönlendirileceksin. Lilyum Design kart bilgisi saklamaz.` : 'Kart bilgisi alınmaz. Talebin cihazına kaydedilir; ardından hazırlanan e-postayla stüdyoya iletebilirsin.';
+  $('#checkoutCtaLabel').textContent = paymentReady ? 'Güvenli ödemeye geç' : 'Sipariş talebi oluştur';
+  $('#checkoutSubmitLabel').textContent = paymentReady ? 'Ödeme sayfasına devam et' : 'Sipariş talebi oluştur';
+}
+
+function updatePaymentCheck(settings) {
+  const check = $('#paymentCheck');
+  const title = check.querySelector('b');
+  const detail = check.querySelector('small');
+  check.classList.remove('valid', 'invalid');
+  if (!settings.enabled) {
+    check.querySelector('span').textContent = '○';
+    title.textContent = 'Sipariş talebi modu açık';
+    detail.textContent = 'Online ödeme kapalı; mevcut talep akışı çalışmaya devam eder.';
+    return false;
+  }
+  if (!settings.endpoint) {
+    check.classList.add('invalid');
+    check.querySelector('span').textContent = '!';
+    title.textContent = 'Güvenli adres eksik';
+    detail.textContent = 'Online ödeme için sunucu ödeme endpoint’ini ekle.';
+    return false;
+  }
+  if (!isSecurePaymentUrl(settings.endpoint)) {
+    check.classList.add('invalid');
+    check.querySelector('span').textContent = '!';
+    title.textContent = 'Adres güvenli değil';
+    detail.textContent = 'Canlı ödemede yalnızca HTTPS adresi kabul edilir.';
+    return false;
+  }
+  check.classList.add('valid');
+  check.querySelector('span').textContent = '✓';
+  title.textContent = `${providerNames[settings.provider] || 'Ödeme'} yapılandırması hazır`;
+  detail.textContent = 'Kaydettiğinde sepette güvenli ödeme seçeneği etkinleşir.';
+  return true;
+}
+
+function commerceFormValue() {
+  return {
+    enabled: $('#paymentEnabled').checked,
+    provider: $('#paymentProvider').value,
+    endpoint: $('#checkoutEndpoint').value.trim(),
+    currency: $('#shopCurrency').value,
+    freeShipping: Number($('#freeShipping').value) || 0
+  };
 }
 
 function renderCatalogSync() {
@@ -233,12 +296,23 @@ $('#profileForm').onsubmit = event => {
 
 $('#saveCommerce').onclick = () => {
   if (!window.LilyumAccount?.isAdmin()) return;
-  commerceSettings = { endpoint: $('#checkoutEndpoint').value.trim(), currency: $('#shopCurrency').value, freeShipping: Number($('#freeShipping').value) || 0 };
+  const nextSettings = commerceFormValue();
+  if (nextSettings.enabled && !updatePaymentCheck(nextSettings)) { showToast('Online ödeme için güvenli HTTPS adresini tamamla.'); return; }
+  commerceSettings = nextSettings;
   saveFeature(featureKeys.commerce, commerceSettings);
   renderCommerce();
   renderCart();
-  showToast('Satış ayarları kaydedildi.');
+  showToast(onlinePaymentReady() ? 'Güvenli ödeme akışı etkinleştirildi.' : 'Sipariş talebi modu etkin.');
 };
+
+$('#validateCommerce').onclick = () => {
+  if (!window.LilyumAccount?.isAdmin()) return;
+  const settings = commerceFormValue();
+  const valid = updatePaymentCheck(settings);
+  showToast(valid ? 'Yapılandırma geçerli; kaydederek etkinleştirebilirsin.' : settings.enabled ? 'Ödeme yapılandırmasını tamamla.' : 'Online ödeme şu an kapalı.');
+};
+
+['paymentEnabled', 'paymentProvider', 'checkoutEndpoint'].forEach(id => $(`#${id}`).addEventListener('input', () => updatePaymentCheck(commerceFormValue())));
 
 async function syncCatalog(direction) {
   if (!window.LilyumAccount?.isAdmin()) return;
@@ -269,15 +343,15 @@ $('#checkoutForm').onsubmit = async event => {
   const form = event.currentTarget;
   const submit = form.querySelector('button[type="submit"]');
   const totalValue = cart.reduce((sum, item) => sum + priceNumber(works.find(work => work.id === item.id)?.price) * item.qty, 0);
-  const payload = { customer: Object.fromEntries(new FormData(form)), items: cart.map(item => ({ ...item, title: works.find(work => work.id === item.id)?.title })), amount: totalValue, currency: commerceSettings.currency };
+  const payload = { customer: Object.fromEntries(new FormData(form)), items: cart.map(item => ({ ...item, title: works.find(work => work.id === item.id)?.title })), amount: totalValue, currency: commerceSettings.currency, provider: commerceSettings.provider };
   submit.disabled = true;
-  if (commerceSettings.endpoint) {
+  if (onlinePaymentReady()) {
     try {
-      const response = await fetch(commerceSettings.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const response = await fetch(commerceSettings.endpoint, { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       if (!response.ok) throw new Error('Checkout unavailable');
       const result = await response.json();
       const checkoutUrl = new URL(result.checkoutUrl);
-      if (!['https:', 'http:'].includes(checkoutUrl.protocol)) throw new Error('Invalid checkout URL');
+      if (!isSecurePaymentUrl(checkoutUrl.href)) throw new Error('Invalid checkout URL');
       window.location.assign(checkoutUrl.href);
       return;
     } catch { showToast('Ödeme servisine ulaşılamadı; ayarları kontrol et.'); }

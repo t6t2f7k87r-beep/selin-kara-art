@@ -9,31 +9,39 @@
 [hidden] { display: none !important; }
 .svg-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 
+.site-header { height: 92px; }
+.site-header.scrolled { height: 76px; }
+.brand-system { gap: 12px; }
 .lily-brand-mark {
-  width: 39px;
-  height: 43px;
+  width: 58px;
+  height: 62px;
+  flex: 0 0 auto;
   display: grid;
   place-items: center;
-  overflow: hidden;
+  overflow: visible;
   border: 0;
   border-radius: 0;
   background: transparent;
 }
 .lily-brand-mark::after { display: none; }
-.lily-brand-mark svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
-.lily-brand-mark .monogram-bloom { stroke-width: 1.05; }
-.lily-brand-mark .monogram-serif { stroke-width: .8; opacity: .6; }
-.lily-brand-mark circle { fill: var(--lily-acid); stroke: none; }
+.lily-brand-mark svg,.intro-monogram svg,.mobile-menu-signature svg,.mobile-menu-art svg { overflow: visible; }
+.emblem-petal { stroke: none; }
+.emblem-petal-left { fill: #ff715b; }
+.emblem-petal-center { fill: var(--lily-acid); }
+.emblem-petal-right { fill: var(--lily-violet); }
+.emblem-d,.emblem-l,.emblem-baseline { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+.emblem-d { stroke-width: 1.65; }
+.emblem-l { stroke-width: 2.1; }
+.emblem-baseline { stroke-width: .8; opacity: .46; }
+.emblem-nib { fill: #e7c47e; stroke: currentColor; stroke-width: .65; stroke-linejoin: round; }
+.emblem-heart { fill: var(--lily-acid); stroke: #11100e; stroke-width: .8; }
 .brand-name { grid-template-columns: auto auto; column-gap: .42em; row-gap: 3px; align-items: baseline; letter-spacing: 0; }
-.brand-name b { font: 600 15px/.9 var(--serif); letter-spacing: .055em; }
-.brand-name > span { font: 600 7px/1 Inter, sans-serif; letter-spacing: .28em; }
-.brand-name small { grid-column: 1 / -1; font-size: 5px; letter-spacing: .31em; opacity: .56; }
+.brand-name b { font: 600 18px/.9 var(--serif); letter-spacing: .045em; }
+.brand-name > span { font: 700 8px/1 Inter, sans-serif; letter-spacing: .3em; }
+.brand-name small { grid-column: 1 / -1; font-size: 5.5px; letter-spacing: .25em; opacity: .62; }
 
-.intro-monogram { width: 68px; height: 68px; border-radius: 50%; background: rgba(255,255,255,.025); }
-.intro-monogram svg { width: 58%; height: 67%; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
-.intro-monogram .monogram-bloom { stroke-width: 1.05; }
-.intro-monogram .monogram-serif { stroke-width: .8; opacity: .55; }
-.intro-monogram circle { fill: var(--lily-acid); stroke: none; }
+.intro-monogram { width: 92px; height: 92px; border-radius: 50%; background: rgba(255,255,255,.025); }
+.intro-monogram svg { width: 86%; height: 86%; }
 
 .header-auth-actions { display: flex; align-items: center; gap: 5px; padding: 3px; border: 1px solid rgba(255,255,255,.18); border-radius: 100px; background: rgba(255,255,255,.06); backdrop-filter: blur(12px); }
 .header-auth-actions button { min-height: 31px; border: 0; border-radius: 100px; padding: 0 12px; background: transparent; color: #fff; font-size: 8px; font-weight: 700; cursor: pointer; }
@@ -41,17 +49,58 @@
 .site-header.scrolled .header-auth-actions { background: rgba(255,255,255,.04); }
 .user-dot.authenticated { background: var(--lily-acid); border-color: var(--lily-acid); box-shadow: inset 0 0 0 5px #111; }
 
-.hero::after {
-  content: '';
-  position: absolute;
-  right: 5vw;
-  bottom: 8vh;
-  width: min(16vw, 210px);
-  aspect-ratio: .72;
-  opacity: .09;
-  pointer-events: none;
-  background: center / contain no-repeat url("data:image/svg+xml,%3Csvg viewBox='0 0 120 170' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23f1ece2' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M60 166V70M60 79C30 65 18 30 25 8c24 6 35 31 35 55m0 16c30-14 42-49 35-71-24 6-35 31-35 55m0 41C30 104 9 84 4 63c24-5 45 7 56 29m0 12c30 0 51-20 56-41-24-5-45 7-56 29'/%3E%3C/g%3E%3C/svg%3E");
-}
+.hero::after { content: ''; position: absolute; inset: 0; z-index: -1; width: auto; height: 100%; opacity: 1; pointer-events: none; background: repeating-linear-gradient(90deg, transparent 0, transparent calc(25% - 1px), rgba(255,255,255,.055) 25%), linear-gradient(180deg, transparent 78%, #0d0d0d); }
+
+/* Colorful lily system: a quiet classical motif with contemporary color. */
+.lily-motif { --bloom-left: #ff715b; --bloom-center: #d8ff3e; --bloom-right: #8067e8; --bloom-line: currentColor; position: absolute; z-index: 0; display: block; pointer-events: none; color: currentColor; animation: lilyFloat 8s ease-in-out infinite alternate; }
+.lily-motif svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 22px 32px rgba(20,16,13,.12)); }
+.bloom-petal { stroke: none; transform-box: fill-box; transform-origin: center bottom; animation: lilyPetal 5.5s ease-in-out infinite alternate; }
+.bloom-petal-left { fill: var(--bloom-left); }
+.bloom-petal-center { fill: var(--bloom-center); animation-delay: -.8s; }
+.bloom-petal-right { fill: var(--bloom-right); animation-delay: -1.6s; }
+.bloom-stem { fill: none; stroke: var(--bloom-line); stroke-width: 1.2; stroke-linecap: round; }
+.bloom-leaf { fill: none; stroke: var(--bloom-line); stroke-width: .9; stroke-linejoin: round; opacity: .82; }
+.bloom-heart { fill: var(--bloom-center); stroke: var(--bloom-line); stroke-width: .55; }
+.motif-hero { right: 1.5vw; bottom: 1.5vh; width: clamp(180px, 20vw, 320px); height: clamp(180px, 20vw, 320px); color: rgba(244,239,230,.64); opacity: .52; transform: rotate(11deg); }
+.stand { position: relative; isolation: isolate; }
+.stand .section-heading,.stand .stand-rail,.stand .rail-controls { position: relative; z-index: 1; }
+.motif-stand { right: -52px; top: 62px; width: clamp(170px, 18vw, 280px); height: clamp(170px, 18vw, 280px); color: rgba(17,16,14,.5); opacity: .24; transform: rotate(19deg); }
+.manifesto { isolation: isolate; }
+.motif-manifesto { left: 4vw; bottom: -20px; width: clamp(180px, 25vw, 390px); height: clamp(180px, 25vw, 390px); color: rgba(244,239,230,.64); opacity: .34; transform: rotate(-13deg); }
+.manifesto-word,.manifesto-copy { position: relative; z-index: 1; }
+.ai-visual,.ai-console { position: relative; z-index: 1; }
+.motif-ai { right: -62px; top: 16px; width: clamp(210px, 22vw, 350px); height: clamp(210px, 22vw, 350px); color: rgba(244,239,230,.62); opacity: .28; transform: rotate(24deg); }
+.motif-final { left: clamp(-80px,-4vw,-35px); top: 5%; width: clamp(250px, 31vw, 480px); height: clamp(250px, 31vw, 480px); color: rgba(255,255,255,.7); opacity: .35; transform: rotate(-20deg); }
+@keyframes lilyFloat { from { translate: 0 -5px; } to { translate: 0 12px; } }
+@keyframes lilyPetal { from { scale: .98 1; rotate: -1deg; } to { scale: 1.035 .98; rotate: 1.5deg; } }
+
+.lily-click-bloom { --bloom-left: #ff715b; --bloom-center: #d8ff3e; --bloom-right: #8067e8; --bloom-line: rgba(17,16,14,.75); position: fixed; left: 0; top: 0; z-index: 180; width: 62px; height: 62px; pointer-events: none; transform: translate(-50%,-50%) scale(.2) rotate(-22deg); animation: lilyClickBloom .78s cubic-bezier(.16,1,.3,1) forwards; filter: drop-shadow(0 10px 15px rgba(0,0,0,.2)); }
+.lily-click-bloom svg { width: 100%; height: 100%; overflow: visible; }
+.lily-click-bloom::before,.lily-click-bloom::after { content: ''; position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--bloom-center); top: 28px; left: 28px; animation: lilyPollen .7s ease-out forwards; }
+.lily-click-bloom::after { background: var(--bloom-left); animation-delay: .06s; rotate: 120deg; }
+@keyframes lilyClickBloom { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.15) rotate(-25deg); } 28% { opacity: 1; } 72% { opacity: .92; transform: translate(-50%,-72%) scale(1) rotate(7deg); } 100% { opacity: 0; transform: translate(-50%,-105%) scale(1.18) rotate(12deg); } }
+@keyframes lilyPollen { to { translate: 34px -30px; scale: .25; opacity: 0; } }
+
+.payment-switch { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 12px; padding: 18px; border: 1px solid #d6d0c6; background: rgba(255,255,255,.74); cursor: pointer; }
+.payment-switch span { display: grid; gap: 5px; }
+.payment-switch b { font-size: 10px; }
+.payment-switch small { color: #888178; font-size: 8px; }
+.payment-switch input { position: absolute; opacity: 0; pointer-events: none; }
+.payment-switch i { position: relative; flex: 0 0 auto; width: 52px; height: 28px; border-radius: 99px; background: #cbc5bc; transition: .3s; }
+.payment-switch i::after { content: ''; position: absolute; left: 4px; top: 4px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 2px 7px rgba(0,0,0,.18); transition: .3s cubic-bezier(.16,1,.3,1); }
+.payment-switch input:checked + i { background: #111; box-shadow: inset 0 0 0 1px #d8ff3e; }
+.payment-switch input:checked + i::after { translate: 24px 0; background: var(--lily-acid); }
+.payment-switch:has(input:focus-visible) { outline: 2px solid var(--lily-violet); outline-offset: 2px; }
+.setting-field code { padding: 2px 4px; color: #5f4ab5; background: #eee9fa; font: 7px var(--mono); }
+.payment-check { display: flex; align-items: center; gap: 12px; min-height: 62px; margin: 6px 0 15px; padding: 13px 16px; border: 1px dashed #c8c1b7; color: #777067; background: rgba(255,255,255,.45); }
+.payment-check > span { width: 28px; height: 28px; border: 1px solid currentColor; border-radius: 50%; display: grid; place-items: center; font-size: 11px; }
+.payment-check p { display: grid; gap: 3px; margin: 0; }
+.payment-check b { font-size: 9px; color: #332f2b; }
+.payment-check small { font-size: 8px; }
+.payment-check.valid { color: #3c8151; border-style: solid; border-color: rgba(60,129,81,.3); background: rgba(220,240,224,.45); }
+.payment-check.invalid { color: #a33d32; border-style: solid; border-color: rgba(163,61,50,.28); background: rgba(249,225,220,.54); }
+.commerce-actions { display: flex; justify-content: flex-end; gap: 9px; }
+.admin-secondary-btn { border: 1px solid #111; background: transparent; color: #111; padding: 13px 16px; font: 700 8px var(--mono); cursor: pointer; }
 
 .auth-dialog {
   width: min(1040px, calc(100vw - 28px));
@@ -165,11 +214,14 @@
 }
 
 @media (max-width: 640px) {
+  .site-header { height: 74px; padding-left: 4vw; }
+  .site-header.scrolled { height: 68px; }
   .site-header .header-auth-actions { display: none !important; }
-  .brand-name b { font-size: 13px; }
-  .brand-name > span { font-size: 6px; }
-  .brand-name small { font-size: 4.5px; letter-spacing: .22em; }
-  .lily-brand-mark { width: 31px; height: 35px; }
+  .brand-system { gap: 7px; }
+  .brand-name b { font-size: 15px; }
+  .brand-name > span { font-size: 6.5px; }
+  .brand-name small { display: block; font-size: 4px; letter-spacing: .16em; }
+  .lily-brand-mark { width: 44px; height: 47px; }
 
   .mobile-menu {
     --menu-line: rgba(26,23,20,.14);
@@ -182,8 +234,7 @@
   .mobile-menu::before { content: ''; position: absolute; right: -42px; top: 84px; width: 170px; height: 190px; opacity: .045; pointer-events: none; background: center / contain no-repeat url("data:image/svg+xml,%3Csvg viewBox='0 0 64 72' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23110f0d' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M32 66V35M32 38C23 30 21 17 25 6c6 4 9 14 7 27M32 38C41 30 43 17 39 6c-6 4-9 14-7 27M32 43C20 44 11 36 9 25c10-1 19 5 23 15M32 43c12 1 21-7 23-18-10-1-19 5-23 15M20 56c4-6 8-8 12-8s8 2 12 8M23 62h18'/%3E%3C/g%3E%3C/svg%3E"); }
   .mobile-menu-top { min-height: 44px; padding: 0 0 10px; border-color: var(--menu-line); position: relative; z-index: 1; }
   .mobile-menu-signature { display: flex; align-items: center; gap: 8px; color: #151310; }
-  .mobile-menu-signature svg { width: 24px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
-  .mobile-menu-signature circle { fill: var(--lily-violet); stroke: none; }
+  .mobile-menu-signature svg { width: 39px; height: 42px; }
   .mobile-menu-signature span { font: 600 8px/1 Inter, sans-serif; letter-spacing: .17em; }
   .mobile-menu-signature b { font: 600 13px/1 var(--serif); letter-spacing: .05em; margin-right: 3px; }
   .mobile-menu-top > small { font: 6px var(--mono); letter-spacing: .12em; }
@@ -196,8 +247,7 @@
   .mobile-menu nav a:active i { background: #111; color: var(--lily-acid); }
   .mobile-menu-art { height: 88px; margin: 12px 0; padding: 0 16px; border-radius: 14px; display: grid; grid-template-columns: 60px 1fr; align-items: center; overflow: hidden; color: #f3eee4; background: linear-gradient(135deg,#181713,#2c2622); }
   .mobile-menu-art::after { content: ''; position: absolute; inset: 0; opacity: .13; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-  .mobile-menu-art svg { width: 46px; height: 58px; z-index: 1; fill: none; stroke: #d9c7a9; stroke-width: 1.05; stroke-linecap: round; stroke-linejoin: round; }
-  .mobile-menu-art svg circle { fill: var(--lily-acid); stroke: none; }
+  .mobile-menu-art svg { width: 58px; height: 68px; z-index: 1; color: #f3eee4; }
   .mobile-menu-art > div { position: relative; z-index: 1; padding-left: 14px; border-left: 1px solid rgba(255,255,255,.15); }
   .mobile-menu-art small { color: #9d948a; font: 5px var(--mono); letter-spacing: .15em; }
   .mobile-menu-art p { margin: 5px 0 0; font: 600 19px/.98 var(--serif); }
@@ -228,4 +278,17 @@
   .auth-tabs button { min-height: 46px; font-size: 8px; }
   .auth-form input:not([type='checkbox']) { border-radius: 9px; padding: 14px; }
   .auth-form > button { min-height: 50px; align-items: center; border-radius: 9px; }
+  .motif-hero { right: -56px; bottom: 8vh; width: 190px; height: 190px; opacity: .38; }
+  .motif-stand { right: -64px; top: 35px; width: 165px; height: 165px; opacity: .19; }
+  .motif-manifesto { left: -58px; width: 230px; height: 230px; opacity: .26; }
+  .motif-ai { right: -86px; top: 10px; width: 230px; height: 230px; opacity: .22; }
+  .motif-final { left: -100px; top: 10%; width: 270px; height: 270px; opacity: .27; }
+  .lily-click-bloom { width: 52px; height: 52px; }
+  .commerce-actions { display: grid; grid-template-columns: 1fr; }
+  .commerce-actions button { width: 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lily-motif,.lily-motif .bloom-petal { animation: none; }
+  .lily-click-bloom { display: none; }
 }
