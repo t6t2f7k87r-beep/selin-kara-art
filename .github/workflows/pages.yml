@@ -25,10 +25,18 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
+      - name: Prepare maintenance site
+        run: |
+          mkdir -p _maintenance
+          cp maintenance.html _maintenance/index.html
+          cp icon.svg _maintenance/icon.svg
+          cp sw.js _maintenance/sw.js
+          cp robots.txt _maintenance/robots.txt
+          cp CNAME _maintenance/CNAME
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _maintenance
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

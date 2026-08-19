@@ -1,5 +1,5 @@
-const CACHE_NAME = 'ecren-isik-v9';
-const CORE_ASSETS = ['./', './index.html', './style.css', './studio.css', './polish.css', './features.css', './refinement.css', './art-direction.css', './app.js', './features.js', './icon.svg', './og.png', './assets/atelier-dream.jpg', './assets/inner-weather.jpg', './assets/sundown-club.jpg', './assets/blue-hour.jpg', './assets/soft-rebel.jpg', './assets/memory-garden.jpg', './assets/other-side.jpg'];
+const CACHE_NAME = 'lilyum-maintenance-v1';
+const CORE_ASSETS = ['./', './index.html', './icon.svg'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting()));

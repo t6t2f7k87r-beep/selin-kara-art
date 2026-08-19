@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#11100e" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="description" content="Ecren Işık Artist Studio yenileniyor. Çok yakında yeniden buradayız." />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <title>Bakımdayız — Ecren Işık Artist Studio</title>
+  <style>
+    :root { color-scheme: dark; --ink:#11100e; --paper:#eee9df; --acid:#d8ff3e; --violet:#8a6cff; --line:rgba(238,233,223,.18); }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body { margin:0; min-height:100svh; overflow-x:hidden; background:var(--ink); color:var(--paper); font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.16; z-index:10; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E"); mix-blend-mode:soft-light; }
+    .shell { position:relative; isolation:isolate; min-height:100svh; display:grid; grid-template-rows:auto 1fr auto; padding:clamp(22px,3vw,46px); }
+    .aurora { position:fixed; width:min(60vw,800px); aspect-ratio:1; left:-22vw; bottom:-36vw; border-radius:50%; background:radial-gradient(circle,rgba(138,108,255,.34),transparent 66%); filter:blur(20px); animation:breathe 9s ease-in-out infinite alternate; pointer-events:none; }
+    .topbar,.footer { display:flex; align-items:center; justify-content:space-between; gap:24px; position:relative; z-index:3; }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .monogram { width:50px; aspect-ratio:1; border:1px solid rgba(238,233,223,.72); border-radius:16px; display:grid; place-items:center; font-family:Georgia,"Times New Roman",serif; font-size:18px; letter-spacing:.08em; }
+    .brand-copy strong,.brand-copy small { display:block; }
+    .brand-copy strong { font-size:14px; letter-spacing:.16em; line-height:1.2; }
+    .brand-copy small,.eyebrow,.footer,.status { font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; text-transform:uppercase; letter-spacing:.16em; }
+    .brand-copy small { margin-top:4px; color:rgba(238,233,223,.52); font-size:9px; }
+    .status { display:inline-flex; align-items:center; gap:10px; padding:11px 15px; border:1px solid var(--line); border-radius:999px; color:rgba(238,233,223,.76); font-size:9px; }
+    .status::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--acid); box-shadow:0 0 0 6px rgba(216,255,62,.08),0 0 18px rgba(216,255,62,.5); animation:pulse 2s ease-in-out infinite; }
+    main { width:min(1440px,100%); margin:auto; display:grid; grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr); align-items:center; gap:clamp(54px,8vw,140px); padding:clamp(70px,8vh,120px) 0; }
+    .copy { position:relative; z-index:2; }
+    .eyebrow { display:flex; align-items:center; gap:16px; margin:0 0 28px; color:var(--acid); font-size:10px; }
+    .eyebrow::before { content:""; width:42px; height:1px; background:currentColor; }
+    h1 { margin:0; max-width:900px; font-family:Georgia,"Times New Roman",serif; font-size:clamp(68px,10vw,160px); font-weight:400; letter-spacing:-.075em; line-height:.78; }
+    h1 em { display:block; margin-left:clamp(40px,8vw,135px); color:var(--violet); font-weight:400; }
+    .description { max-width:590px; margin:clamp(42px,6vh,72px) 0 0 clamp(40px,8vw,135px); color:rgba(238,233,223,.65); font-size:clamp(15px,1.3vw,19px); line-height:1.75; }
+    .description strong { color:var(--paper); font-weight:500; }
+    .artwork { position:relative; width:min(100%,580px); aspect-ratio:.83; justify-self:end; border-radius:min(4vw,54px) min(4vw,54px) 6px 6px; overflow:hidden; background:linear-gradient(136deg,transparent 0 33%,rgba(224,201,159,.12) 33.2% 48%,transparent 48.2%),radial-gradient(circle at 69% 26%,rgba(216,255,62,.72) 0 2.4%,transparent 2.8%),radial-gradient(ellipse at 56% 52%,rgba(138,108,255,.76),transparent 28%),radial-gradient(ellipse at 35% 28%,rgba(229,199,147,.88),transparent 34%),linear-gradient(155deg,#41392e,#121516 58%,#241f25); box-shadow:0 40px 100px rgba(0,0,0,.42); transform:translate3d(var(--x,0),var(--y,0),0) rotate(1.2deg); transition:transform .8s cubic-bezier(.2,.8,.2,1); }
+    .artwork::before,.artwork::after { content:""; position:absolute; inset:9%; border:1px solid rgba(238,233,223,.22); border-radius:50% 50% 44% 56%; transform:rotate(16deg); }
+    .artwork::after { inset:23% 16%; border-color:rgba(216,255,62,.38); transform:rotate(-28deg); }
+    .figure { position:absolute; left:50%; bottom:-8%; width:54%; height:76%; transform:translateX(-50%); border-radius:50% 50% 8% 8%/27% 27% 6% 6%; background:linear-gradient(105deg,rgba(10,10,9,.96),rgba(40,31,43,.86) 55%,rgba(17,17,16,.98)); box-shadow:0 -18px 60px rgba(0,0,0,.32); }
+    .figure::before { content:""; position:absolute; width:42%; aspect-ratio:.82; left:29%; top:-21%; border-radius:48% 52% 44% 46%; background:linear-gradient(120deg,#b98a68,#6e493e 62%,#241d1e); box-shadow:-12px -10px 0 #211b1c; }
+    .art-label { position:absolute; inset:auto 28px 26px; display:flex; justify-content:space-between; gap:20px; color:rgba(238,233,223,.52); font:9px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; text-transform:uppercase; letter-spacing:.13em; }
+    .footer { padding-top:22px; border-top:1px solid var(--line); color:rgba(238,233,223,.44); font-size:8px; }
+    .footer span:last-child { text-align:right; }
+    @keyframes pulse { 50% { opacity:.42; transform:scale(.8); } }
+    @keyframes breathe { to { transform:translate(8vw,-4vw) scale(1.14); opacity:.72; } }
+    @media (max-width:850px) { .shell{padding:20px}.status{padding:10px 12px}.status span{display:none}main{grid-template-columns:1fr;gap:58px;padding:72px 0 62px}h1{font-size:clamp(66px,23vw,118px)}h1 em{margin-left:12vw}.description{margin:38px 0 0 12vw;max-width:calc(100% - 12vw);font-size:15px}.artwork{justify-self:center;width:min(92%,520px)}.footer{align-items:flex-end} }
+    @media (max-width:480px) { .brand-copy strong{font-size:12px}.monogram{width:44px;border-radius:14px}main{padding-top:62px}.eyebrow{margin-bottom:22px}.artwork{width:100%;border-radius:38px 38px 5px 5px}.footer span:last-child{max-width:150px} }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after{animation:none!important;transition:none!important} }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="aurora" aria-hidden="true"></div>
+    <header class="topbar">
+      <div class="brand" aria-label="Ecren Işık Artist Studio"><div class="monogram" aria-hidden="true">E·I</div><div class="brand-copy"><strong>ECREN IŞIK</strong><small>Artist Studio</small></div></div>
+      <div class="status"><span>Atölye güncelleniyor</span></div>
+    </header>
+    <main>
+      <section class="copy">
+        <p class="eyebrow">Geçici stüdyo arası / 2026</p>
+        <h1>Bakım<em>dayız.</em></h1>
+        <p class="description"><strong>Yeni bir görsel dünya hazırlanıyor.</strong> Yeni eserler, daha güçlü bir sergi deneyimi ve yenilenen sipariş sistemi için stüdyoda çalışıyoruz. Çok yakında yeniden buradayız.</p>
+      </section>
+      <div class="artwork" aria-label="Soyut sanatsal çalışma"><div class="figure" aria-hidden="true"></div><div class="art-label"><span>Lilyum Designs</span><span>Work in progress</span></div></div>
+    </main>
+    <footer class="footer"><span>© 2026 Ecren Işık</span><span>Sanat · Tasarım · Kişiye özel üretim</span></footer>
+  </div>
+  <script>
+    const artwork=document.querySelector('.artwork');
+    if(artwork&&matchMedia('(pointer:fine)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches){addEventListener('pointermove',event=>{const x=((event.clientX/innerWidth)-.5)*-14;const y=((event.clientY/innerHeight)-.5)*-10;artwork.style.setProperty('--x',`${x}px`);artwork.style.setProperty('--y',`${y}px`)},{passive:true})}
+    if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=maintenance-20260819',{updateViaCache:'none'}).then(registration=>registration.update()).catch(()=>{}))}
+  </script>
+</body>
+</html>
