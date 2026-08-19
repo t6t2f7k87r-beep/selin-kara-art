@@ -1,10 +1,10 @@
 const featureKeys = {
-  cart: 'ecren-isik-cart',
-  orders: 'ecren-isik-orders',
-  profile: 'ecren-isik-profile',
-  commerce: 'ecren-isik-commerce',
-  catalog: 'ecren-isik-catalog-settings',
-  language: 'ecren-isik-language'
+  cart: 'lilyum-design-cart',
+  orders: 'lilyum-design-orders',
+  profile: 'lilyum-design-profile',
+  commerce: 'lilyum-design-commerce',
+  catalog: 'lilyum-design-catalog-settings',
+  language: 'lilyum-design-language'
 };
 
 let cart = parseStore(featureKeys.cart, []);
@@ -36,7 +36,7 @@ function renderGallery() {
   if (!works.length) return;
   galleryIndex = (galleryIndex + works.length) % works.length;
   const work = works[galleryIndex];
-  $('#galleryStage').innerHTML = `<article><div class="gallery-art">${artMarkup(work, galleryIndex)}</div><div class="gallery-copy"><span>ECREN IŞIK / ${escapeHTML(work.year || '2026')}</span><h2>${escapeHTML(work.title)}</h2><p>${escapeHTML(work.description)}</p><div><b>${escapeHTML(work.type)}</b><strong>${escapeHTML(work.price)}</strong></div><button data-gallery-work="${work.id}">Eser ayrıntıları ↗</button></div></article>`;
+  $('#galleryStage').innerHTML = `<article><div class="gallery-art">${artMarkup(work, galleryIndex)}</div><div class="gallery-copy"><span>LILYUM DESIGN / ${escapeHTML(work.year || '2026')}</span><h2>${escapeHTML(work.title)}</h2><p>${escapeHTML(work.description)}</p><div><b>${escapeHTML(work.type)}</b><strong>${escapeHTML(work.price)}</strong></div><button data-gallery-work="${work.id}">Eser ayrıntıları ↗</button></div></article>`;
   $('#galleryCounter').textContent = `${String(galleryIndex + 1).padStart(2, '0')} / ${String(works.length).padStart(2, '0')}`;
 }
 
@@ -66,7 +66,7 @@ function orderMailHref(order) {
     return `• ${work?.title || item.title || 'Eser'} — ${item.size || ''} / ${item.frame || ''} / ${item.qty} adet`;
   });
   const body = [`Sipariş talebi: ${order.number}`, '', ...itemLines, '', `Toplam: ${order.total}`, '', `Ad soyad: ${customer.name || ''}`, `E-posta: ${customer.email || ''}`, `Telefon: ${customer.phone || ''}`, `Şehir: ${customer.city || ''}`, `Adres: ${customer.address || ''}`].join('\n');
-  return `mailto:hello@ecrenisik.art?subject=${encodeURIComponent(`Ecren Işık sipariş talebi ${order.number}`)}&body=${encodeURIComponent(body)}`;
+  return `mailto:hello@lilyumdesigns.com?subject=${encodeURIComponent(`Lilyum Design sipariş talebi ${order.number}`)}&body=${encodeURIComponent(body)}`;
 }
 
 function renderOrders() {
@@ -75,6 +75,7 @@ function renderOrders() {
 }
 
 function renderProfile() {
+  if (window.LilyumAccount?.isSignedIn()) return;
   $('#profileName').value = profile.name || '';
   $('#profileEmail').value = profile.email || '';
   $('#profileCity').value = profile.city || '';
@@ -224,12 +225,14 @@ $('#referencePreview').onclick = event => {
 
 $('#profileForm').onsubmit = event => {
   event.preventDefault();
+  if (window.LilyumAccount?.isSignedIn()) return;
   profile = { name: $('#profileName').value.trim(), email: $('#profileEmail').value.trim(), city: $('#profileCity').value.trim() };
   saveFeature(featureKeys.profile, profile);
   showToast('Profil bilgilerin bu cihazda kaydedildi.');
 };
 
 $('#saveCommerce').onclick = () => {
+  if (!window.LilyumAccount?.isAdmin()) return;
   commerceSettings = { endpoint: $('#checkoutEndpoint').value.trim(), currency: $('#shopCurrency').value, freeShipping: Number($('#freeShipping').value) || 0 };
   saveFeature(featureKeys.commerce, commerceSettings);
   renderCommerce();
@@ -238,6 +241,7 @@ $('#saveCommerce').onclick = () => {
 };
 
 async function syncCatalog(direction) {
+  if (!window.LilyumAccount?.isAdmin()) return;
   const endpoint = $('#catalogEndpoint').value.trim();
   if (!endpoint) { showToast('Önce katalog endpoint adresini eklemelisin.'); return; }
   catalogSettings = { endpoint };
@@ -278,7 +282,7 @@ $('#checkoutForm').onsubmit = async event => {
       return;
     } catch { showToast('Ödeme servisine ulaşılamadı; ayarları kontrol et.'); }
   } else {
-    const number = `EI-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
+    const number = `LD-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
     orders.push({ number, date: new Intl.DateTimeFormat('tr-TR', { dateStyle: 'medium' }).format(new Date()), status: 'Gönderime hazır', total: money(totalValue), items: [...cart], customer: payload.customer });
     saveFeature(featureKeys.orders, orders);
     cart = [];
@@ -308,5 +312,5 @@ applyLanguage();
 window.renderFeatureLayers();
 
 if ('serviceWorker' in navigator && !['localhost', '127.0.0.1'].includes(location.hostname)) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=20260818-5', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {}));
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=20260819-1', { updateViaCache: 'none' }).then(registration => registration.update()).catch(() => {}));
 }

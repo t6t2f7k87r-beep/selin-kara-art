@@ -1,8 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ecren Işık monogramı">
-  <rect width="512" height="512" rx="116" fill="#0b0b0b"/>
-  <rect x="92" y="92" width="328" height="328" rx="88" fill="none" stroke="#f4f1e9" stroke-width="12"/>
-  <path d="M256 92v328" stroke="#f4f1e9" stroke-width="12"/>
-  <path d="M156 176v160m0-160h62m-62 80h52m-52 80h62" fill="none" stroke="#f4f1e9" stroke-width="24" stroke-linecap="square" stroke-linejoin="miter"/>
-  <path d="M294 176h62m-31 0v160m-31 0h62" fill="none" stroke="#f4f1e9" stroke-width="24" stroke-linecap="square"/>
-  <circle cx="390" cy="122" r="19" fill="#d7ff3f"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Lilyum Design zambak amblemi">
+  <rect width="512" height="512" rx="124" fill="#11100e"/>
+  <rect x="74" y="74" width="364" height="364" rx="108" fill="none" stroke="#eee9df" stroke-width="8"/>
+  <g fill="none" stroke="#eee9df" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M256 382V218"/>
+    <path d="M256 228c-68-31-89-100-72-147 52 13 76 64 72 114"/>
+    <path d="M256 228c68-31 89-100 72-147-52 13-76 64-72 114"/>
+    <path d="M256 276c-67 0-115-42-127-88 56-13 101 14 127 62"/>
+    <path d="M256 276c67 0 115-42 127-88-56-13-101 14-127 62"/>
+    <path d="M256 342c-37 0-68 22-83 55m83-55c37 0 68 22 83 55"/>
+  </g>
+  <circle cx="389" cy="120" r="18" fill="#d8ff3e"/>
 </svg>

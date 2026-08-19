@@ -1,5 +1,5 @@
-const CACHE_NAME = 'lilyum-maintenance-v1';
-const CORE_ASSETS = ['./', './index.html', './icon.svg'];
+const CACHE_NAME = 'lilyum-design-v1';
+const CORE_ASSETS = ['./', './index.html', './style.css', './studio.css', './polish.css', './features.css', './refinement.css', './art-direction.css', './lilyum.css', './app.js', './features.js', './lilyum-config.js', './lilyum-auth.js', './icon.svg', './og.png', './assets/atelier-dream.jpg', './assets/inner-weather.jpg', './assets/sundown-club.jpg', './assets/blue-hour.jpg', './assets/soft-rebel.jpg', './assets/memory-garden.jpg', './assets/other-side.jpg'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting()));

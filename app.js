@@ -7,16 +7,16 @@ const defaultWorks = [
   { id: 'other-side', title: 'The Other Side', type: 'Limited Edition / 20', category: 'print', price: '₺2.750', color: '#e68170', image: 'assets/other-side.jpg', year: '2025', size: '40 × 50 cm', edition: '20', description: 'Bir kararın hemen öncesinde duran iki ayrı olasılık.' }
 ];
 
-const keys = { works: 'ecren-isik-works', legacy: 'selin-kara-works', favorites: 'ecren-isik-favorites', briefs: 'ecren-isik-briefs', settings: 'ecren-isik-ai-settings' };
+const keys = { works: 'lilyum-design-works', legacy: 'ecren-isik-works', olderLegacy: 'selin-kara-works', favorites: 'lilyum-design-guest-favorites', briefs: 'lilyum-design-briefs', settings: 'lilyum-design-ai-settings' };
 const parseStore = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
-const legacyWorks = parseStore(keys.legacy, null);
+const legacyWorks = parseStore(keys.legacy, parseStore(keys.olderLegacy, null));
 let works = parseStore(keys.works, legacyWorks || defaultWorks).map((work, index) => {
   const fallback = defaultWorks[index % defaultWorks.length];
   return { ...fallback, ...work, image: work.image || fallback.image, id: work.id || `work-${Date.now()}-${index}`, category: work.category || (index % 2 ? 'original' : 'print') };
 });
 let favorites = parseStore(keys.favorites, []);
 let briefs = parseStore(keys.briefs, []);
-let aiSettings = parseStore(keys.settings, { endpoint: '', assistant: 'Ecren AI' });
+let aiSettings = parseStore(keys.settings, { endpoint: '', assistant: 'Lilyum AI' });
 let activeFilter = 'all';
 let railIndex = 0;
 let selectedType = '';
@@ -79,7 +79,7 @@ function renderAdmin() {
   $('#totalBriefs').textContent = briefs.length;
   $('#adminList').innerHTML = works.map((work, index) => `<div class="admin-row"><div class="admin-thumb">${artMarkup(work, index)}</div><input data-index="${index}" data-field="title" value="${escapeHTML(work.title)}" aria-label="Eser adı"><input data-index="${index}" data-field="type" value="${escapeHTML(work.type)}" aria-label="Eser türü"><input data-index="${index}" data-field="price" value="${escapeHTML(work.price)}" aria-label="Eser fiyatı"><label class="upload-label">GÖRSEL YÜKLE<input type="file" accept="image/*" data-upload="${index}"></label><button class="delete-work" data-delete="${index}" aria-label="Eseri sil">×</button></div>`).join('');
   $('#aiEndpoint').value = aiSettings.endpoint || '';
-  $('#assistantName').value = aiSettings.assistant || 'Ecren AI';
+  $('#assistantName').value = aiSettings.assistant || 'Lilyum AI';
   updateAIStatus();
 }
 
@@ -88,15 +88,25 @@ function renderUserPanel() {
   $('#favoriteTabCount').textContent = favorites.length;
   $('#projectCount').textContent = briefs.length;
   const favoriteWorks = favorites.map(id => works.find(work => work.id === id)).filter(Boolean);
-  $('#favoritesList').innerHTML = favoriteWorks.length ? favoriteWorks.map((work, index) => `<article class="user-item"><div class="user-thumb">${artMarkup(work, index)}</div><div><h4>${escapeHTML(work.title)}</h4><p>${escapeHTML(work.price)} · ${escapeHTML(work.type)}</p></div><button class="remove-fav" data-favorite="${work.id}" aria-label="Favoriden çıkar">×</button></article>`).join('') : '<i>♡</i><h4>Henüz bir favorin yok.</h4><p>Kalbine dokunan eserlerdeki kalp ikonuna dokun.</p>';
+  $('#favoritesList').innerHTML = favoriteWorks.length ? favoriteWorks.map((work, index) => { const watch = window.LilyumAccount?.getPriceWatch(work.id, work.price); return `<article class="user-item"><div class="user-thumb">${artMarkup(work, index)}</div><div><h4>${escapeHTML(work.title)}</h4><p>${escapeHTML(work.price)} · ${escapeHTML(work.type)}</p>${watch ? `<span class="price-watch ${watch.changed ? 'changed' : ''}">${escapeHTML(watch.text)}</span>` : ''}</div><button class="remove-fav" data-favorite="${work.id}" aria-label="Favoriden çıkar">×</button></article>`; }).join('') : '<i>♡</i><h4>Henüz bir favorin yok.</h4><p>Kalbine dokunan eserlerdeki kalp ikonuna dokun. Fiyat değiştiğinde burada göreceksin.</p>';
   $('#projectsList').innerHTML = briefs.length ? briefs.slice().reverse().map(brief => `<article class="brief-item"><span>${escapeHTML(brief.type || 'ÖZEL PROJE')} · ${escapeHTML(brief.date)}</span><h4>${escapeHTML(brief.title)}</h4><p>${escapeHTML(brief.price)} · ${escapeHTML(brief.duration)}</p></article>`).join('') : '<i>✦</i><h4>İlk fikrini bekliyoruz.</h4><p>AI Stüdyo’da bir brief oluşturduğunda burada görünecek.</p>';
 }
 
 function renderAll() { renderStand(); renderWorks(); renderAdmin(); renderUserPanel(); window.renderFeatureLayers?.(); }
 
-function toggleFavorite(id) {
-  favorites = favorites.includes(id) ? favorites.filter(item => item !== id) : [...favorites, id];
-  saveFavorites(); renderAll(); showToast(favorites.includes(id) ? 'Eser favorilerine eklendi.' : 'Eser favorilerinden çıkarıldı.');
+window.lilyumSetFavorites = ids => { favorites = Array.isArray(ids) ? [...ids] : []; renderAll(); };
+window.lilyumSetWorks = nextWorks => { if (!Array.isArray(nextWorks) || !nextWorks.length) return; works = nextWorks; saveWorks(); renderAll(); };
+
+async function toggleFavorite(id) {
+  const work = works.find(item => item.id === id);
+  if (!work) return;
+  if (!window.LilyumAccount?.isSignedIn()) { window.LilyumAccount?.openAuth('Favori eklemek için koleksiyon hesabına giriş yap.'); return; }
+  try {
+    const next = await window.LilyumAccount.toggleFavorite(id, work.price);
+    if (!next) return;
+    favorites = next;
+    saveFavorites(); renderAll(); showToast(favorites.includes(id) ? 'Eser favorilerine eklendi ve fiyat takibi açıldı.' : 'Eser favorilerinden çıkarıldı.');
+  } catch { showToast('Favori şu anda güncellenemedi. Lütfen tekrar dene.'); }
 }
 
 function updateRail() {
@@ -113,7 +123,7 @@ function openWork(id) {
   const work = works.find(item => item.id === id); if (!work) return;
   const index = works.indexOf(work);
   const sizes = work.category === 'original' ? [work.size || '50 × 70 cm'] : [...new Set([work.size || '30 × 40 cm', '50 × 70 cm'])];
-  $('#workDetail').innerHTML = `<div class="detail-art">${artMarkup(work, index, '', 'eager')}</div><div class="detail-info"><p class="index">ECREN IŞIK / ${work.category === 'original' ? 'ORIGINAL' : 'LIMITED PRINT'}</p><h2>${escapeHTML(work.title)}</h2><p>${escapeHTML(work.description)}</p><div class="detail-story"><span>${escapeHTML(work.year || '2026')} / STORY NOTE</span><p>Renk, ritim ve katmanlar eserin ana duygusunu taşıyacak biçimde kuruldu. Gerçek eskiz ve süreç görselleri yüklendiğinde bu hikâye alanı esere özel güncellenecek.</p></div><strong class="detail-price">${escapeHTML(work.price)}</strong><div class="product-options"><label><span>BOYUT</span><select id="workSize">${sizes.map(size => `<option>${escapeHTML(size)}</option>`).join('')}</select></label><label><span>SUNUM</span><select id="workFrame"><option>Çerçevesiz</option><option>Çerçeveli — teklif iste</option></select></label></div><div class="detail-meta"><div><span>FORMAT</span><b>${escapeHTML(work.type)}</b></div><div><span>TESLİMAT</span><b>3–5 iş günü</b></div><div><span>SERTİFİKA</span><b>İmzalı</b></div><div><span>EDITION</span><b>${escapeHTML(work.edition || (work.category === 'original' ? '1 / 1' : 'Sınırlı'))}</b></div></div><div class="detail-actions"><button class="request-work" data-add-cart="${work.id}">Sepete ekle</button><button class="favorite-work" data-favorite="${work.id}">${favorites.includes(work.id) ? '♥ Favorilerimde' : '♡ Favoriye ekle'}</button></div><button class="commission-link" data-request="${work.id}">Bu eserden ilham alan özel bir çalışma iste →</button></div>`;
+  $('#workDetail').innerHTML = `<div class="detail-art">${artMarkup(work, index, '', 'eager')}</div><div class="detail-info"><p class="index">LILYUM DESIGN / ${work.category === 'original' ? 'ORIGINAL' : 'LIMITED PRINT'}</p><h2>${escapeHTML(work.title)}</h2><p>${escapeHTML(work.description)}</p><div class="detail-story"><span>${escapeHTML(work.year || '2026')} / STORY NOTE</span><p>Renk, ritim ve katmanlar eserin ana duygusunu taşıyacak biçimde kuruldu. Gerçek eskiz ve süreç görselleri yüklendiğinde bu hikâye alanı esere özel güncellenecek.</p></div><strong class="detail-price">${escapeHTML(work.price)}</strong><div class="product-options"><label><span>BOYUT</span><select id="workSize">${sizes.map(size => `<option>${escapeHTML(size)}</option>`).join('')}</select></label><label><span>SUNUM</span><select id="workFrame"><option>Çerçevesiz</option><option>Çerçeveli — teklif iste</option></select></label></div><div class="detail-meta"><div><span>FORMAT</span><b>${escapeHTML(work.type)}</b></div><div><span>TESLİMAT</span><b>3–5 iş günü</b></div><div><span>SERTİFİKA</span><b>İmzalı</b></div><div><span>EDITION</span><b>${escapeHTML(work.edition || (work.category === 'original' ? '1 / 1' : 'Sınırlı'))}</b></div></div><div class="detail-actions"><button class="request-work" data-add-cart="${work.id}">Sepete ekle</button><button class="favorite-work" data-favorite="${work.id}">${favorites.includes(work.id) ? '♥ Favorilerimde' : '♡ Favoriye ekle'}</button></div><button class="commission-link" data-request="${work.id}">Bu eserden ilham alan özel bir çalışma iste →</button></div>`;
   $('#workDialog').setAttribute('aria-label', `${work.title} eser detayı`);
   $('#workDialog').scrollTop = 0;
   $('#workDialog').showModal();
@@ -234,20 +244,21 @@ async function analyzeProject() {
   } else { await new Promise(resolve => setTimeout(resolve, 900)); }
   lastAnalysis = { ...result, idea };
   const palette = result.palette;
-  $('#aiResult').innerHTML = `<div class="result-card"><div class="result-top"><span>✦ ${escapeHTML(aiSettings.assistant || 'ECREN AI')} / CREATIVE BRIEF</span><b>%${escapeHTML(result.confidence)} BRIEF SKORU</b></div><h3>${escapeHTML(result.title)}</h3><p>${escapeHTML(result.direction)}</p><div class="result-summary"><div><span>ANA DUYGU</span><b>${escapeHTML(result.focus)}</b></div><div><span>KOMPOZİSYON</span><b>${escapeHTML(result.composition)}</b></div><div><span>KARMAŞIKLIK</span><b>${escapeHTML(result.complexity)}</b></div></div><div class="palette">${palette.map(color => `<i style="background:${color}"></i>`).join('')}</div><div class="route-grid">${result.routes.map((route, index) => `<article class="route-card"><div class="route-visual" style="--r1:${palette[index % 4]};--r2:${palette[(index + 1) % 4]};--r3:${palette[(index + 2) % 4]};--r4:${palette[(index + 3) % 4]}"></div><span>ROTA 0${index + 1}</span><b>${escapeHTML(route.name)}</b><p>${escapeHTML(route.note)}</p></article>`).join('')}</div><small class="ai-disclaimer">Bunlar sanat yönü ve kompozisyon rotalarıdır; bitmiş eser önizlemesi değildir.${window.ecrenReferenceData ? ' Yüklenen referans brief analizine eklendi.' : ''}</small><div class="ai-insights"><article><span>SANAT DANIŞMANI NOTU</span><p>${escapeHTML(result.insight)}</p></article><article><span>SIRADAKİ SORU</span><p>${escapeHTML(result.nextQuestion)}</p></article></div><div class="result-metrics"><div><span>TAHMİNİ BÜTÇE</span><strong>${escapeHTML(result.price)}</strong></div><div><span>ÜRETİM SÜRESİ</span><strong>${escapeHTML(result.duration)}</strong></div><div><span>TESLİM</span><strong>${escapeHTML(result.deliverable)}</strong></div></div><button class="save-brief" id="saveBrief">Bu yaratıcı briefi hesabıma kaydet →</button></div>`;
+  $('#aiResult').innerHTML = `<div class="result-card"><div class="result-top"><span>✦ ${escapeHTML(aiSettings.assistant || 'LILYUM AI')} / CREATIVE BRIEF</span><b>%${escapeHTML(result.confidence)} BRIEF SKORU</b></div><h3>${escapeHTML(result.title)}</h3><p>${escapeHTML(result.direction)}</p><div class="result-summary"><div><span>ANA DUYGU</span><b>${escapeHTML(result.focus)}</b></div><div><span>KOMPOZİSYON</span><b>${escapeHTML(result.composition)}</b></div><div><span>KARMAŞIKLIK</span><b>${escapeHTML(result.complexity)}</b></div></div><div class="palette">${palette.map(color => `<i style="background:${color}"></i>`).join('')}</div><div class="route-grid">${result.routes.map((route, index) => `<article class="route-card"><div class="route-visual" style="--r1:${palette[index % 4]};--r2:${palette[(index + 1) % 4]};--r3:${palette[(index + 2) % 4]};--r4:${palette[(index + 3) % 4]}"></div><span>ROTA 0${index + 1}</span><b>${escapeHTML(route.name)}</b><p>${escapeHTML(route.note)}</p></article>`).join('')}</div><small class="ai-disclaimer">Bunlar sanat yönü ve kompozisyon rotalarıdır; bitmiş eser önizlemesi değildir.${window.ecrenReferenceData ? ' Yüklenen referans brief analizine eklendi.' : ''}</small><div class="ai-insights"><article><span>SANAT DANIŞMANI NOTU</span><p>${escapeHTML(result.insight)}</p></article><article><span>SIRADAKİ SORU</span><p>${escapeHTML(result.nextQuestion)}</p></article></div><div class="result-metrics"><div><span>TAHMİNİ BÜTÇE</span><strong>${escapeHTML(result.price)}</strong></div><div><span>ÜRETİM SÜRESİ</span><strong>${escapeHTML(result.duration)}</strong></div><div><span>TESLİM</span><strong>${escapeHTML(result.deliverable)}</strong></div></div><button class="save-brief" id="saveBrief">Bu yaratıcı briefi hesabıma kaydet →</button></div>`;
   $('#aiResult').classList.add('show'); button.classList.remove('loading'); button.disabled = false;
   $$('.ai-steps span').forEach((step, index) => step.classList.toggle('active', index <= 1));
 }
 
 function saveCurrentBrief() {
   if (!lastAnalysis) return;
+  if (!window.LilyumAccount?.isSignedIn()) { window.LilyumAccount?.openAuth('Yaratıcı briefi kaydetmek için hesabına giriş yap.'); return; }
   briefs.push({ ...lastAnalysis, date: new Intl.DateTimeFormat('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date()) });
   saveBriefs(); renderUserPanel(); renderAdmin(); showToast('Yaratıcı brief hesabına kaydedildi.');
   $$('.ai-steps span').forEach(step => step.classList.add('active'));
   openPanel('userPanel');
 }
 
-function updateAIStatus() { const live = Boolean(aiSettings.endpoint); $('#aiConnectionStatus').textContent = live ? 'ENDPOINT READY' : 'LOCAL AI'; $('#aiConnectionStatus').style.color = live ? '#d9ff43' : ''; }
+function updateAIStatus() { const live = Boolean(aiSettings.endpoint); $('#aiConnectionStatus').textContent = live ? 'ENDPOINT READY' : 'LILYUM LOCAL AI'; $('#aiConnectionStatus').style.color = live ? '#d9ff43' : ''; }
 
 document.addEventListener('click', event => {
   const favorite = event.target.closest('[data-favorite]'); if (favorite) { event.stopPropagation(); toggleFavorite(favorite.dataset.favorite); return; }
@@ -257,8 +268,8 @@ document.addEventListener('click', event => {
   if (event.target.id === 'saveBrief') saveCurrentBrief();
 });
 
-$('#openUser').onclick = () => openPanel('userPanel');
-$('#openAdmin').onclick = () => { renderAdmin(); $('#adminDialog').showModal(); };
+$('#openUser').onclick = () => window.LilyumAccount?.openAccount();
+$('#openAdmin').onclick = () => window.LilyumAccount?.openAdmin();
 $('#closeAdmin').onclick = () => $('#adminDialog').close();
 $('#closeWork').onclick = () => $('#workDialog').close();
 $('#heroBrief').onclick = () => goToAI(); $('#footerBrief').onclick = () => goToAI();
@@ -267,8 +278,8 @@ function closeMobileMenu() { $('#mobileMenu').classList.remove('open'); $('#mobi
 $('#menuBtn').setAttribute('aria-expanded', 'false');
 $('#menuBtn').onclick = () => { const opening = !$('#mobileMenu').classList.contains('open'); $('#mobileMenu').classList.toggle('open', opening); $('#mobileMenu').setAttribute('aria-hidden', String(!opening)); $('#menuBtn').classList.toggle('active', opening); $('#menuBtn').setAttribute('aria-expanded', String(opening)); $('#menuBtn').setAttribute('aria-label', opening ? 'Menüyü kapat' : 'Menüyü aç'); document.body.classList.toggle('mobile-nav-open', opening); setPageLock(opening); };
 $$('#mobileMenu a[href^="#"]').forEach(link => link.onclick = closeMobileMenu);
-$('#mobileUser').onclick = () => { closeMobileMenu(); openPanel('userPanel'); };
-$('#mobileAdmin').onclick = () => { closeMobileMenu(); renderAdmin(); $('#adminDialog').showModal(); };
+$('#mobileUser').onclick = () => { closeMobileMenu(); window.LilyumAccount?.openAccount(); };
+$('#mobileAdmin').onclick = () => { closeMobileMenu(); window.LilyumAccount?.openAdmin(); };
 $('#mobileLang').onclick = () => $('#langToggle').click();
 function openDesktopMenu() { $('#desktopMenu').classList.add('open'); $('#desktopMenu').setAttribute('aria-hidden', 'false'); setPageLock(true); }
 function closeDesktopMenu() { $('#desktopMenu').classList.remove('open'); $('#desktopMenu').setAttribute('aria-hidden', 'true'); setPageLock(false); }
@@ -319,25 +330,26 @@ $('#generateBrief').onclick = analyzeProject;
 $$('[data-user-tab]').forEach(button => button.onclick = () => { $$('[data-user-tab]').forEach(item => item.classList.toggle('active', item === button)); $$('.user-view').forEach(view => view.classList.toggle('active', view.id === `${button.dataset.userTab}View`)); });
 $$('[data-admin-tab]').forEach(button => button.onclick = () => { const tabMap = { ai: 'adminAI', commerce: 'adminCommerce', collection: 'adminCollection' }; const titleMap = { ai: 'AI Ayarları', commerce: 'Satış', collection: 'Koleksiyon' }; $$('[data-admin-tab]').forEach(item => item.classList.toggle('active', item === button)); $$('.admin-tab').forEach(tab => tab.classList.toggle('active', tab.id === tabMap[button.dataset.adminTab])); $('#adminTitle').textContent = titleMap[button.dataset.adminTab]; });
 
-$('#adminList').addEventListener('input', event => { const input = event.target; if (!input.dataset.field) return; works[input.dataset.index][input.dataset.field] = input.value; saveWorks(); });
+$('#adminList').addEventListener('input', event => { const input = event.target; if (!input.dataset.field || !window.LilyumAccount?.isAdmin()) return; works[input.dataset.index][input.dataset.field] = input.value; saveWorks(); });
 $('#adminList').addEventListener('change', async event => {
   const input = event.target;
-  if (input.dataset.field) { renderAll(); return; }
+  if (input.dataset.field) { window.LilyumAccount?.saveWork(works[input.dataset.index]).catch(() => showToast('Sunucu kaydı güncellenemedi.')); renderAll(); return; }
   if (input.dataset.upload !== undefined && input.files?.[0]) {
     if (input.files[0].size > 8_000_000) { showToast('Görsel 8 MB’dan küçük olmalı.'); input.value = ''; return; }
     const index = Number(input.dataset.upload);
     const previous = works[index].image;
     try {
-      works[index].image = await optimizeArtworkUpload(input.files[0]);
+      const remoteUrl = await window.LilyumAccount?.uploadArtwork(input.files[0], works[index].id);
+      works[index].image = remoteUrl || await optimizeArtworkUpload(input.files[0]);
       if (!saveWorks()) works[index].image = previous;
-      else showToast('Eser görseli optimize edilip güncellendi.');
+      else { await window.LilyumAccount?.saveWork(works[index]); showToast('Eser görseli güvenle güncellendi.'); }
       renderAll();
     } catch { works[index].image = previous; showToast('Bu görsel işlenemedi. JPG veya PNG dene.'); }
   }
 });
-$('#adminList').addEventListener('click', event => { const button = event.target.closest('[data-delete]'); if (!button) return; works.splice(Number(button.dataset.delete), 1); saveWorks(); renderAll(); showToast('Eser koleksiyondan kaldırıldı.'); });
-$('#addWork').onclick = () => { works.unshift({ id: `work-${Date.now()}`, title: 'Yeni eser', type: 'Fine Art Print', category: 'print', price: '₺0', color: '#7b61ff', image: '', year: String(new Date().getFullYear()), size: '30 × 40 cm', edition: '30', description: 'Yeni koleksiyon eseri.' }); saveWorks(); renderAll(); showToast('Yeni eser eklendi.'); };
-$('#saveAISettings').onclick = () => { aiSettings = { endpoint: $('#aiEndpoint').value.trim(), assistant: $('#assistantName').value.trim() || 'Ecren AI' }; localStorage.setItem(keys.settings, JSON.stringify(aiSettings)); updateAIStatus(); showToast('AI ayarları kaydedildi.'); };
+$('#adminList').addEventListener('click', async event => { const button = event.target.closest('[data-delete]'); if (!button || !window.LilyumAccount?.isAdmin()) return; const index = Number(button.dataset.delete); const work = works[index]; try { await window.LilyumAccount.deleteWork(work.id); works.splice(index, 1); saveWorks(); renderAll(); showToast('Eser koleksiyondan kaldırıldı.'); } catch { showToast('Eser silinemedi.'); } });
+$('#addWork').onclick = async () => { if (!window.LilyumAccount?.isAdmin()) return; const work = { id: `work-${Date.now()}`, title: 'Yeni eser', type: 'Fine Art Print', category: 'print', price: '₺0', color: '#7b61ff', image: '', year: String(new Date().getFullYear()), size: '30 × 40 cm', edition: '30', description: 'Yeni koleksiyon eseri.' }; works.unshift(work); saveWorks(); renderAll(); try { await window.LilyumAccount.saveWork(work); } catch {} showToast('Yeni eser eklendi.'); };
+$('#saveAISettings').onclick = () => { if (!window.LilyumAccount?.isAdmin()) return; aiSettings = { endpoint: $('#aiEndpoint').value.trim(), assistant: $('#assistantName').value.trim() || 'Lilyum AI' }; localStorage.setItem(keys.settings, JSON.stringify(aiSettings)); updateAIStatus(); showToast('AI ayarları kaydedildi.'); };
 
 let motionFrame = 0;
 window.addEventListener('scroll', () => {
