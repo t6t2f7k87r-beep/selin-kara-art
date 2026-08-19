@@ -275,6 +275,7 @@ $('#closeWork').onclick = () => $('#workDialog').close();
 $('#heroBrief').onclick = () => goToAI(); $('#footerBrief').onclick = () => goToAI();
 function setPageLock(locked) { document.body.style.overflow = locked ? 'hidden' : ''; }
 function closeMobileMenu() { $('#mobileMenu').classList.remove('open'); $('#mobileMenu').setAttribute('aria-hidden', 'true'); $('#menuBtn').classList.remove('active'); $('#menuBtn').setAttribute('aria-expanded', 'false'); $('#menuBtn').setAttribute('aria-label', 'Menüyü aç'); document.body.classList.remove('mobile-nav-open'); setPageLock(false); }
+window.lilyumCloseMobileMenu = closeMobileMenu;
 $('#menuBtn').setAttribute('aria-expanded', 'false');
 $('#menuBtn').onclick = () => { const opening = !$('#mobileMenu').classList.contains('open'); $('#mobileMenu').classList.toggle('open', opening); $('#mobileMenu').setAttribute('aria-hidden', String(!opening)); $('#menuBtn').classList.toggle('active', opening); $('#menuBtn').setAttribute('aria-expanded', String(opening)); $('#menuBtn').setAttribute('aria-label', opening ? 'Menüyü kapat' : 'Menüyü aç'); document.body.classList.toggle('mobile-nav-open', opening); setPageLock(opening); };
 $$('#mobileMenu a[href^="#"]').forEach(link => link.onclick = closeMobileMenu);

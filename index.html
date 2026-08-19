@@ -35,24 +35,26 @@
   <link rel="stylesheet" href="features.css?v=20260818-5" />
   <link rel="stylesheet" href="refinement.css?v=20260818-5" />
   <link rel="stylesheet" href="art-direction.css?v=20260818-5" />
-  <link rel="stylesheet" href="lilyum.css?v=20260819-1" />
+  <link rel="stylesheet" href="lilyum.css?v=20260819-2" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Lilyum Design","founder":{"@type":"Person","name":"Ecren Işık"},"url":"https://lilyumdesigns.com/","knowsAbout":["Digital illustration","Fine art prints","Custom commissions"]}</script>
 </head>
 <body>
-  <div class="intro-loader" id="introLoader" aria-hidden="true"><div class="intro-brand"><span class="intro-monogram">LD</span><strong>LILYUM DESIGN</strong></div><div class="intro-line"><b></b></div><small>INDEPENDENT ARTIST STUDIO</small></div>
+  <svg class="svg-defs" aria-hidden="true"><symbol id="lilyumEmblem" viewBox="0 0 64 72"><path d="M32 66V35"/><path d="M32 38C23 30 21 17 25 6c6 4 9 14 7 27"/><path d="M32 38C41 30 43 17 39 6c-6 4-9 14-7 27"/><path d="M32 43C20 44 11 36 9 25c10-1 19 5 23 15"/><path d="M32 43c12 1 21-7 23-18-10-1-19 5-23 15"/><path d="M20 56c4-6 8-8 12-8s8 2 12 8"/><path d="M23 62h18"/><circle cx="32" cy="39" r="1.8"/></symbol></svg>
+  <div class="intro-loader" id="introLoader" aria-hidden="true"><div class="intro-brand"><span class="intro-monogram"><svg viewBox="0 0 64 72"><use href="#lilyumEmblem"/></svg></span><strong>LILYUM DESIGN</strong></div><div class="intro-line"><b></b></div><small>INDEPENDENT ARTIST STUDIO</small></div>
   <div class="scroll-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
   <div class="noise" aria-hidden="true"></div>
   <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
   <header class="site-header" id="siteHeader">
-    <a class="brand brand-system" href="#home" aria-label="Lilyum Design ana sayfa"><span class="brand-mark lily-brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 33V16M20 17c-6-3-8-9-7-13 5 1 7 5 7 10m0 3c6-3 8-9 7-13-5 1-7 5-7 10m0 6c-6 0-11-4-12-8 5-1 9 1 12 5m0 3c6 0 11-4 12-8-5-1-9 1-12 5m0 10c-4 0-7 2-9 6m9-6c4 0 7 2 9 6"/></svg></span><span class="brand-name">LILYUM DESIGN<small>ARTIST STUDIO</small></span></a>
+    <a class="brand brand-system" href="#home" aria-label="Lilyum Design ana sayfa"><span class="brand-mark lily-brand-mark" aria-hidden="true"><svg viewBox="0 0 64 72"><use href="#lilyumEmblem"/></svg></span><span class="brand-name"><b>LILYUM</b><span>DESIGN</span><small>ARTIST STUDIO</small></span></a>
     <nav class="desktop-nav" aria-label="Ana menü">
       <a href="#stand">Stand</a><a href="#works">Eserler</a><a href="#ai-studio">AI Stüdyo</a><a href="#about">Hakkımda</a>
     </nav>
     <div class="header-actions">
       <button class="lang-toggle" id="langToggle" aria-label="Dili değiştir">TR <span>/</span> EN</button>
       <button class="cart-trigger" id="openCart" aria-label="Sepeti aç" aria-controls="cartDrawer">Bag <b id="cartCount">0</b></button>
-      <button class="icon-btn" id="openUser" aria-label="Kullanıcı menüsü" aria-controls="userPanel"><span class="user-dot"></span><span class="hide-mobile">Hesabım</span><b id="favoriteCount">0</b></button>
+      <div class="header-auth-actions" data-guest-only><button id="headerLogin">Giriş yap</button><button class="header-register" id="headerRegister">Kayıt ol</button></div>
+      <button class="icon-btn" id="openUser" aria-label="Kullanıcı menüsü" aria-controls="userPanel" data-auth-only hidden><span class="user-dot"></span><span class="hide-mobile">Hesabım</span><b id="favoriteCount">0</b></button>
       <button class="desktop-explore" id="desktopExplore" aria-label="Masaüstü keşif menüsünü aç"><span>Keşfet</span><i><b></b><b></b></i></button>
       <button class="pill-btn" id="openAdmin" aria-haspopup="dialog" hidden>Stüdyo paneli <span>↗</span></button>
       <button class="menu-btn" id="menuBtn" aria-label="Menüyü aç" aria-controls="mobileMenu"><span></span><span></span></button>
@@ -60,14 +62,20 @@
   </header>
 
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
-    <div class="mobile-menu-top"><span>MENU</span><small>LILYUM DESIGN / 2026</small></div>
-    <nav><a href="#stand"><span>01</span><b>Stand</b><i>↘</i></a><a href="#works"><span>02</span><b>Eserler</b><i>↘</i></a><a href="#archive"><span>03</span><b>Arşiv</b><i>↘</i></a><a href="#ai-studio"><span>04</span><b>AI Stüdyo</b><i>↘</i></a><a href="#about"><span>05</span><b>Hakkımda</b><i>↘</i></a></nav>
-    <div class="mobile-menu-art"><div class="menu-mini-orb"></div><p>Hayal ettiğin<br><em>şeyin ötesi.</em></p></div>
-    <div class="mobile-menu-foot"><div><button id="mobileUser">Hesabım</button><button id="mobileAdmin" hidden>Stüdyo</button><button id="mobileLang">TR / EN</button></div><a href="mailto:hello@lilyumdesigns.com">Birlikte çalışalım <span>↗</span></a></div>
+    <div class="mobile-menu-top"><div class="mobile-menu-signature"><svg viewBox="0 0 64 72"><use href="#lilyumEmblem"/></svg><span><b>LILYUM</b> DESIGN</span></div><small>MENU / 2026</small></div>
+    <div class="mobile-menu-body">
+      <nav><a href="#stand"><span>01</span><b>Stand</b><i>↗</i></a><a href="#works"><span>02</span><b>Eserler</b><i>↗</i></a><a href="#archive"><span>03</span><b>Arşiv</b><i>↗</i></a><a href="#ai-studio"><span>04</span><b>AI Stüdyo</b><i>↗</i></a><a href="#about"><span>05</span><b>Hakkımda</b><i>↗</i></a></nav>
+      <div class="mobile-menu-art"><svg viewBox="0 0 64 72"><use href="#lilyumEmblem"/></svg><div><small>ATELIER NOTE</small><p>Art that blooms<br><em>with you.</em></p></div></div>
+    </div>
+    <div class="mobile-menu-foot">
+      <div class="mobile-auth-card" data-guest-only><p><small>KOLEKSİYON HESABI</small>Favorilerini ve fiyat değişikliklerini sakla.</p><div><button id="mobileLogin">Giriş yap</button><button class="mobile-register" id="mobileRegister">Kayıt ol <span>→</span></button></div></div>
+      <div class="mobile-member-actions" data-auth-only hidden><button id="mobileUser">Koleksiyonum</button><button id="mobileAdmin" hidden>Özel stüdyo <span>↗</span></button></div>
+      <div class="mobile-menu-meta"><button id="mobileLang">TR / EN</button><a href="mailto:hello@lilyumdesigns.com">Birlikte çalışalım <span>↗</span></a></div>
+    </div>
   </div>
 
   <div class="desktop-menu" id="desktopMenu" aria-hidden="true">
-    <div class="desktop-menu-top"><a class="brand brand-system" href="#home"><span class="brand-mark lily-brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 33V16M20 17c-6-3-8-9-7-13 5 1 7 5 7 10m0 3c6-3 8-9 7-13-5 1-7 5-7 10m0 6c-6 0-11-4-12-8 5-1 9 1 12 5m0 3c6 0 11-4 12-8-5-1-9 1-12 5m0 10c-4 0-7 2-9 6m9-6c4 0 7 2 9 6"/></svg></span><span class="brand-name">LILYUM DESIGN<small>ARTIST STUDIO</small></span></a><p>DESKTOP EXPERIENCE / 2026</p><button id="closeDesktopMenu">Kapat <span>×</span></button></div>
+    <div class="desktop-menu-top"><a class="brand brand-system" href="#home"><span class="brand-mark lily-brand-mark" aria-hidden="true"><svg viewBox="0 0 64 72"><use href="#lilyumEmblem"/></svg></span><span class="brand-name"><b>LILYUM</b><span>DESIGN</span><small>ARTIST STUDIO</small></span></a><p>DESKTOP EXPERIENCE / 2026</p><button id="closeDesktopMenu">Kapat <span>×</span></button></div>
     <div class="desktop-menu-grid">
       <nav class="mega-links" id="megaLinks"><a href="#stand" data-preview="0"><small>01</small><span>Stand</span><i>Seçili işler</i></a><a href="#works" data-preview="1"><small>02</small><span>Koleksiyon</span><i>Özgün eserler</i></a><a href="#archive" data-preview="2"><small>03</small><span>Arşiv</span><i>Süreç ve eskizler</i></a><a href="#ai-studio" data-preview="3"><small>04</small><span>AI Project Lab</span><i>Fikrini analiz et</i></a><a href="#about" data-preview="4"><small>05</small><span>Ecren</span><i>Sanatçıyı tanı</i></a></nav>
       <div class="mega-preview"><div class="preview-frame" id="menuPreview"><span class="preview-shape p-one"></span><span class="preview-shape p-two"></span><span class="preview-shape p-three"></span></div><div class="preview-caption"><span id="previewIndex">01 / 05</span><p id="previewTitle">Curated digital worlds.</p></div></div>
@@ -185,7 +193,7 @@
     <section class="final-cta"><div class="cta-orbit"></div><p>Bir fikrin mi var?</p><h2>Onu birlikte<br><em>unutulmaz</em> yapalım.</h2><button class="primary-btn light" id="footerBrief">Projeni başlat <span>↗</span></button></section>
   </main>
 
-  <footer><a class="brand brand-system" href="#home"><span class="brand-mark lily-brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 33V16M20 17c-6-3-8-9-7-13 5 1 7 5 7 10m0 3c6-3 8-9 7-13-5 1-7 5-7 10m0 6c-6 0-11-4-12-8 5-1 9 1 12 5m0 3c6 0 11-4 12-8-5-1-9 1-12 5m0 10c-4 0-7 2-9 6m9-6c4 0 7 2 9 6"/></svg></span><span class="brand-name">LILYUM DESIGN<small>ARTIST STUDIO</small></span></a><p>Art that blooms with you.<br>© 2026 Lilyum Design.</p><div><a href="#" data-placeholder-link>Instagram / yakında</a><a href="#" data-placeholder-link>Behance / yakında</a><a href="mailto:hello@lilyumdesigns.com">E-posta ↗</a></div></footer>
+  <footer><a class="brand brand-system" href="#home"><span class="brand-mark lily-brand-mark" aria-hidden="true"><svg viewBox="0 0 64 72"><use href="#lilyumEmblem"/></svg></span><span class="brand-name"><b>LILYUM</b><span>DESIGN</span><small>ARTIST STUDIO</small></span></a><p>Art that blooms with you.<br>© 2026 Lilyum Design.</p><div><a href="#" data-placeholder-link>Instagram / yakında</a><a href="#" data-placeholder-link>Behance / yakında</a><a href="mailto:hello@lilyumdesigns.com">E-posta ↗</a></div></footer>
 
   <dialog class="auth-dialog" id="authDialog" aria-labelledby="authTitle">
     <button class="auth-close" id="closeAuth" aria-label="Giriş ekranını kapat">×</button>
@@ -195,7 +203,7 @@
       <p class="index">ÜYE ALANI</p><h2 id="authTitle">Koleksiyonuna<br><em>geri dön.</em></h2>
       <div class="auth-tabs"><button class="active" data-auth-tab="login">Giriş yap</button><button data-auth-tab="register">Kayıt ol</button></div>
       <form class="auth-form active" id="loginForm">
-        <label>E-posta<input name="email" type="email" autocomplete="email" required placeholder="sen@ornek.com"></label>
+        <label>E-posta veya kullanıcı adı<input name="email" type="text" autocomplete="username" required placeholder="E-posta adresin"></label>
         <label>Şifre<input name="password" type="password" autocomplete="current-password" required minlength="8" placeholder="En az 8 karakter"></label>
         <button type="submit">Hesabıma gir <span>→</span></button>
       </form>
@@ -213,6 +221,7 @@
 
   <aside class="side-panel" id="userPanel" aria-hidden="true">
     <div class="panel-head"><div><p>MY COLLECTION</p><h3>Merhaba <em id="accountGreeting">sanatsever.</em></h3><small id="accountEmail"></small></div><button class="panel-close" data-close="userPanel">×</button></div>
+    <button class="account-admin-entry" id="accountAdmin" hidden><span><small>PRIVATE STUDIO</small>Yönetim paneline geç</span><b>↗</b></button>
     <div class="user-tabs"><button class="active" data-user-tab="favorites">Favorilerim <b id="favoriteTabCount">0</b></button><button data-user-tab="projects">Projelerim <b id="projectCount">0</b></button><button data-user-tab="orders">Siparişler <b id="orderCount">0</b></button><button data-user-tab="profile">Profil</button></div>
     <div class="user-view active" id="favoritesView"><div class="empty-state" id="favoritesList"><i>♡</i><h4>Henüz bir favorin yok.</h4><p>Kalbine dokunan eserlerdeki kalp ikonuna dokun.</p></div></div>
     <div class="user-view" id="projectsView"><div class="empty-state" id="projectsList"><i>✦</i><h4>İlk fikrini bekliyoruz.</h4><p>AI Stüdyo’da bir brief oluşturduğunda burada görünecek.</p></div></div>
@@ -223,7 +232,7 @@
 
   <dialog class="admin-dialog" id="adminDialog" aria-label="Stüdyo yönetim paneli">
     <div class="admin-shell">
-      <aside class="admin-sidebar"><a class="brand brand-system"><span class="brand-mark lily-brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 33V16M20 17c-6-3-8-9-7-13 5 1 7 5 7 10m0 3c6-3 8-9 7-13-5 1-7 5-7 10m0 6c-6 0-11-4-12-8 5-1 9 1 12 5m0 3c6 0 11-4 12-8-5-1-9 1-12 5m0 10c-4 0-7 2-9 6m9-6c4 0 7 2 9 6"/></svg></span><span class="brand-name">LILYUM DESIGN<small>PRIVATE ADMIN</small></span></a><nav><button class="active" data-admin-tab="collection">▦ <span>Koleksiyon</span></button><button data-admin-tab="commerce">◇ <span>Satış</span></button><button data-admin-tab="ai">✦ <span>AI Ayarları</span></button></nav><div class="admin-profile"><span>LD</span><div><b>Stüdyo Sahibi</b><small>Verified Admin</small></div></div></aside>
+      <aside class="admin-sidebar"><a class="brand brand-system"><span class="brand-mark lily-brand-mark" aria-hidden="true"><svg viewBox="0 0 64 72"><use href="#lilyumEmblem"/></svg></span><span class="brand-name"><b>LILYUM</b><span>DESIGN</span><small>PRIVATE ADMIN</small></span></a><nav><button class="active" data-admin-tab="collection">▦ <span>Koleksiyon</span></button><button data-admin-tab="commerce">◇ <span>Satış</span></button><button data-admin-tab="ai">✦ <span>AI Ayarları</span></button></nav><div class="admin-profile"><span>EI</span><div><b>Ecren Işık</b><small>Verified Admin</small></div></div></aside>
       <main class="admin-main">
         <div class="admin-header"><div><p>STÜDYO PANELİ</p><h2 id="adminTitle">Koleksiyon</h2></div><button class="panel-close" id="closeAdmin" aria-label="Stüdyo panelini kapat">×</button></div>
         <section class="admin-tab active" id="adminCollection">
@@ -255,8 +264,8 @@
   <div class="toast" id="toast"><span>✦</span><p></p></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="lilyum-config.js?v=20260819-1"></script>
-  <script src="app.js?v=20260819-1"></script>
+  <script src="app.js?v=20260819-2"></script>
   <script src="features.js?v=20260819-1"></script>
-  <script src="lilyum-auth.js?v=20260819-1"></script>
+  <script src="lilyum-auth.js?v=20260819-2"></script>
 </body>
 </html>

@@ -1,13 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Lilyum Design zambak amblemi">
-  <rect width="512" height="512" rx="124" fill="#11100e"/>
-  <rect x="74" y="74" width="364" height="364" rx="108" fill="none" stroke="#eee9df" stroke-width="8"/>
-  <g fill="none" stroke="#eee9df" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M256 382V218"/>
-    <path d="M256 228c-68-31-89-100-72-147 52 13 76 64 72 114"/>
-    <path d="M256 228c68-31 89-100 72-147-52 13-76 64-72 114"/>
-    <path d="M256 276c-67 0-115-42-127-88 56-13 101 14 127 62"/>
-    <path d="M256 276c67 0 115-42 127-88-56-13-101 14-127 62"/>
-    <path d="M256 342c-37 0-68 22-83 55m83-55c37 0 68 22 83 55"/>
+  <rect width="512" height="512" rx="128" fill="#11100e"/>
+  <path d="M256 66C358 66 422 139 422 245c0 112-72 201-166 219C162 446 90 357 90 245 90 139 154 66 256 66Z" fill="none" stroke="#eee9df" stroke-width="8" opacity=".9"/>
+  <g transform="translate(64 34) scale(6)" fill="none" stroke="#eee9df" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 66V35"/>
+    <path d="M32 38C23 30 21 17 25 6c6 4 9 14 7 27"/>
+    <path d="M32 38C41 30 43 17 39 6c-6 4-9 14-7 27"/>
+    <path d="M32 43C20 44 11 36 9 25c10-1 19 5 23 15"/>
+    <path d="M32 43c12 1 21-7 23-18-10-1-19 5-23 15"/>
+    <path d="M20 56c4-6 8-8 12-8s8 2 12 8"/>
+    <path d="M23 62h18"/>
   </g>
-  <circle cx="389" cy="120" r="18" fill="#d8ff3e"/>
+  <circle cx="256" cy="268" r="12" fill="#d8ff3e"/>
 </svg>

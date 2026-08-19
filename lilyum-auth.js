@@ -9,6 +9,14 @@
     profile: id => `lilyum-demo-profile-v1:${id}`
   };
   const state = { mode: 'demo', client: null, user: null, profile: null, favorites: [], snapshots: {} };
+  const demoOwnerIdentity = Object.freeze({
+    id: 'lilyum-owner-ecren-isik',
+    email: 'studio@lilyum.local',
+    username: 'ecren isik',
+    name: 'Ecren Işık',
+    role: 'admin',
+    createdAt: '2026-08-19T00:00:00.000Z'
+  });
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
   const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
@@ -17,6 +25,8 @@
   const parsePrice = value => Number(String(value || '').replace(/[^\d]/g, '')) || 0;
   const formatPrice = value => new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(value);
   const safeId = () => crypto.randomUUID?.() || `user-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const canonical = value => String(value || '').trim().toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ı/g, 'i');
+  const canBootstrapLocalOwner = () => ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
 
   async function hashPassword(password, salt) {
     const bytes = new TextEncoder().encode(`${salt}:${password}`);
@@ -45,20 +55,28 @@
 
   function renderIdentity() {
     const adminAllowed = isAdmin();
+    const signedIn = isSignedIn();
+    $$('[data-guest-only]').forEach(element => { element.hidden = signedIn; });
+    $$('[data-auth-only]').forEach(element => { element.hidden = !signedIn; });
     ['#openAdmin', '#mobileAdmin'].forEach(selector => { const element = $(selector); if (element) element.hidden = !adminAllowed; });
+    const accountAdmin = $('#accountAdmin');
+    if (accountAdmin) accountAdmin.hidden = !adminAllowed;
     const adminDialog = $('#adminDialog');
     adminDialog?.classList.toggle('authorized', adminAllowed);
+    if (adminDialog) adminDialog.inert = !adminAllowed;
     const greeting = $('#accountGreeting');
     const email = $('#accountEmail');
     if (greeting) greeting.textContent = profileName();
-    if (email) email.textContent = state.user?.email || '';
+    if (email) email.textContent = isAdmin() && state.mode === 'demo' ? 'Özel stüdyo hesabı' : (state.user?.email || '');
     const profileNameInput = $('#profileName');
     const profileEmailInput = $('#profileEmail');
     const profileCityInput = $('#profileCity');
     if (profileNameInput) profileNameInput.value = state.profile?.display_name || state.user?.user_metadata?.display_name || state.user?.name || '';
     if (profileEmailInput) profileEmailInput.value = state.user?.email || '';
     if (profileCityInput) profileCityInput.value = state.profile?.city || '';
-    $('.user-dot')?.classList.toggle('authenticated', isSignedIn());
+    $('.user-dot')?.classList.toggle('authenticated', signedIn);
+    const adminName = $('.admin-profile b');
+    if (adminName && adminAllowed) adminName.textContent = profileName();
   }
 
   function applyFavorites(records = []) {
@@ -83,8 +101,16 @@
     write(demoKeys.profile(account.id), state.profile);
   }
 
-  async function demoSignIn(email, password) {
-    const account = demoAccounts().find(item => item.email === email.trim().toLocaleLowerCase('tr-TR'));
+  async function demoSignIn(identifier, password) {
+    const normalized = canonical(identifier);
+    const accounts = demoAccounts();
+    let account = accounts.find(item => canonical(item.email) === normalized || canonical(item.username) === normalized || canonical(item.name) === normalized);
+    if (!account && canBootstrapLocalOwner() && normalized === canonical(demoOwnerIdentity.name)) {
+      const salt = safeId();
+      account = { ...demoOwnerIdentity, salt, passwordHash: await hashPassword(password, salt) };
+      accounts.push(account);
+      write(demoKeys.accounts, accounts);
+    }
     if (!account || account.passwordHash !== await hashPassword(password, account.salt)) throw new Error('E-posta veya şifre hatalı.');
     write(demoKeys.session, account.id);
     state.user = { id: account.id, email: account.email, name: account.name, user_metadata: { display_name: account.name } };
@@ -164,7 +190,15 @@
     renderIdentity();
   }
 
-  function openAuth(message = '') {
+  function selectAuthTab(tab = 'login') {
+    $$('.auth-tabs [data-auth-tab]').forEach(item => item.classList.toggle('active', item.dataset.authTab === tab));
+    $$('.auth-form').forEach(form => form.classList.toggle('active', form.id === `${tab}Form`));
+    const title = $('#authTitle');
+    if (title) title.innerHTML = tab === 'register' ? 'Koleksiyonunu<br><em>oluştur.</em>' : 'Koleksiyonuna<br><em>geri dön.</em>';
+  }
+
+  function openAuth(message = '', tab = 'login') {
+    selectAuthTab(tab);
     setMessage(message);
     const dialog = $('#authDialog');
     if (dialog && !dialog.open) dialog.showModal();
@@ -264,10 +298,14 @@
 
   function bindUI() {
     $$('.auth-tabs [data-auth-tab]').forEach(button => button.addEventListener('click', () => {
-      $$('.auth-tabs [data-auth-tab]').forEach(item => item.classList.toggle('active', item === button));
-      $$('.auth-form').forEach(form => form.classList.toggle('active', form.id === `${button.dataset.authTab}Form`));
+      selectAuthTab(button.dataset.authTab);
       setMessage('');
     }));
+    $('#headerLogin')?.addEventListener('click', () => openAuth('', 'login'));
+    $('#headerRegister')?.addEventListener('click', () => openAuth('', 'register'));
+    $('#mobileLogin')?.addEventListener('click', () => { window.lilyumCloseMobileMenu?.(); openAuth('', 'login'); });
+    $('#mobileRegister')?.addEventListener('click', () => { window.lilyumCloseMobileMenu?.(); openAuth('', 'register'); });
+    $('#accountAdmin')?.addEventListener('click', () => { window.closePanel?.('userPanel'); openAdmin(); });
     $('#closeAuth')?.addEventListener('click', closeAuth);
     $('#authDialog')?.addEventListener('click', event => { if (event.target === $('#authDialog')) closeAuth(); });
 
