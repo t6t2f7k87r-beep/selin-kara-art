@@ -1,14 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Lilyum Design zambak amblemi">
   <rect width="512" height="512" rx="128" fill="#11100e"/>
-  <path d="M256 66C358 66 422 139 422 245c0 112-72 201-166 219C162 446 90 357 90 245 90 139 154 66 256 66Z" fill="none" stroke="#eee9df" stroke-width="8" opacity=".9"/>
-  <g transform="translate(64 34) scale(6)" fill="none" stroke="#eee9df" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M32 66V35"/>
-    <path d="M32 38C23 30 21 17 25 6c6 4 9 14 7 27"/>
-    <path d="M32 38C41 30 43 17 39 6c-6 4-9 14-7 27"/>
-    <path d="M32 43C20 44 11 36 9 25c10-1 19 5 23 15"/>
-    <path d="M32 43c12 1 21-7 23-18-10-1-19 5-23 15"/>
-    <path d="M20 56c4-6 8-8 12-8s8 2 12 8"/>
-    <path d="M23 62h18"/>
+  <circle cx="256" cy="256" r="202" fill="none" stroke="#eee9df" stroke-width="6" opacity=".22"/>
+  <g transform="translate(64 46) scale(6)" fill="none" stroke="#eee9df" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 18v40h23"/>
+    <path d="M20 18h10c15 0 25 7.8 25 20S45 58 30 58H20"/>
+    <path d="M20 19C13 17 9 12 10 6c6 0 9 4 10 10m0 3c7-2 11-7 10-13-6 0-9 4-10 10m0 0c-4-5-3-11 0-15 3 4 4 10 0 15" stroke-width="1.35"/>
+    <path d="M15 58h33" stroke-width="1" opacity=".6"/>
   </g>
-  <circle cx="256" cy="268" r="12" fill="#d8ff3e"/>
+  <circle cx="184" cy="154" r="11" fill="#d8ff3e"/>
 </svg>
