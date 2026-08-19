@@ -40,14 +40,14 @@ function renderArchive() {
     return base;
   });
   const filtered = archive.filter(item => (archiveType === 'all' || item.type === archiveType) && (archiveYear === 'all' || item.year === archiveYear));
-  $('#archiveGrid').innerHTML = filtered.length ? filtered.map((item, index) => `<article class="archive-card ${item.type}" data-work="${item.work.id}"><div class="archive-art">${artMarkup(item.work, index)}</div><div><span>${escapeHTML(item.year)} / ${escapeHTML(item.label)}</span><h3>${escapeHTML(item.title)}</h3><i>↗</i></div></article>`).join('') : '<div class="archive-empty">Bu filtrede henüz bir kayıt yok.</div>';
+  $('#archiveGrid').innerHTML = filtered.length ? filtered.map((item, index) => `<article class="archive-card ${item.type}" data-work="${item.work.id}"><div class="archive-art">${artMarkup(item.work, index)}</div><div><span>${escapeHTML(item.year)} / ${escapeHTML(item.label)}</span><h3>${escapeHTML(item.title)}</h3><i><span class="line-arrow" aria-hidden="true"></span></i></div></article>`).join('') : '<div class="archive-empty">Bu filtrede henüz bir kayıt yok.</div>';
 }
 
 function renderGallery() {
   if (!works.length) return;
   galleryIndex = (galleryIndex + works.length) % works.length;
   const work = works[galleryIndex];
-  $('#galleryStage').innerHTML = `<article><div class="gallery-art">${artMarkup(work, galleryIndex)}</div><div class="gallery-copy"><span>LILYUM DESIGN / ${escapeHTML(work.year || '2026')}</span><h2>${escapeHTML(work.title)}</h2><p>${escapeHTML(work.description)}</p><div><b>${escapeHTML(work.type)}</b><strong>${escapeHTML(work.price)}</strong></div><button data-gallery-work="${work.id}">Eser ayrıntıları ↗</button></div></article>`;
+  $('#galleryStage').innerHTML = `<article><div class="gallery-art">${artMarkup(work, galleryIndex)}</div><div class="gallery-copy"><span>LILYUM DESIGN / ${escapeHTML(work.year || '2026')}</span><h2>${escapeHTML(work.title)}</h2><p>${escapeHTML(work.description)}</p><div><b>${escapeHTML(work.type)}</b><strong>${escapeHTML(work.price)}</strong></div><button data-gallery-work="${work.id}">Eser ayrıntıları <span class="line-arrow" aria-hidden="true"></span></button></div></article>`;
   $('#galleryCounter').textContent = `${String(galleryIndex + 1).padStart(2, '0')} / ${String(works.length).padStart(2, '0')}`;
 }
 
@@ -70,7 +70,7 @@ function renderCart() {
   $('#cartItems').innerHTML = cart.length ? cart.map((item, index) => {
     const work = works.find(entry => entry.id === item.id);
     return `<article class="cart-item"><div class="cart-thumb">${artMarkup(work, index)}</div><div><span>${work.category === 'original' ? 'ORIGINAL' : 'LIMITED PRINT'}</span><h4>${escapeHTML(work.title)}</h4><p>${escapeHTML(item.size || work.size || '30 × 40 cm')} · ${escapeHTML(item.frame || 'Çerçevesiz')}<br>${escapeHTML(work.price)}</p><div class="qty"><button data-cart-dec="${index}">−</button><b>${item.qty}</b><button data-cart-inc="${index}">＋</button></div></div><button class="cart-remove" data-cart-remove="${index}" aria-label="Ürünü kaldır">×</button></article>`;
-  }).join('') : '<div class="cart-empty"><i>◇</i><h4>Sepetin henüz boş.</h4><p>Sana eşlik edecek bir eser seçtiğinde burada göreceksin.</p><a href="#works" data-close="cartDrawer">Koleksiyona git →</a></div>';
+  }).join('') : '<div class="cart-empty"><i>◇</i><h4>Sepetin henüz boş.</h4><p>Sana eşlik edecek bir eser seçtiğinde burada göreceksin.</p><a href="#works" data-close="cartDrawer">Koleksiyona git <span class="line-arrow" aria-hidden="true"></span></a></div>';
 }
 
 function orderMailHref(order) {
@@ -85,7 +85,7 @@ function orderMailHref(order) {
 
 function renderOrders() {
   $('#orderCount').textContent = orders.length;
-  $('#ordersList').innerHTML = orders.length ? orders.slice().reverse().map(order => `<article class="order-item"><div><span>${escapeHTML(order.date)} · ${escapeHTML(order.status)}</span><h4>${escapeHTML(order.number)}</h4><p>${order.items.length} eser · ${escapeHTML(order.total)}</p></div><a class="order-send" href="${orderMailHref(order)}">Stüdyoya gönder ↗</a></article>`).join('') : '<i>□</i><h4>Henüz sipariş talebin yok.</h4><p>Sepetinden oluşturduğun talepler burada görünür.</p>';
+  $('#ordersList').innerHTML = orders.length ? orders.slice().reverse().map(order => `<article class="order-item"><div><span>${escapeHTML(order.date)} · ${escapeHTML(order.status)}</span><h4>${escapeHTML(order.number)}</h4><p>${order.items.length} eser · ${escapeHTML(order.total)}</p></div><a class="order-send" href="${orderMailHref(order)}">Stüdyoya gönder <span class="line-arrow" aria-hidden="true"></span></a></article>`).join('') : '<i>□</i><h4>Henüz sipariş talebin yok.</h4><p>Sepetinden oluşturduğun talepler burada görünür.</p>';
 }
 
 function renderProfile() {
@@ -195,7 +195,7 @@ const translations = {
     ['.desktop-nav a:nth-child(1)', 'Stand'], ['.desktop-nav a:nth-child(2)', 'Works'], ['.desktop-nav a:nth-child(3)', 'AI Studio'], ['.desktop-nav a:nth-child(4)', 'About'],
     ['.hero .kicker', '<span></span> DIGITAL ILLUSTRATION · ORIGINAL WORKS'], ['.hero-copy h1', 'Beyond what<br><em>you imagined.</em>'], ['.hero-lead', 'Emotion-led collectible digital art for people and brands with character.'],
     ['#heroBrief', 'Tell me an idea <span>✦</span>'], ['.hero-cta .primary-btn', 'Explore the collection <span>↘</span>'],
-    ['#works .section-heading h2', 'A new world begins<br><em>on your wall.</em>'], ['#openGallery', 'Fullscreen exhibition <span>↗</span>'],
+    ['#works .section-heading h2', 'A new world begins<br><em>on your wall.</em>'], ['#openGallery', 'Fullscreen exhibition <span class="line-arrow" aria-hidden="true"></span>'],
     ['#archive .archive-head h2', 'The making matters<br><em>as much as the result.</em>'], ['#ai-studio h2', 'Tell your idea.<br><em>See its potential.</em>'],
     ['.process h2', 'From idea to<br><em>signature artwork.</em>'], ['#about h2', 'Making inner worlds<br><em>visible.</em>'], ['.final-cta>p', 'Have an idea?'], ['.final-cta h2', 'Let’s make it<br><em>unforgettable.</em>']
   ],
@@ -203,7 +203,7 @@ const translations = {
     ['.desktop-nav a:nth-child(1)', 'Stand'], ['.desktop-nav a:nth-child(2)', 'Eserler'], ['.desktop-nav a:nth-child(3)', 'AI Stüdyo'], ['.desktop-nav a:nth-child(4)', 'Hakkımda'],
     ['.hero .kicker', '<span></span> DİJİTAL İLLÜSTRASYON · ÖZGÜN İŞLER'], ['.hero-copy h1', 'Hayal ettiğin<br><em>şeyin ötesi.</em>'], ['.hero-lead', 'Karakteri olan insanlar ve markalar için duygusu yüksek, koleksiyonluk dijital sanat.'],
     ['#heroBrief', 'Bir fikir anlat <span>✦</span>'], ['.hero-cta .primary-btn', 'Koleksiyonu keşfet <span>↘</span>'],
-    ['#works .section-heading h2', 'Yeni bir dünya<br><em>duvarında başlar.</em>'], ['#openGallery', 'Tam ekran sergi <span>↗</span>'],
+    ['#works .section-heading h2', 'Yeni bir dünya<br><em>duvarında başlar.</em>'], ['#openGallery', 'Tam ekran sergi <span class="line-arrow" aria-hidden="true"></span>'],
     ['#archive .archive-head h2', 'Bitmiş işler kadar<br><em>oluş anları da.</em>'], ['#ai-studio h2', 'Fikrini anlat.<br><em>Olasılığını gör.</em>'],
     ['.process h2', 'Fikirden,<br><em>imza esere.</em>'], ['#about h2', 'İç dünyaları<br><em>görünür</em> kılıyorum.'], ['.final-cta>p', 'Bir fikrin mi var?'], ['.final-cta h2', 'Onu birlikte<br><em>unutulmaz</em> yapalım.']
   ]
