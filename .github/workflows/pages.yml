@@ -25,18 +25,15 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
-      - name: Prepare maintenance site
+      - name: Prepare production site
         run: |
-          mkdir -p _maintenance
-          cp maintenance.html _maintenance/index.html
-          cp icon.svg _maintenance/icon.svg
-          cp sw.js _maintenance/sw.js
-          cp robots.txt _maintenance/robots.txt
-          cp CNAME _maintenance/CNAME
+          mkdir -p _site/assets
+          cp index.html *.css app.js features.js lilyum-auth.js lilyum-config.js icon.svg og.png manifest.webmanifest robots.txt sitemap.xml sw.js CNAME .nojekyll _site/
+          cp assets/* _site/assets/
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _maintenance
+          path: _site
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
