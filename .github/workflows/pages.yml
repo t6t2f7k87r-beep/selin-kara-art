@@ -28,7 +28,7 @@ jobs:
       - name: Prepare production site
         run: |
           mkdir -p _site/assets
-          cp index.html *.css app.js features.js lilyum-auth.js lilyum-config.js icon.svg og.png manifest.webmanifest robots.txt sitemap.xml sw.js CNAME .nojekyll _site/
+          cp index.html *.css app.js features.js lilyum-auth.js lilyum-config.js icon.svg og.png lilyum-social-2026.png manifest.webmanifest robots.txt sitemap.xml sw.js CNAME .nojekyll _site/
           cp assets/* _site/assets/
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
