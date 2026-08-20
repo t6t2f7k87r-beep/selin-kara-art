@@ -123,16 +123,31 @@ function openWork(id) {
   const work = works.find(item => item.id === id); if (!work) return;
   const index = works.indexOf(work);
   const sizes = work.category === 'original' ? [work.size || '50 × 70 cm'] : [...new Set([work.size || '30 × 40 cm', '50 × 70 cm'])];
-  $('#workDetail').innerHTML = `<div class="detail-art">${artMarkup(work, index, '', 'eager')}</div><div class="detail-info"><p class="index">LILYUM DESIGN / ${work.category === 'original' ? 'ORIGINAL' : 'LIMITED PRINT'}</p><h2>${escapeHTML(work.title)}</h2><p>${escapeHTML(work.description)}</p><div class="detail-story"><span>${escapeHTML(work.year || '2026')} / STORY NOTE</span><p>Renk, ritim ve katmanlar eserin ana duygusunu taşıyacak biçimde kuruldu. Gerçek eskiz ve süreç görselleri yüklendiğinde bu hikâye alanı esere özel güncellenecek.</p></div><strong class="detail-price">${escapeHTML(work.price)}</strong><div class="product-options"><label><span>BOYUT</span><select id="workSize">${sizes.map(size => `<option>${escapeHTML(size)}</option>`).join('')}</select></label><label><span>SUNUM</span><select id="workFrame"><option>Çerçevesiz</option><option>Çerçeveli — teklif iste</option></select></label></div><div class="detail-meta"><div><span>FORMAT</span><b>${escapeHTML(work.type)}</b></div><div><span>TESLİMAT</span><b>3–5 iş günü</b></div><div><span>SERTİFİKA</span><b>İmzalı</b></div><div><span>EDITION</span><b>${escapeHTML(work.edition || (work.category === 'original' ? '1 / 1' : 'Sınırlı'))}</b></div></div><div class="detail-actions"><button class="request-work" data-add-cart="${work.id}">Sepete ekle</button><button class="favorite-work" data-favorite="${work.id}">${favorites.includes(work.id) ? '♥ Favorilerimde' : '♡ Favoriye ekle'}</button></div><button class="commission-link" data-request="${work.id}">Bu eserden ilham alan özel bir çalışma iste <span class="line-arrow" aria-hidden="true"></span></button></div>`;
-  $('#workDialog').setAttribute('aria-label', `${work.title} eser detayı`);
-  $('#workDialog').scrollTop = 0;
-  $('#workDialog').showModal();
+  $('#workDetail').innerHTML = `<div class="detail-art">${artMarkup(work, index, '', 'eager')}<div class="detail-art-caption"><span>ORIGINAL ART / ${escapeHTML(work.year || '2026')}</span><b>${String(index + 1).padStart(2, '0')} / ${String(works.length).padStart(2, '0')}</b></div></div><div class="detail-info"><div class="sale-eyebrow"><p class="index">LILYUM DESIGN / ${work.category === 'original' ? 'ORIGINAL' : 'LIMITED PRINT'}</p><span class="sale-availability"><i></i>SATIŞA HAZIR</span></div><h2>${escapeHTML(work.title)}</h2><p>${escapeHTML(work.description)}</p><div class="detail-story"><span>${escapeHTML(work.year || '2026')} / STORY NOTE</span><p>Renk, ritim ve katmanlar eserin ana duygusunu taşıyacak biçimde kuruldu. Gerçek eskiz ve süreç görselleri yüklendiğinde bu hikâye alanı esere özel güncellenecek.</p></div><div class="sale-price-row"><strong class="detail-price">${escapeHTML(work.price)}</strong><small>Vergiler dahil · güvenli sipariş</small></div><div class="product-options"><label><span>BOYUT</span><select id="workSize">${sizes.map(size => `<option>${escapeHTML(size)}</option>`).join('')}</select></label><label><span>SUNUM</span><select id="workFrame"><option>Çerçevesiz</option><option>Çerçeveli — teklif iste</option></select></label></div><div class="detail-meta"><div><span>FORMAT</span><b>${escapeHTML(work.type)}</b></div><div><span>TESLİMAT</span><b>3–5 iş günü</b></div><div><span>SERTİFİKA</span><b>İmzalı</b></div><div><span>EDITION</span><b>${escapeHTML(work.edition || (work.category === 'original' ? '1 / 1' : 'Sınırlı'))}</b></div></div><div class="sale-assurance"><span><i></i>Özenli paketleme</span><span><i></i>Takipli gönderim</span><span><i></i>Stüdyo onayı</span></div><div class="detail-actions"><button class="request-work" data-add-cart="${work.id}">Sepete ekle <span class="line-arrow" aria-hidden="true"></span></button><button class="favorite-work" data-favorite="${work.id}">${favorites.includes(work.id) ? '♥ Favorilerimde' : '♡ Favoriye ekle'}</button></div><button class="commission-link" data-request="${work.id}">Bu eserden ilham alan özel bir çalışma iste <span class="line-arrow" aria-hidden="true"></span></button></div>`;
+  const dialog = $('#workDialog');
+  dialog.setAttribute('aria-label', `${work.title} eser detayı`);
+  dialog.scrollTop = 0;
+  $('#workDetail').scrollTop = 0;
+  if (!dialog.open) dialog.showModal();
+  document.body.classList.add('sale-open');
+  setPageLock(true);
+  requestAnimationFrame(() => $('#closeWork').focus({ preventScroll: true }));
+}
+
+function closeWorkDialog() {
+  const dialog = $('#workDialog');
+  if (dialog.open) dialog.close();
+}
+
+function releaseWorkDialog() {
+  document.body.classList.remove('sale-open');
+  if (!document.querySelector('dialog[open], .side-panel.open, .cart-drawer.open, .mobile-menu.open, .desktop-menu.open')) setPageLock(false);
 }
 
 function openPanel(id) { const panel = document.getElementById(id); panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); setPageLock(true); }
 function closePanel(id) { const panel = document.getElementById(id); panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); if (!document.querySelector('.side-panel.open, .cart-drawer.open, .mobile-menu.open, .desktop-menu.open')) setPageLock(false); }
 function showToast(message) { $('#toast p').textContent = message; $('#toast').classList.add('show'); clearTimeout(showToast.timer); showToast.timer = setTimeout(() => $('#toast').classList.remove('show'), 2600); }
-function goToAI(prefill = '') { $('#workDialog').open && $('#workDialog').close(); document.querySelector('#ai-studio').scrollIntoView({ behavior: 'smooth' }); if (prefill) { $('#ideaInput').value = prefill; updateBriefMeter(); } setTimeout(() => $('#ideaInput').focus(), 700); }
+function goToAI(prefill = '') { $('#workDialog').open && closeWorkDialog(); document.querySelector('#ai-studio').scrollIntoView({ behavior: 'smooth' }); if (prefill) { $('#ideaInput').value = prefill; updateBriefMeter(); } setTimeout(() => $('#ideaInput').focus(), 700); }
 
 const hasAny = (text, words) => words.some(word => text.includes(word));
 const formatRange = (low, high) => `${new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(low)} – ${new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(high)}`;
@@ -310,7 +325,9 @@ document.addEventListener('click', event => {
 $('#openUser').onclick = () => window.LilyumAccount?.openAccount();
 $('#openAdmin').onclick = () => window.LilyumAccount?.openAdmin();
 $('#closeAdmin').onclick = () => $('#adminDialog').close();
-$('#closeWork').onclick = () => $('#workDialog').close();
+$('#closeWork').onclick = closeWorkDialog;
+$('#workDialog').addEventListener('close', releaseWorkDialog);
+$('#workDialog').addEventListener('cancel', releaseWorkDialog);
 $('#heroBrief').onclick = () => goToAI(); $('#footerBrief').onclick = () => goToAI();
 function setPageLock(locked) { document.body.style.overflow = locked ? 'hidden' : ''; }
 function closeMobileMenu() { $('#mobileMenu').classList.remove('open'); $('#mobileMenu').setAttribute('aria-hidden', 'true'); $('#menuBtn').classList.remove('active'); $('#menuBtn').setAttribute('aria-expanded', 'false'); $('#menuBtn').setAttribute('aria-label', 'Menüyü aç'); document.body.classList.remove('mobile-nav-open'); setPageLock(false); }
