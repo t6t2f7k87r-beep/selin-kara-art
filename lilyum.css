@@ -1416,3 +1416,78 @@ body.ecren-note-open { overflow: hidden; }
   .ecren-note-dialog[open],.ecren-note-content,.ecren-note-rule span,.ecren-note-seal,.ecren-note-lily,.ecren-note-lily .bloom-petal,.ecren-orbit { animation: none; }
   .ecren-confetti { display: none; }
 }
+
+/* Mobile archive only — compact portrait cards in a vertical reading flow */
+@media (max-width: 960px) {
+  #archive .archive-grid {
+    width: 100%;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0,1fr);
+    gap: 14px;
+  }
+
+  #archive .archive-card,
+  #archive .archive-card:nth-child(n) {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: clamp(150px,32vw,250px) minmax(0,1fr);
+    align-items: stretch;
+    gap: 16px;
+    padding: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.11);
+    border-radius: 17px;
+    background: rgba(255,255,255,.035);
+  }
+
+  #archive .archive-art,
+  #archive .archive-card .archive-art {
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border-radius: 11px;
+  }
+
+  #archive .archive-art > img,
+  #archive .archive-art > .generated-art {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #archive .archive-card > div:last-child {
+    min-width: 0;
+    padding: 9px 4px 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-top: 0;
+  }
+
+  #archive .archive-card > div:last-child > span { width: 100%; line-height: 1.5; }
+  #archive .archive-card h3 { margin-top: 10px; font-size: clamp(17px,3.5vw,23px); line-height: 1.08; overflow-wrap: anywhere; }
+  #archive .archive-card i { margin-top: auto; padding-top: 18px; }
+}
+
+@media (max-width: 520px) {
+  #archive .archive-grid { gap: 11px; }
+  #archive .archive-card,
+  #archive .archive-card:nth-child(n) {
+    grid-template-columns: clamp(112px,39vw,168px) minmax(0,1fr);
+    gap: 12px;
+    padding: 8px;
+    border-radius: 15px;
+  }
+  #archive .archive-card h3 { font-size: clamp(15px,4.6vw,20px); }
+  #archive .archive-card.process .archive-art::after,
+  #archive .archive-card.sketch .archive-art::after { inset: 7px; letter-spacing: 1px; }
+}

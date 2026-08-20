@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lilyum-design-v9';
+const CACHE_NAME = 'lilyum-design-v10';
 const CORE_ASSETS = ['./', './index.html', './style.css', './studio.css', './polish.css', './features.css', './refinement.css', './art-direction.css', './lilyum.css', './app.js', './features.js', './lilyum-config.js', './lilyum-auth.js', './icon.svg', './lilyum-social-2026.png', './assets/atelier-dream.jpg', './assets/inner-weather.jpg', './assets/sundown-club.jpg', './assets/blue-hour.jpg', './assets/soft-rebel.jpg', './assets/memory-garden.jpg', './assets/other-side.jpg'];
 
 self.addEventListener('install', event => {
