@@ -152,6 +152,43 @@ function goToAI(prefill = '') { $('#workDialog').open && closeWorkDialog(); docu
 const hasAny = (text, words) => words.some(word => text.includes(word));
 const formatRange = (low, high) => `${new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(low)} – ${new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(high)}`;
 const visualFeastRequested = value => String(value || '').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ı/g, 'i').includes('saitcani sikmisler');
+const normalizeSecretPhrase = value => String(value || '').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ı/g, 'i').replace(/[^a-z0-9]+/g, ' ').trim();
+const ecrenNoteRequested = value => normalizeSecretPhrase(value) === 'ecren dunyanin en guzel kizi';
+
+function buildEcrenConfetti() {
+  const colors = ['#d8ff3e', '#ff715b', '#8067e8', '#e7c47e', '#f6efe5', '#f0a5bc'];
+  $('#ecrenConfetti').innerHTML = Array.from({ length: 64 }, (_, index) => {
+    const left = (index * 37 + 11) % 101;
+    const delay = -((index * 13) % 72) / 10;
+    const duration = 5.7 + ((index * 17) % 35) / 10;
+    const drift = ((index * 29) % 150) - 75;
+    const width = 5 + (index % 5) * 2;
+    const height = index % 3 === 0 ? width * 2.4 : width;
+    return `<i style="--x:${left}%;--delay:${delay}s;--duration:${duration}s;--drift:${drift}px;--turn:${180 + (index % 7) * 90}deg;--confetti:${colors[index % colors.length]};--w:${width}px;--h:${height}px"></i>`;
+  }).join('');
+}
+
+function openEcrenNote() {
+  const dialog = $('#ecrenNoteDialog');
+  if (dialog.open) return;
+  buildEcrenConfetti();
+  dialog.scrollTop = 0;
+  $('.ecren-note-scene').scrollTop = 0;
+  dialog.showModal();
+  document.body.classList.add('ecren-note-open');
+  setPageLock(true);
+  requestAnimationFrame(() => $('#closeEcrenNote').focus({ preventScroll: true }));
+}
+
+function closeEcrenNote() {
+  const dialog = $('#ecrenNoteDialog');
+  if (dialog.open) dialog.close();
+}
+
+function releaseEcrenNote() {
+  document.body.classList.remove('ecren-note-open');
+  if (!document.querySelector('dialog[open], .side-panel.open, .cart-drawer.open, .mobile-menu.open, .desktop-menu.open')) setPageLock(false);
+}
 
 function launchVisualFeast() {
   document.querySelector('.visual-feast-overlay')?.remove();
@@ -283,6 +320,7 @@ function normalizeAnalysis(base, external) {
 
 async function analyzeProject() {
   const idea = $('#ideaInput').value.trim();
+  if (ecrenNoteRequested(idea)) { openEcrenNote(); return; }
   if (idea.length < 15) { showToast('Fikrini biraz daha detaylandırmalısın.'); $('#ideaInput').focus(); return; }
   const button = $('#generateBrief'); button.classList.add('loading'); button.disabled = true;
   const base = localAnalysis(idea);
@@ -328,6 +366,8 @@ $('#closeAdmin').onclick = () => $('#adminDialog').close();
 $('#closeWork').onclick = closeWorkDialog;
 $('#workDialog').addEventListener('close', releaseWorkDialog);
 $('#workDialog').addEventListener('cancel', releaseWorkDialog);
+$('#closeEcrenNote').onclick = closeEcrenNote;
+$('#ecrenNoteDialog').addEventListener('close', releaseEcrenNote);
 $('#heroBrief').onclick = () => goToAI(); $('#footerBrief').onclick = () => goToAI();
 function setPageLock(locked) { document.body.style.overflow = locked ? 'hidden' : ''; }
 function closeMobileMenu() { $('#mobileMenu').classList.remove('open'); $('#mobileMenu').setAttribute('aria-hidden', 'true'); $('#menuBtn').classList.remove('active'); $('#menuBtn').setAttribute('aria-expanded', 'false'); $('#menuBtn').setAttribute('aria-label', 'Menüyü aç'); document.body.classList.remove('mobile-nav-open'); setPageLock(false); }
@@ -371,7 +411,10 @@ function updateBriefMeter() {
 }
 $('#projectTypes').onclick = event => { const button = event.target.closest('[data-type]'); if (!button) return; selectedType = button.dataset.type; $$('#projectTypes button').forEach(item => item.classList.toggle('active', item === button)); updateBriefMeter(); };
 $('#moods').onclick = event => { const button = event.target.closest('[data-mood]'); if (!button) return; selectedMood = button.dataset.mood; $$('#moods button').forEach(item => item.classList.toggle('active', item === button)); updateBriefMeter(); };
-$('#ideaInput').oninput = updateBriefMeter;
+$('#ideaInput').oninput = () => {
+  updateBriefMeter();
+  if (ecrenNoteRequested($('#ideaInput').value)) openEcrenNote();
+};
 $('#ideaStarters').onclick = event => {
   const button = event.target.closest('[data-prompt-starter]');
   if (!button) return;
