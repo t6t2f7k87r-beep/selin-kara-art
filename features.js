@@ -194,7 +194,7 @@ const translations = {
   en: [
     ['.desktop-nav a:nth-child(1)', 'Stand'], ['.desktop-nav a:nth-child(2)', 'Works'], ['.desktop-nav a:nth-child(3)', 'AI Studio'], ['.desktop-nav a:nth-child(4)', 'About'],
     ['.hero .kicker', '<span></span> DIGITAL ILLUSTRATION · ORIGINAL WORKS'], ['.hero-copy h1', 'Beyond what<br><em>you imagined.</em>'], ['.hero-lead', 'Emotion-led collectible digital art for people and brands with character.'],
-    ['#heroBrief', 'Tell me an idea <span>✦</span>'], ['.hero-cta .primary-btn', 'Explore the collection <span>↘</span>'],
+    ['#heroBrief', 'Tell me an idea <span class="button-icon is-spark" aria-hidden="true"></span>'], ['.hero-cta .primary-btn', 'Explore the collection <span class="button-icon" aria-hidden="true"><span class="line-arrow"></span></span>'],
     ['#works .section-heading h2', 'A new world begins<br><em>on your wall.</em>'], ['#openGallery', 'Fullscreen exhibition <span class="line-arrow" aria-hidden="true"></span>'],
     ['#archive .archive-head h2', 'The making matters<br><em>as much as the result.</em>'], ['#ai-studio h2', 'Tell your idea.<br><em>See its potential.</em>'],
     ['.process h2', 'From idea to<br><em>signature artwork.</em>'], ['#about h2', 'Making inner worlds<br><em>visible.</em>'], ['.final-cta>p', 'Have an idea?'], ['.final-cta h2', 'Let’s make it<br><em>unforgettable.</em>']
@@ -202,7 +202,7 @@ const translations = {
   tr: [
     ['.desktop-nav a:nth-child(1)', 'Stand'], ['.desktop-nav a:nth-child(2)', 'Eserler'], ['.desktop-nav a:nth-child(3)', 'AI Stüdyo'], ['.desktop-nav a:nth-child(4)', 'Hakkımda'],
     ['.hero .kicker', '<span></span> DİJİTAL İLLÜSTRASYON · ÖZGÜN İŞLER'], ['.hero-copy h1', 'Hayal ettiğin<br><em>şeyin ötesi.</em>'], ['.hero-lead', 'Karakteri olan insanlar ve markalar için duygusu yüksek, koleksiyonluk dijital sanat.'],
-    ['#heroBrief', 'Bir fikir anlat <span>✦</span>'], ['.hero-cta .primary-btn', 'Koleksiyonu keşfet <span>↘</span>'],
+    ['#heroBrief', 'Bir fikir anlat <span class="button-icon is-spark" aria-hidden="true"></span>'], ['.hero-cta .primary-btn', 'Koleksiyonu keşfet <span class="button-icon" aria-hidden="true"><span class="line-arrow"></span></span>'],
     ['#works .section-heading h2', 'Yeni bir dünya<br><em>duvarında başlar.</em>'], ['#openGallery', 'Tam ekran sergi <span class="line-arrow" aria-hidden="true"></span>'],
     ['#archive .archive-head h2', 'Bitmiş işler kadar<br><em>oluş anları da.</em>'], ['#ai-studio h2', 'Fikrini anlat.<br><em>Olasılığını gör.</em>'],
     ['.process h2', 'Fikirden,<br><em>imza esere.</em>'], ['#about h2', 'İç dünyaları<br><em>görünür</em> kılıyorum.'], ['.final-cta>p', 'Bir fikrin mi var?'], ['.final-cta h2', 'Onu birlikte<br><em>unutulmaz</em> yapalım.']
